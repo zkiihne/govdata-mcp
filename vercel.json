@@ -1,9 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "builds": [{ "src": "api/mcp.ts", "use": "@vercel/node" }],
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/mcp", "dest": "/api/mcp" },
-    { "src": "/", "dest": "/api/mcp" }
-  ]
+  "functions": {
+    "api/mcp.ts": {
+      "maxDuration": 30
+    }
+  },
+  "rewrites": [{ "source": "/mcp", "destination": "/api/mcp" }]
 }
