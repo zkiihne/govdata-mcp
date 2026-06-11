@@ -21,6 +21,10 @@ export const QUERY_TOOL_NAME = "query_data_source";
  * - stdio (src/transport/stdio.ts) for local dev / desktop clients.
  * - Streamable HTTP (api/mcp.ts on Vercel) for remote access.
  *
+ * NOTE: intentionally NOT named server.ts — Vercel's Node.js framework
+ * auto-detects a root file named server.ts as the project entrypoint, which
+ * hijacked the api/ serverless-function deployment and crashed at runtime.
+ *
  * Stateless HTTP creates one server per request, so this must stay cheap and
  * side-effect free.
  */

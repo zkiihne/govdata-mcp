@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { createServer } from "./server.js";
+import { createServer } from "./registry.js";
 import { startStdio } from "./transport/stdio.js";
 
 async function main(): Promise<void> {

@@ -14,7 +14,7 @@
  *           Also reachable at /mcp via the rewrite in vercel.json.
  */
 import { createMcpHandler } from "mcp-handler";
-import { registerTools } from "../src/server.js";
+import { registerTools } from "../src/registry.js";
 
 const handler = createMcpHandler(
   (server) => {
@@ -32,4 +32,7 @@ const handler = createMcpHandler(
   { basePath: "/api", disableSse: true, maxDuration: 30 },
 );
 
-export default handler;
+// Named web-handler exports are the signature Vercel's @vercel/node builder
+// expects for a fetch-style function (per the canonical mcp-on-vercel template).
+// `export default` is misdetected as a legacy (req, res) Node handler.
+export { handler as GET, handler as POST, handler as DELETE };
