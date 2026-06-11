@@ -32,5 +32,4 @@ const handler = createMcpHandler(
   { basePath: "/api", disableSse: true, maxDuration: 30 },
 );
 
-export { handler as GET, handler as POST, handler as DELETE };
 export default handler;
