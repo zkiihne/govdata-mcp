@@ -1,0 +1,84 @@
+{
+  "id": "bea",
+  "name": "BEA — Bureau of Economic Analysis API",
+  "agency": "U.S. Bureau of Economic Analysis",
+  "category": "economy",
+  "tier": "free",
+  "status": "planned",
+  "api": {
+    "baseUrl": "https://apps.bea.gov/api",
+    "protocol": "rest-json",
+    "docsUrl": "https://apps.bea.gov/api/_pdf/bea_web_service_api_user_guide.pdf",
+    "endpoints": [
+      {
+        "id": "data",
+        "path": "/data",
+        "method": "GET",
+        "description": "Single endpoint; the method= param selects the operation (GetData, GetDataSetList, GetParameterList, GetParameterValues)."
+      }
+    ]
+  },
+  "auth": {
+    "type": "api-key",
+    "placement": "query",
+    "paramName": "UserID",
+    "credentialRef": "env:BEA_API_KEY",
+    "signupUrl": "https://apps.bea.gov/API/signup/"
+  },
+  "limits": {
+    "dailyQuota": null,
+    "perRequestMaxSeries": null,
+    "rateLimitBehavior": "error",
+    "notes": "Free UserID key required. Throttle: max 100 requests, 100MB, and 30 errors per minute per IP/key — exceeding it blocks for 1 hour."
+  },
+  "pricing": {
+    "model": "free",
+    "feePerCallCents": null
+  },
+  "llmDocs": {
+    "summary": "US economic accounts: GDP (NIPA), regional income/GDP, input-output, international trade and investment, and fixed assets.",
+    "queryGuide": "One endpoint, /data; the operation is chosen by method=. Discover structure first: method=GetDataSetList, then GetParameterList&datasetname=, then GetParameterValues&datasetname=&ParameterName=. Then method=GetData&datasetname=<ds>&<params>&ResultFormat=JSON. UserID is injected by the gateway.",
+    "exampleQueries": [
+      {
+        "intent": "List available datasets",
+        "request": {
+          "method": "GET",
+          "path": "/data",
+          "params": { "method": "GetDataSetList", "ResultFormat": "JSON" }
+        }
+      },
+      {
+        "intent": "Annual real GDP (NIPA table T10101)",
+        "request": {
+          "method": "GET",
+          "path": "/data",
+          "params": {
+            "method": "GetData",
+            "datasetname": "NIPA",
+            "TableName": "T10101",
+            "Frequency": "A",
+            "Year": "2023",
+            "ResultFormat": "JSON"
+          }
+        }
+      }
+    ],
+    "gotchas": [
+      "Everything goes through one /data endpoint — the method= param picks the operation, not the URL path.",
+      "Add ResultFormat=JSON — the default is XML.",
+      "Walk the metadata methods (GetParameterList/GetParameterValues) to learn each dataset's required params before GetData.",
+      "Requires a free key (BEA_API_KEY, sent as UserID); without it the gateway returns 503."
+    ]
+  },
+  "compliance": {
+    "license": "public-domain",
+    "tosUrl": "https://apps.bea.gov/api/_pdf/bea_web_service_api_user_guide.pdf",
+    "redistributionNotes": "US federal data, public domain. Terms require attribution and prohibit implying BEA endorsement.",
+    "reviewedDate": null
+  },
+  "meta": {
+    "addedDate": "2026-06-11",
+    "lastTestedDate": null,
+    "connectorPath": "src/connectors/bea.ts"
+  }
+}

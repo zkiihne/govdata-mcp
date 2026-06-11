@@ -1,0 +1,87 @@
+{
+  "id": "clinical-trials",
+  "name": "ClinicalTrials.gov — study registry (v2)",
+  "agency": "U.S. National Library of Medicine (NIH)",
+  "category": "health",
+  "tier": "free",
+  "status": "live",
+  "api": {
+    "baseUrl": "https://clinicaltrials.gov/api/v2",
+    "protocol": "rest-json",
+    "docsUrl": "https://clinicaltrials.gov/data-api/api",
+    "endpoints": [
+      {
+        "id": "studies-search",
+        "path": "/studies",
+        "method": "GET",
+        "description": "Search registered studies by term, condition, status, location; supports field selection and paging."
+      },
+      {
+        "id": "study-by-id",
+        "path": "/studies/{nctId}",
+        "method": "GET",
+        "description": "Full record for one study by NCT id (e.g. NCT01884792)."
+      }
+    ]
+  },
+  "auth": {
+    "type": "none",
+    "placement": null,
+    "paramName": null,
+    "credentialRef": null,
+    "signupUrl": null
+  },
+  "limits": {
+    "dailyQuota": null,
+    "perRequestMaxSeries": null,
+    "rateLimitBehavior": "throttle",
+    "notes": "No API key. Roughly 50 requests/minute per IP. Default pageSize is 10; set it explicitly. Max pageSize 1000."
+  },
+  "pricing": {
+    "model": "free",
+    "feePerCallCents": null
+  },
+  "llmDocs": {
+    "summary": "Registry of clinical studies worldwide: conditions, interventions, eligibility, sponsors, status, locations, and results.",
+    "queryGuide": "GET /studies with query.* and filter.* params. Free text via query.term; structured search via query.cond (condition), query.intr (intervention), query.locn (location). Filter enums with filter.overallStatus (RECRUITING, COMPLETED, ...). Reduce payload with fields=NCTId,BriefTitle,OverallStatus. Page with pageSize and the nextPageToken returned in each response (pass it as pageToken). Fetch one record with /studies/{nctId}.",
+    "exampleQueries": [
+      {
+        "intent": "Recruiting diabetes studies, key fields only",
+        "request": {
+          "method": "GET",
+          "path": "/studies",
+          "params": {
+            "query.cond": "diabetes",
+            "filter.overallStatus": "RECRUITING",
+            "fields": "NCTId,BriefTitle,OverallStatus",
+            "pageSize": "5"
+          }
+        }
+      },
+      {
+        "intent": "Full record for one trial by NCT id",
+        "request": {
+          "method": "GET",
+          "path": "/studies/NCT01884792"
+        }
+      }
+    ],
+    "gotchas": [
+      "Records are deeply nested under protocolSection.<module> (identificationModule, statusModule, ...) — fields= takes leaf names like NCTId, not dotted paths.",
+      "Default pageSize is 10 — set it explicitly or you silently get a short page.",
+      "Pagination is token-based: read nextPageToken from the response and resend it as pageToken (no offset/skip).",
+      "Status filters are uppercase enums: RECRUITING, COMPLETED, TERMINATED, NOT_YET_RECRUITING."
+    ]
+  },
+  "compliance": {
+    "license": "public-domain",
+    "tosUrl": "https://clinicaltrials.gov/about-site/terms-conditions",
+    "redistributionNotes": "US federal (NIH/NLM) data, public domain. Terms request attribution and that data not be presented as if endorsed by NLM.",
+    "reviewedDate": "2026-06-11"
+  },
+  "meta": {
+    "addedDate": "2026-06-11",
+    "lastTestedDate": "2026-06-11",
+    "connectorPath": "src/connectors/clinical-trials.ts"
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "id": "fema-open",
+  "name": "OpenFEMA — disasters, NFIP & assistance",
+  "agency": "Federal Emergency Management Agency",
+  "category": "emergency-management",
+  "tier": "free",
+  "status": "live",
+  "api": {
+    "baseUrl": "https://www.fema.gov/api/open",
+    "protocol": "rest-json",
+    "docsUrl": "https://www.fema.gov/about/openfema/api",
+    "endpoints": [
+      {
+        "id": "disaster-declarations",
+        "path": "/v2/DisasterDeclarationsSummaries",
+        "method": "GET",
+        "description": "Summary of every FEMA disaster declaration (state, incident type, dates, program)."
+      },
+      {
+        "id": "nfip-claims",
+        "path": "/v2/FimaNfipClaims",
+        "method": "GET",
+        "description": "National Flood Insurance Program redacted claims data."
+      },
+      {
+        "id": "data-sets",
+        "path": "/v1/DataSets",
+        "method": "GET",
+        "description": "Catalog of every OpenFEMA dataset and its current version (use to discover entity names/versions)."
+      }
+    ]
+  },
+  "auth": {
+    "type": "none",
+    "placement": null,
+    "paramName": null,
+    "credentialRef": null,
+    "signupUrl": null
+  },
+  "limits": {
+    "dailyQuota": null,
+    "perRequestMaxSeries": null,
+    "rateLimitBehavior": "throttle",
+    "notes": "No API key. $top caps at 10000 records per request; default page size is 1000. Paginate with $skip. No published hard quota."
+  },
+  "pricing": {
+    "model": "free",
+    "feePerCallCents": null
+  },
+  "llmDocs": {
+    "summary": "FEMA disaster declarations, National Flood Insurance Program claims, and individual/public assistance, queryable by state, incident type, and date.",
+    "queryGuide": "Each dataset is a versioned path, e.g. /v2/DisasterDeclarationsSummaries. Filter with OData params: $filter (e.g. state eq 'TX'), $top (max 10000), $skip, $orderby, $select. Append $inlinecount=allpages&$metadata=off to control the metadata envelope. Call /v1/DataSets to discover entity names and their latest version.",
+    "exampleQueries": [
+      {
+        "intent": "Most recent 5 disaster declarations in Texas",
+        "request": {
+          "method": "GET",
+          "path": "/v2/DisasterDeclarationsSummaries",
+          "params": {
+            "$filter": "state eq 'TX'",
+            "$orderby": "declarationDate desc",
+            "$top": "5"
+          }
+        }
+      },
+      {
+        "intent": "Count of all NFIP flood claims for a county FIPS",
+        "request": {
+          "method": "GET",
+          "path": "/v2/FimaNfipClaims",
+          "params": {
+            "$filter": "countyCode eq '48201'",
+            "$top": "1",
+            "$inlinecount": "allpages"
+          }
+        }
+      }
+    ],
+    "gotchas": [
+      "Filter/order params use the OData $ prefix: $filter, $top, $skip, $orderby, $select.",
+      "$filter string values use single quotes: state eq 'TX'.",
+      "Default page size is 1000 and $top maxes at 10000 — paginate large pulls with $skip.",
+      "Datasets are versioned (v1/v2/...); a renamed/retired version 404s. Check /v1/DataSets for the current version path."
+    ]
+  },
+  "compliance": {
+    "license": "public-domain",
+    "tosUrl": "https://www.fema.gov/about/openfema/terms-conditions",
+    "redistributionNotes": "US federal data, public domain. OpenFEMA terms require attribution and prohibit implying FEMA endorsement.",
+    "reviewedDate": "2026-06-11"
+  },
+  "meta": {
+    "addedDate": "2026-06-11",
+    "lastTestedDate": "2026-06-11",
+    "connectorPath": "src/connectors/fema-open.ts"
+  }
+}

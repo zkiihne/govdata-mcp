@@ -1,0 +1,96 @@
+{
+  "id": "usgs-earthquake",
+  "name": "USGS Earthquake Catalog (FDSN event)",
+  "agency": "U.S. Geological Survey",
+  "category": "geology",
+  "tier": "free",
+  "status": "live",
+  "api": {
+    "baseUrl": "https://earthquake.usgs.gov/fdsnws/event/1",
+    "protocol": "rest-json",
+    "docsUrl": "https://earthquake.usgs.gov/fdsnws/event/1/",
+    "endpoints": [
+      {
+        "id": "query",
+        "path": "/query",
+        "method": "GET",
+        "description": "Search the earthquake catalog by time, magnitude, location, and depth; returns GeoJSON when format=geojson."
+      },
+      {
+        "id": "count",
+        "path": "/count",
+        "method": "GET",
+        "description": "Count matching events without returning them (same filter params as /query)."
+      }
+    ]
+  },
+  "auth": {
+    "type": "none",
+    "placement": null,
+    "paramName": null,
+    "credentialRef": null,
+    "signupUrl": null
+  },
+  "limits": {
+    "dailyQuota": null,
+    "perRequestMaxSeries": null,
+    "rateLimitBehavior": "error",
+    "notes": "No API key. A single query returns at most 20000 events; larger queries are rejected with HTTP 400 — narrow the time window or raise minmagnitude. Use /count to size a query first."
+  },
+  "pricing": {
+    "model": "free",
+    "feePerCallCents": null
+  },
+  "llmDocs": {
+    "summary": "Global real-time and historical earthquake catalog: magnitude, location, depth, and time for seismic events.",
+    "queryGuide": "GET /query?format=geojson with filters: starttime/endtime (ISO 8601 or YYYY-MM-DD), minmagnitude/maxmagnitude, latitude+longitude+maxradiuskm (radial), or minlatitude/maxlatitude/minlongitude/maxlongitude (box), mindepth/maxdepth, orderby (time, time-asc, magnitude, magnitude-asc), limit. Always set format=geojson for clean JSON; the default format is QuakeML XML. Use /count with the same params to size a result first.",
+    "exampleQueries": [
+      {
+        "intent": "Magnitude 5+ quakes worldwide in a one-day window",
+        "request": {
+          "method": "GET",
+          "path": "/query",
+          "params": {
+            "format": "geojson",
+            "starttime": "2024-01-01",
+            "endtime": "2024-01-02",
+            "minmagnitude": "5"
+          }
+        }
+      },
+      {
+        "intent": "Recent quakes within 200km of Los Angeles, strongest first",
+        "request": {
+          "method": "GET",
+          "path": "/query",
+          "params": {
+            "format": "geojson",
+            "latitude": "34.05",
+            "longitude": "-118.25",
+            "maxradiuskm": "200",
+            "minmagnitude": "3",
+            "orderby": "magnitude",
+            "limit": "20"
+          }
+        }
+      }
+    ],
+    "gotchas": [
+      "Set format=geojson — the default response format is QuakeML (XML), not JSON.",
+      "A query returning more than 20000 events fails with HTTP 400: narrow starttime/endtime or raise minmagnitude.",
+      "Times are UTC; bare dates (YYYY-MM-DD) imply 00:00:00 UTC.",
+      "Radial search needs latitude, longitude, AND maxradiuskm together."
+    ]
+  },
+  "compliance": {
+    "license": "public-domain",
+    "tosUrl": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits",
+    "redistributionNotes": "US federal data, public domain. Attribution to USGS requested.",
+    "reviewedDate": "2026-06-11"
+  },
+  "meta": {
+    "addedDate": "2026-06-11",
+    "lastTestedDate": "2026-06-11",
+    "connectorPath": "src/connectors/usgs-earthquake.ts"
+  }
+}

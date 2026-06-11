@@ -1,0 +1,94 @@
+{
+  "id": "federal-register",
+  "name": "Federal Register API",
+  "agency": "Office of the Federal Register / GPO",
+  "category": "regulations",
+  "tier": "free",
+  "status": "live",
+  "api": {
+    "baseUrl": "https://www.federalregister.gov/api/v1",
+    "protocol": "rest-json",
+    "docsUrl": "https://www.federalregister.gov/developers/documentation/api/v1",
+    "endpoints": [
+      {
+        "id": "documents-search",
+        "path": "/documents.json",
+        "method": "GET",
+        "description": "Search Federal Register documents (rules, proposed rules, notices, presidential docs) by term, agency, type, and date."
+      },
+      {
+        "id": "document-by-number",
+        "path": "/documents/{document_number}.json",
+        "method": "GET",
+        "description": "Full metadata for a single document by its Federal Register document number."
+      }
+    ]
+  },
+  "auth": {
+    "type": "none",
+    "placement": null,
+    "paramName": null,
+    "credentialRef": null,
+    "signupUrl": null
+  },
+  "limits": {
+    "dailyQuota": null,
+    "perRequestMaxSeries": null,
+    "rateLimitBehavior": "throttle",
+    "notes": "No API key. per_page max 1000; results capped at 2000 documents per search (page beyond that is rejected). No published hard quota."
+  },
+  "pricing": {
+    "model": "free",
+    "feePerCallCents": null
+  },
+  "llmDocs": {
+    "summary": "The daily journal of the US federal government: final and proposed rules, agency notices, and presidential documents, searchable by term, agency, type, and date.",
+    "queryGuide": "GET /documents.json with conditions[*] filters: conditions[term] (full text), conditions[agencies][] (agency slug, e.g. securities-and-exchange-commission), conditions[type][] (RULE, PRORULE, NOTICE, PRESDOCU), conditions[publication_date][gte]/[lte] (YYYY-MM-DD). Choose returned columns with fields[] (e.g. title, type, publication_date, html_url). Page with per_page and page. Fetch one document by number with /documents/{document_number}.json.",
+    "exampleQueries": [
+      {
+        "intent": "Recent proposed rules mentioning 'privacy'",
+        "request": {
+          "method": "GET",
+          "path": "/documents.json",
+          "params": {
+            "conditions[term]": "privacy",
+            "conditions[type][]": "PRORULE",
+            "per_page": "5",
+            "order": "newest"
+          }
+        }
+      },
+      {
+        "intent": "SEC documents published in a date range",
+        "request": {
+          "method": "GET",
+          "path": "/documents.json",
+          "params": {
+            "conditions[agencies][]": "securities-and-exchange-commission",
+            "conditions[publication_date][gte]": "2024-01-01",
+            "conditions[publication_date][lte]": "2024-03-31",
+            "fields[]": "title",
+            "per_page": "10"
+          }
+        }
+      }
+    ],
+    "gotchas": [
+      "Filters are bracketed: conditions[term], conditions[type][], conditions[publication_date][gte] — array filters need the trailing [].",
+      "document type codes are RULE, PRORULE (proposed), NOTICE, PRESDOCU.",
+      "agencies are referenced by slug, not display name (securities-and-exchange-commission).",
+      "Deep pagination is capped (~2000 results); narrow with date/agency conditions rather than paging far."
+    ]
+  },
+  "compliance": {
+    "license": "public-domain",
+    "tosUrl": "https://www.federalregister.gov/reader-aids/developer-resources",
+    "redistributionNotes": "US federal data, public domain. Free to redistribute; attribution requested.",
+    "reviewedDate": "2026-06-11"
+  },
+  "meta": {
+    "addedDate": "2026-06-11",
+    "lastTestedDate": "2026-06-11",
+    "connectorPath": "src/connectors/federal-register.ts"
+  }
+}

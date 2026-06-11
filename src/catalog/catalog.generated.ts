@@ -5,6 +5,93 @@ import type { SourceSpec } from "./schema.js";
 
 export const SOURCES: readonly SourceSpec[] = [
   {
+    "id": "bea",
+    "name": "BEA — Bureau of Economic Analysis API",
+    "agency": "U.S. Bureau of Economic Analysis",
+    "category": "economy",
+    "tier": "free",
+    "status": "planned",
+    "api": {
+      "baseUrl": "https://apps.bea.gov/api",
+      "protocol": "rest-json",
+      "docsUrl": "https://apps.bea.gov/api/_pdf/bea_web_service_api_user_guide.pdf",
+      "endpoints": [
+        {
+          "id": "data",
+          "path": "/data",
+          "method": "GET",
+          "description": "Single endpoint; the method= param selects the operation (GetData, GetDataSetList, GetParameterList, GetParameterValues)."
+        }
+      ]
+    },
+    "auth": {
+      "type": "api-key",
+      "placement": "query",
+      "paramName": "UserID",
+      "credentialRef": "env:BEA_API_KEY",
+      "signupUrl": "https://apps.bea.gov/API/signup/"
+    },
+    "limits": {
+      "dailyQuota": null,
+      "perRequestMaxSeries": null,
+      "rateLimitBehavior": "error",
+      "notes": "Free UserID key required. Throttle: max 100 requests, 100MB, and 30 errors per minute per IP/key — exceeding it blocks for 1 hour."
+    },
+    "pricing": {
+      "model": "free",
+      "feePerCallCents": null
+    },
+    "llmDocs": {
+      "summary": "US economic accounts: GDP (NIPA), regional income/GDP, input-output, international trade and investment, and fixed assets.",
+      "queryGuide": "One endpoint, /data; the operation is chosen by method=. Discover structure first: method=GetDataSetList, then GetParameterList&datasetname=, then GetParameterValues&datasetname=&ParameterName=. Then method=GetData&datasetname=<ds>&<params>&ResultFormat=JSON. UserID is injected by the gateway.",
+      "exampleQueries": [
+        {
+          "intent": "List available datasets",
+          "request": {
+            "method": "GET",
+            "path": "/data",
+            "params": {
+              "method": "GetDataSetList",
+              "ResultFormat": "JSON"
+            }
+          }
+        },
+        {
+          "intent": "Annual real GDP (NIPA table T10101)",
+          "request": {
+            "method": "GET",
+            "path": "/data",
+            "params": {
+              "method": "GetData",
+              "datasetname": "NIPA",
+              "TableName": "T10101",
+              "Frequency": "A",
+              "Year": "2023",
+              "ResultFormat": "JSON"
+            }
+          }
+        }
+      ],
+      "gotchas": [
+        "Everything goes through one /data endpoint — the method= param picks the operation, not the URL path.",
+        "Add ResultFormat=JSON — the default is XML.",
+        "Walk the metadata methods (GetParameterList/GetParameterValues) to learn each dataset's required params before GetData.",
+        "Requires a free key (BEA_API_KEY, sent as UserID); without it the gateway returns 503."
+      ]
+    },
+    "compliance": {
+      "license": "public-domain",
+      "tosUrl": "https://apps.bea.gov/api/_pdf/bea_web_service_api_user_guide.pdf",
+      "redistributionNotes": "US federal data, public domain. Terms require attribution and prohibit implying BEA endorsement.",
+      "reviewedDate": null
+    },
+    "meta": {
+      "addedDate": "2026-06-11",
+      "lastTestedDate": null,
+      "connectorPath": "src/connectors/bea.ts"
+    }
+  },
+  {
     "id": "bls-public-data",
     "name": "BLS Public Data API",
     "agency": "Bureau of Labor Statistics",
@@ -176,6 +263,269 @@ export const SOURCES: readonly SourceSpec[] = [
     }
   },
   {
+    "id": "clinical-trials",
+    "name": "ClinicalTrials.gov — study registry (v2)",
+    "agency": "U.S. National Library of Medicine (NIH)",
+    "category": "health",
+    "tier": "free",
+    "status": "live",
+    "api": {
+      "baseUrl": "https://clinicaltrials.gov/api/v2",
+      "protocol": "rest-json",
+      "docsUrl": "https://clinicaltrials.gov/data-api/api",
+      "endpoints": [
+        {
+          "id": "studies-search",
+          "path": "/studies",
+          "method": "GET",
+          "description": "Search registered studies by term, condition, status, location; supports field selection and paging."
+        },
+        {
+          "id": "study-by-id",
+          "path": "/studies/{nctId}",
+          "method": "GET",
+          "description": "Full record for one study by NCT id (e.g. NCT01884792)."
+        }
+      ]
+    },
+    "auth": {
+      "type": "none",
+      "placement": null,
+      "paramName": null,
+      "credentialRef": null,
+      "signupUrl": null
+    },
+    "limits": {
+      "dailyQuota": null,
+      "perRequestMaxSeries": null,
+      "rateLimitBehavior": "throttle",
+      "notes": "No API key. Roughly 50 requests/minute per IP. Default pageSize is 10; set it explicitly. Max pageSize 1000."
+    },
+    "pricing": {
+      "model": "free",
+      "feePerCallCents": null
+    },
+    "llmDocs": {
+      "summary": "Registry of clinical studies worldwide: conditions, interventions, eligibility, sponsors, status, locations, and results.",
+      "queryGuide": "GET /studies with query.* and filter.* params. Free text via query.term; structured search via query.cond (condition), query.intr (intervention), query.locn (location). Filter enums with filter.overallStatus (RECRUITING, COMPLETED, ...). Reduce payload with fields=NCTId,BriefTitle,OverallStatus. Page with pageSize and the nextPageToken returned in each response (pass it as pageToken). Fetch one record with /studies/{nctId}.",
+      "exampleQueries": [
+        {
+          "intent": "Recruiting diabetes studies, key fields only",
+          "request": {
+            "method": "GET",
+            "path": "/studies",
+            "params": {
+              "query.cond": "diabetes",
+              "filter.overallStatus": "RECRUITING",
+              "fields": "NCTId,BriefTitle,OverallStatus",
+              "pageSize": "5"
+            }
+          }
+        },
+        {
+          "intent": "Full record for one trial by NCT id",
+          "request": {
+            "method": "GET",
+            "path": "/studies/NCT01884792"
+          }
+        }
+      ],
+      "gotchas": [
+        "Records are deeply nested under protocolSection.<module> (identificationModule, statusModule, ...) — fields= takes leaf names like NCTId, not dotted paths.",
+        "Default pageSize is 10 — set it explicitly or you silently get a short page.",
+        "Pagination is token-based: read nextPageToken from the response and resend it as pageToken (no offset/skip).",
+        "Status filters are uppercase enums: RECRUITING, COMPLETED, TERMINATED, NOT_YET_RECRUITING."
+      ]
+    },
+    "compliance": {
+      "license": "public-domain",
+      "tosUrl": "https://clinicaltrials.gov/about-site/terms-conditions",
+      "redistributionNotes": "US federal (NIH/NLM) data, public domain. Terms request attribution and that data not be presented as if endorsed by NLM.",
+      "reviewedDate": "2026-06-11"
+    },
+    "meta": {
+      "addedDate": "2026-06-11",
+      "lastTestedDate": "2026-06-11",
+      "connectorPath": "src/connectors/clinical-trials.ts"
+    }
+  },
+  {
+    "id": "congress-gov",
+    "name": "Congress.gov API",
+    "agency": "Library of Congress",
+    "category": "legislative",
+    "tier": "free",
+    "status": "planned",
+    "api": {
+      "baseUrl": "https://api.congress.gov/v3",
+      "protocol": "rest-json",
+      "docsUrl": "https://gpo.congress.gov/",
+      "endpoints": [
+        {
+          "id": "bill",
+          "path": "/bill/{congress}/{billType}/{billNumber}",
+          "method": "GET",
+          "description": "Bill detail by congress, type (hr, s, hjres, ...), and number; list endpoints at /bill and /bill/{congress}."
+        },
+        {
+          "id": "member",
+          "path": "/member/{bioguideId}",
+          "method": "GET",
+          "description": "Member profile by bioguide id; list at /member."
+        }
+      ]
+    },
+    "auth": {
+      "type": "api-key",
+      "placement": "query",
+      "paramName": "api_key",
+      "credentialRef": "env:CONGRESS_API_KEY",
+      "signupUrl": "https://api.congress.gov/sign-up/"
+    },
+    "limits": {
+      "dailyQuota": null,
+      "perRequestMaxSeries": null,
+      "rateLimitBehavior": "error",
+      "notes": "Free api.data.gov key required. ~5000 requests/hour per key, then HTTP 429. Default limit 20, max 250 per page."
+    },
+    "pricing": {
+      "model": "free",
+      "feePerCallCents": null
+    },
+    "llmDocs": {
+      "summary": "US legislative data: bills, amendments, members, committees, the Congressional Record, nominations, and treaties from 1973 onward.",
+      "queryGuide": "Append ?format=json and the api_key (injected by the gateway). Resource lists at /bill, /member, /committee, /nomination; detail at /bill/{congress}/{billType}/{billNumber}. Page with offset and limit (max 250). Filter bill lists by fromDateTime/toDateTime and sort.",
+      "exampleQueries": [
+        {
+          "intent": "Detail for H.R. 1 of the 118th Congress",
+          "request": {
+            "method": "GET",
+            "path": "/bill/118/hr/1",
+            "params": {
+              "format": "json"
+            }
+          }
+        },
+        {
+          "intent": "Most recently updated bills",
+          "request": {
+            "method": "GET",
+            "path": "/bill",
+            "params": {
+              "format": "json",
+              "sort": "updateDate+desc",
+              "limit": "20"
+            }
+          }
+        }
+      ],
+      "gotchas": [
+        "Add format=json — the default response is XML.",
+        "billType is lowercase (hr, s, hjres, sjres, hconres, sconres, hres, sres).",
+        "Paging is offset/limit, limit max 250.",
+        "Requires a free api.data.gov key (CONGRESS_API_KEY); without it the gateway returns 503."
+      ]
+    },
+    "compliance": {
+      "license": "public-domain",
+      "tosUrl": "https://www.congress.gov/about/data-and-api",
+      "redistributionNotes": "US legislative data, public domain. api.data.gov key-sharing ToS applies — review before going live.",
+      "reviewedDate": null
+    },
+    "meta": {
+      "addedDate": "2026-06-11",
+      "lastTestedDate": null,
+      "connectorPath": "src/connectors/congress-gov.ts"
+    }
+  },
+  {
+    "id": "eia",
+    "name": "EIA Energy Data API (v2)",
+    "agency": "U.S. Energy Information Administration",
+    "category": "energy",
+    "tier": "free",
+    "status": "planned",
+    "api": {
+      "baseUrl": "https://api.eia.gov/v2",
+      "protocol": "rest-json",
+      "docsUrl": "https://www.eia.gov/opendata/documentation.php",
+      "endpoints": [
+        {
+          "id": "route-data",
+          "path": "/{route}/data",
+          "method": "GET",
+          "description": "Time-series data for a route (e.g. /electricity/retail-sales/data); pick facets, frequency, and data columns."
+        },
+        {
+          "id": "route-metadata",
+          "path": "/{route}",
+          "method": "GET",
+          "description": "Browse the route tree: child routes, available frequencies, facets, and data columns."
+        }
+      ]
+    },
+    "auth": {
+      "type": "api-key",
+      "placement": "query",
+      "paramName": "api_key",
+      "credentialRef": "env:EIA_API_KEY",
+      "signupUrl": "https://www.eia.gov/opendata/register.php"
+    },
+    "limits": {
+      "dailyQuota": null,
+      "perRequestMaxSeries": null,
+      "rateLimitBehavior": "error",
+      "notes": "Free key required (api_key query param). Up to 5000 rows per request; page with offset/length."
+    },
+    "pricing": {
+      "model": "free",
+      "feePerCallCents": null
+    },
+    "llmDocs": {
+      "summary": "US energy statistics: electricity prices and generation, petroleum, natural gas, coal, renewables, CO2 emissions, and international energy.",
+      "queryGuide": "The API is a route tree. GET a route (e.g. /electricity/retail-sales) to discover its frequencies, facets, and data columns, then GET /{route}/data with data[]=<column>, frequency=, facets[<id>][]=<value>, start=, end=, sort[0][column]=&sort[0][direction]=, offset, length (max 5000). api_key is injected by the gateway.",
+      "exampleQueries": [
+        {
+          "intent": "Browse the electricity retail-sales route metadata",
+          "request": {
+            "method": "GET",
+            "path": "/electricity/retail-sales"
+          }
+        },
+        {
+          "intent": "Monthly average retail electricity price, all sectors",
+          "request": {
+            "method": "GET",
+            "path": "/electricity/retail-sales/data",
+            "params": {
+              "frequency": "monthly",
+              "data[]": "price",
+              "start": "2023-01",
+              "length": "12"
+            }
+          }
+        }
+      ],
+      "gotchas": [
+        "Two-step: read a route's metadata to learn valid data[] columns and facet ids before requesting /data.",
+        "data columns and facets use bracketed array params: data[]=price, facets[stateid][]=CA.",
+        "length maxes at 5000 rows — page with offset.",
+        "Requires a free key (EIA_API_KEY); without it the gateway returns 503."
+      ]
+    },
+    "compliance": {
+      "license": "public-domain",
+      "tosUrl": "https://www.eia.gov/about/copyrights_reuse.php",
+      "redistributionNotes": "US federal data, public domain. Free to redistribute; attribution to EIA requested.",
+      "reviewedDate": null
+    },
+    "meta": {
+      "addedDate": "2026-06-11",
+      "lastTestedDate": null,
+      "connectorPath": "src/connectors/eia.ts"
+    }
+  },
+  {
     "id": "epa-airnow",
     "name": "EPA AirNow API",
     "agency": "Environmental Protection Agency",
@@ -276,6 +626,296 @@ export const SOURCES: readonly SourceSpec[] = [
       "addedDate": "2026-06-11",
       "lastTestedDate": null,
       "connectorPath": "src/connectors/epa-airnow.ts"
+    }
+  },
+  {
+    "id": "fdic-bankfind",
+    "name": "FDIC BankFind Suite",
+    "agency": "Federal Deposit Insurance Corporation",
+    "category": "finance",
+    "tier": "free",
+    "status": "live",
+    "api": {
+      "baseUrl": "https://api.fdic.gov/banks",
+      "protocol": "rest-json",
+      "docsUrl": "https://api.fdic.gov/banks/docs/",
+      "endpoints": [
+        {
+          "id": "institutions",
+          "path": "/institutions",
+          "method": "GET",
+          "description": "Search FDIC-insured institutions by name, location, charter, and status."
+        },
+        {
+          "id": "financials",
+          "path": "/financials",
+          "method": "GET",
+          "description": "Quarterly financial/call-report metrics per institution (by CERT)."
+        },
+        {
+          "id": "failures",
+          "path": "/failures",
+          "method": "GET",
+          "description": "Historical bank failures and assistance transactions."
+        }
+      ]
+    },
+    "auth": {
+      "type": "none",
+      "placement": null,
+      "paramName": null,
+      "credentialRef": null,
+      "signupUrl": null
+    },
+    "limits": {
+      "dailyQuota": null,
+      "perRequestMaxSeries": null,
+      "rateLimitBehavior": "throttle",
+      "notes": "No API key. Default limit is 10; max limit per request is 10000. Paginate with offset. No published hard quota."
+    },
+    "pricing": {
+      "model": "free",
+      "feePerCallCents": null
+    },
+    "llmDocs": {
+      "summary": "FDIC-insured bank directory, quarterly financial metrics, and historical failures, searchable by name, location, and identifier.",
+      "queryGuide": "GET /institutions, /financials, or /failures. Narrow with filters (Elasticsearch-style field:value, e.g. STALP:CA, joined with AND/OR), full-text with search, choose columns with fields (comma-separated), page with limit and offset, sort with sort_by and sort_order. format=json is the default. Discover field names from the docs (e.g. NAME, CITY, STALP, CERT, ACTIVE).",
+      "exampleQueries": [
+        {
+          "intent": "Active California banks, name and city only",
+          "request": {
+            "method": "GET",
+            "path": "/institutions",
+            "params": {
+              "filters": "STALP:CA AND ACTIVE:1",
+              "fields": "NAME,CITY,STALP,CERT",
+              "limit": "5"
+            }
+          }
+        },
+        {
+          "intent": "Bank failures in Illinois since 2008",
+          "request": {
+            "method": "GET",
+            "path": "/failures",
+            "params": {
+              "filters": "PSTALP:IL AND FAILYR:[2008 TO 2025]",
+              "fields": "NAME,CITYST,FAILDATE",
+              "sort_by": "FAILDATE",
+              "sort_order": "DESC",
+              "limit": "10"
+            }
+          }
+        }
+      ],
+      "gotchas": [
+        "Host migrated: the API is now api.fdic.gov/banks (the old banks.data.fdic.gov/api 301-redirects here).",
+        "Records are wrapped: each result is { data: {...}, score }, and the top level has meta.total — read .data[].data.",
+        "filters uses Elasticsearch query syntax: field:value, AND/OR, and ranges like FAILYR:[2008 TO 2025].",
+        "Default limit is 10 — set limit explicitly and paginate with offset for full pulls."
+      ]
+    },
+    "compliance": {
+      "license": "public-domain",
+      "tosUrl": "https://www.fdic.gov/policies/website-policies",
+      "redistributionNotes": "US federal data, public domain. Free to redistribute; attribution to FDIC requested.",
+      "reviewedDate": "2026-06-11"
+    },
+    "meta": {
+      "addedDate": "2026-06-11",
+      "lastTestedDate": "2026-06-11",
+      "connectorPath": "src/connectors/fdic-bankfind.ts"
+    }
+  },
+  {
+    "id": "federal-register",
+    "name": "Federal Register API",
+    "agency": "Office of the Federal Register / GPO",
+    "category": "regulations",
+    "tier": "free",
+    "status": "live",
+    "api": {
+      "baseUrl": "https://www.federalregister.gov/api/v1",
+      "protocol": "rest-json",
+      "docsUrl": "https://www.federalregister.gov/developers/documentation/api/v1",
+      "endpoints": [
+        {
+          "id": "documents-search",
+          "path": "/documents.json",
+          "method": "GET",
+          "description": "Search Federal Register documents (rules, proposed rules, notices, presidential docs) by term, agency, type, and date."
+        },
+        {
+          "id": "document-by-number",
+          "path": "/documents/{document_number}.json",
+          "method": "GET",
+          "description": "Full metadata for a single document by its Federal Register document number."
+        }
+      ]
+    },
+    "auth": {
+      "type": "none",
+      "placement": null,
+      "paramName": null,
+      "credentialRef": null,
+      "signupUrl": null
+    },
+    "limits": {
+      "dailyQuota": null,
+      "perRequestMaxSeries": null,
+      "rateLimitBehavior": "throttle",
+      "notes": "No API key. per_page max 1000; results capped at 2000 documents per search (page beyond that is rejected). No published hard quota."
+    },
+    "pricing": {
+      "model": "free",
+      "feePerCallCents": null
+    },
+    "llmDocs": {
+      "summary": "The daily journal of the US federal government: final and proposed rules, agency notices, and presidential documents, searchable by term, agency, type, and date.",
+      "queryGuide": "GET /documents.json with conditions[*] filters: conditions[term] (full text), conditions[agencies][] (agency slug, e.g. securities-and-exchange-commission), conditions[type][] (RULE, PRORULE, NOTICE, PRESDOCU), conditions[publication_date][gte]/[lte] (YYYY-MM-DD). Choose returned columns with fields[] (e.g. title, type, publication_date, html_url). Page with per_page and page. Fetch one document by number with /documents/{document_number}.json.",
+      "exampleQueries": [
+        {
+          "intent": "Recent proposed rules mentioning 'privacy'",
+          "request": {
+            "method": "GET",
+            "path": "/documents.json",
+            "params": {
+              "conditions[term]": "privacy",
+              "conditions[type][]": "PRORULE",
+              "per_page": "5",
+              "order": "newest"
+            }
+          }
+        },
+        {
+          "intent": "SEC documents published in a date range",
+          "request": {
+            "method": "GET",
+            "path": "/documents.json",
+            "params": {
+              "conditions[agencies][]": "securities-and-exchange-commission",
+              "conditions[publication_date][gte]": "2024-01-01",
+              "conditions[publication_date][lte]": "2024-03-31",
+              "fields[]": "title",
+              "per_page": "10"
+            }
+          }
+        }
+      ],
+      "gotchas": [
+        "Filters are bracketed: conditions[term], conditions[type][], conditions[publication_date][gte] — array filters need the trailing [].",
+        "document type codes are RULE, PRORULE (proposed), NOTICE, PRESDOCU.",
+        "agencies are referenced by slug, not display name (securities-and-exchange-commission).",
+        "Deep pagination is capped (~2000 results); narrow with date/agency conditions rather than paging far."
+      ]
+    },
+    "compliance": {
+      "license": "public-domain",
+      "tosUrl": "https://www.federalregister.gov/reader-aids/developer-resources",
+      "redistributionNotes": "US federal data, public domain. Free to redistribute; attribution requested.",
+      "reviewedDate": "2026-06-11"
+    },
+    "meta": {
+      "addedDate": "2026-06-11",
+      "lastTestedDate": "2026-06-11",
+      "connectorPath": "src/connectors/federal-register.ts"
+    }
+  },
+  {
+    "id": "fema-open",
+    "name": "OpenFEMA — disasters, NFIP & assistance",
+    "agency": "Federal Emergency Management Agency",
+    "category": "emergency-management",
+    "tier": "free",
+    "status": "live",
+    "api": {
+      "baseUrl": "https://www.fema.gov/api/open",
+      "protocol": "rest-json",
+      "docsUrl": "https://www.fema.gov/about/openfema/api",
+      "endpoints": [
+        {
+          "id": "disaster-declarations",
+          "path": "/v2/DisasterDeclarationsSummaries",
+          "method": "GET",
+          "description": "Summary of every FEMA disaster declaration (state, incident type, dates, program)."
+        },
+        {
+          "id": "nfip-claims",
+          "path": "/v2/FimaNfipClaims",
+          "method": "GET",
+          "description": "National Flood Insurance Program redacted claims data."
+        },
+        {
+          "id": "data-sets",
+          "path": "/v1/DataSets",
+          "method": "GET",
+          "description": "Catalog of every OpenFEMA dataset and its current version (use to discover entity names/versions)."
+        }
+      ]
+    },
+    "auth": {
+      "type": "none",
+      "placement": null,
+      "paramName": null,
+      "credentialRef": null,
+      "signupUrl": null
+    },
+    "limits": {
+      "dailyQuota": null,
+      "perRequestMaxSeries": null,
+      "rateLimitBehavior": "throttle",
+      "notes": "No API key. $top caps at 10000 records per request; default page size is 1000. Paginate with $skip. No published hard quota."
+    },
+    "pricing": {
+      "model": "free",
+      "feePerCallCents": null
+    },
+    "llmDocs": {
+      "summary": "FEMA disaster declarations, National Flood Insurance Program claims, and individual/public assistance, queryable by state, incident type, and date.",
+      "queryGuide": "Each dataset is a versioned path, e.g. /v2/DisasterDeclarationsSummaries. Filter with OData params: $filter (e.g. state eq 'TX'), $top (max 10000), $skip, $orderby, $select. Append $inlinecount=allpages&$metadata=off to control the metadata envelope. Call /v1/DataSets to discover entity names and their latest version.",
+      "exampleQueries": [
+        {
+          "intent": "Most recent 5 disaster declarations in Texas",
+          "request": {
+            "method": "GET",
+            "path": "/v2/DisasterDeclarationsSummaries",
+            "params": {
+              "$filter": "state eq 'TX'",
+              "$orderby": "declarationDate desc",
+              "$top": "5"
+            }
+          }
+        },
+        {
+          "intent": "Count of all NFIP flood claims for a county FIPS",
+          "request": {
+            "method": "GET",
+            "path": "/v2/FimaNfipClaims",
+            "params": {
+              "$filter": "countyCode eq '48201'",
+              "$top": "1",
+              "$inlinecount": "allpages"
+            }
+          }
+        }
+      ],
+      "gotchas": [
+        "Filter/order params use the OData $ prefix: $filter, $top, $skip, $orderby, $select.",
+        "$filter string values use single quotes: state eq 'TX'.",
+        "Default page size is 1000 and $top maxes at 10000 — paginate large pulls with $skip.",
+        "Datasets are versioned (v1/v2/...); a renamed/retired version 404s. Check /v1/DataSets for the current version path."
+      ]
+    },
+    "compliance": {
+      "license": "public-domain",
+      "tosUrl": "https://www.fema.gov/about/openfema/terms-conditions",
+      "redistributionNotes": "US federal data, public domain. OpenFEMA terms require attribution and prohibit implying FEMA endorsement.",
+      "reviewedDate": "2026-06-11"
+    },
+    "meta": {
+      "addedDate": "2026-06-11",
+      "lastTestedDate": "2026-06-11",
+      "connectorPath": "src/connectors/fema-open.ts"
     }
   },
   {
@@ -561,6 +1201,375 @@ export const SOURCES: readonly SourceSpec[] = [
     }
   },
   {
+    "id": "nvd",
+    "name": "NVD — National Vulnerability Database (CVE)",
+    "agency": "NIST (National Institute of Standards and Technology)",
+    "category": "cybersecurity",
+    "tier": "free",
+    "status": "planned",
+    "api": {
+      "baseUrl": "https://services.nvd.nist.gov/rest/json",
+      "protocol": "rest-json",
+      "docsUrl": "https://nvd.nist.gov/developers/vulnerabilities",
+      "endpoints": [
+        {
+          "id": "cves",
+          "path": "/cves/2.0",
+          "method": "GET",
+          "description": "Search CVE vulnerability records by id, keyword, CVSS severity, CPE, and date range."
+        },
+        {
+          "id": "cve-history",
+          "path": "/cvehistory/2.0",
+          "method": "GET",
+          "description": "Change history for CVE records."
+        }
+      ]
+    },
+    "auth": {
+      "type": "api-key",
+      "placement": "header",
+      "paramName": "apiKey",
+      "credentialRef": "env:NVD_API_KEY",
+      "signupUrl": "https://nvd.nist.gov/developers/request-an-api-key"
+    },
+    "limits": {
+      "dailyQuota": null,
+      "perRequestMaxSeries": null,
+      "rateLimitBehavior": "throttle",
+      "notes": "Works keyless at 5 requests per 30s rolling window; a free key raises it to 50 per 30s. resultsPerPage max 2000. Inject the key only when set (optional)."
+    },
+    "pricing": {
+      "model": "free",
+      "feePerCallCents": null
+    },
+    "llmDocs": {
+      "summary": "NIST National Vulnerability Database: CVE records with CVSS scores, affected products (CPE), references, and change history.",
+      "queryGuide": "GET /cves/2.0 with cveId=CVE-YYYY-NNNN for one record, or filters: keywordSearch=, cvssV3Severity=(LOW|MEDIUM|HIGH|CRITICAL), cpeName=, pubStartDate/pubEndDate or lastModStartDate/lastModEndDate (ISO 8601, max 120-day span), resultsPerPage (max 2000), startIndex. The apiKey header is injected only when configured (works keyless at lower limits).",
+      "exampleQueries": [
+        {
+          "intent": "Fetch one CVE by id",
+          "request": {
+            "method": "GET",
+            "path": "/cves/2.0",
+            "params": {
+              "cveId": "CVE-2021-44228"
+            }
+          }
+        },
+        {
+          "intent": "Critical CVEs matching a keyword",
+          "request": {
+            "method": "GET",
+            "path": "/cves/2.0",
+            "params": {
+              "keywordSearch": "openssl",
+              "cvssV3Severity": "CRITICAL",
+              "resultsPerPage": "10"
+            }
+          }
+        }
+      ],
+      "gotchas": [
+        "Date-range filters max out at a 120-day span per request; window larger pulls.",
+        "Pagination is startIndex/resultsPerPage (max 2000), with totalResults in the envelope.",
+        "Keyless is 5 req/30s — bursts get HTTP 403/429; set NVD_API_KEY to raise to 50/30s (optional injection).",
+        "cveId must be the full CVE-YYYY-NNNN form."
+      ]
+    },
+    "compliance": {
+      "license": "public-domain",
+      "tosUrl": "https://nvd.nist.gov/developers/terms-of-use",
+      "redistributionNotes": "US federal data, public domain. Terms request attribution and prohibit implying NIST endorsement.",
+      "reviewedDate": null
+    },
+    "meta": {
+      "addedDate": "2026-06-11",
+      "lastTestedDate": null,
+      "connectorPath": "src/connectors/nvd.ts"
+    }
+  },
+  {
+    "id": "openfda",
+    "name": "openFDA API",
+    "agency": "U.S. Food and Drug Administration",
+    "category": "health",
+    "tier": "free",
+    "status": "planned",
+    "api": {
+      "baseUrl": "https://api.fda.gov",
+      "protocol": "rest-json",
+      "docsUrl": "https://open.fda.gov/apis/",
+      "endpoints": [
+        {
+          "id": "drug-event",
+          "path": "/drug/event.json",
+          "method": "GET",
+          "description": "Adverse event reports (FAERS) for drugs."
+        },
+        {
+          "id": "drug-enforcement",
+          "path": "/drug/enforcement.json",
+          "method": "GET",
+          "description": "Drug recall enforcement reports."
+        },
+        {
+          "id": "device-event",
+          "path": "/device/event.json",
+          "method": "GET",
+          "description": "Medical device adverse event reports (MAUDE)."
+        }
+      ]
+    },
+    "auth": {
+      "type": "api-key",
+      "placement": "query",
+      "paramName": "api_key",
+      "credentialRef": "env:OPENFDA_API_KEY",
+      "signupUrl": "https://open.fda.gov/apis/authentication/"
+    },
+    "limits": {
+      "dailyQuota": null,
+      "perRequestMaxSeries": null,
+      "rateLimitBehavior": "throttle",
+      "notes": "Works keyless at lower limits (240 req/min, 1000/day per IP); a free api_key raises it (240 req/min, 120000/day). Inject the key only when set (mirror census-acs)."
+    },
+    "pricing": {
+      "model": "free",
+      "feePerCallCents": null
+    },
+    "llmDocs": {
+      "summary": "FDA data on drugs, devices, and foods: adverse events, recalls/enforcement, product labels, and the NDC directory.",
+      "queryGuide": "Each domain has its own endpoint, e.g. /drug/event.json. Query with search=<field>:<value> (Lucene syntax, AND/OR, ranges, date ranges like [20240101+TO+20241231]), limit (max 1000), skip (max 25000), and count=<field> for aggregated counts instead of records. api_key is injected only when configured (works keyless otherwise).",
+      "exampleQueries": [
+        {
+          "intent": "Count adverse-event reports by reaction for a drug",
+          "request": {
+            "method": "GET",
+            "path": "/drug/event.json",
+            "params": {
+              "search": "patient.drug.medicinalproduct:aspirin",
+              "count": "patient.reaction.reactionmeddrapt.exact"
+            }
+          }
+        },
+        {
+          "intent": "Recent drug recall enforcement reports",
+          "request": {
+            "method": "GET",
+            "path": "/drug/enforcement.json",
+            "params": {
+              "search": "report_date:[20240101+TO+20241231]",
+              "limit": "5"
+            }
+          }
+        }
+      ],
+      "gotchas": [
+        "search uses Lucene field:value syntax; exact-match fields need the .exact suffix (especially for count=).",
+        "count= returns aggregated buckets, not raw records — different response shape.",
+        "Paging: limit max 1000, skip max 25000; beyond that, narrow the search.",
+        "Keyless works but is rate-limited per IP; set OPENFDA_API_KEY to raise the daily cap (optional injection)."
+      ]
+    },
+    "compliance": {
+      "license": "public-domain",
+      "tosUrl": "https://open.fda.gov/terms/",
+      "redistributionNotes": "US federal data, public domain (CC0). openFDA is not for clinical decisions; terms prohibit implying FDA endorsement.",
+      "reviewedDate": null
+    },
+    "meta": {
+      "addedDate": "2026-06-11",
+      "lastTestedDate": null,
+      "connectorPath": "src/connectors/openfda.ts"
+    }
+  },
+  {
+    "id": "regulations-gov",
+    "name": "Regulations.gov API (v4)",
+    "agency": "U.S. General Services Administration / eRulemaking",
+    "category": "regulations",
+    "tier": "premium",
+    "status": "planned",
+    "api": {
+      "baseUrl": "https://api.regulations.gov/v4",
+      "protocol": "rest-json",
+      "docsUrl": "https://open.gsa.gov/api/regulationsgov/",
+      "endpoints": [
+        {
+          "id": "documents",
+          "path": "/documents",
+          "method": "GET",
+          "description": "Search regulatory documents (rules, proposed rules, notices, supporting materials)."
+        },
+        {
+          "id": "dockets",
+          "path": "/dockets",
+          "method": "GET",
+          "description": "Search rulemaking dockets."
+        },
+        {
+          "id": "comments",
+          "path": "/comments",
+          "method": "GET",
+          "description": "Search public comments submitted on documents/dockets."
+        }
+      ]
+    },
+    "auth": {
+      "type": "api-key",
+      "placement": "header",
+      "paramName": "X-Api-Key",
+      "credentialRef": "env:REGULATIONS_API_KEY",
+      "signupUrl": "https://open.gsa.gov/api/regulationsgov/#getting-started"
+    },
+    "limits": {
+      "dailyQuota": null,
+      "perRequestMaxSeries": null,
+      "rateLimitBehavior": "error",
+      "notes": "api.data.gov key required in X-Api-Key. Hard limit 1000 requests/hour per key, then HTTP 429. page[size] max 250; results capped at 5000 per query (20 pages)."
+    },
+    "pricing": {
+      "model": "metered",
+      "feePerCallCents": 1
+    },
+    "llmDocs": {
+      "summary": "US federal rulemaking: regulatory documents, dockets, and public comments from Regulations.gov.",
+      "queryGuide": "GET /documents, /dockets, or /comments with filter[*] params (e.g. filter[searchTerm], filter[agencyId], filter[postedDate][ge]), sort, page[size] (max 250), page[number]. The X-Api-Key header is injected by the gateway. Detail records are fetched by id at /documents/{id}, etc.",
+      "exampleQueries": [
+        {
+          "intent": "Search documents by term for an agency",
+          "request": {
+            "method": "GET",
+            "path": "/documents",
+            "params": {
+              "filter[searchTerm]": "emissions",
+              "filter[agencyId]": "EPA",
+              "page[size]": "5"
+            }
+          }
+        },
+        {
+          "intent": "Comments posted after a date",
+          "request": {
+            "method": "GET",
+            "path": "/comments",
+            "params": {
+              "filter[postedDate][ge]": "2024-01-01",
+              "page[size]": "10"
+            }
+          }
+        }
+      ],
+      "gotchas": [
+        "Filters and paging are bracketed: filter[searchTerm], page[size], page[number].",
+        "1000 req/hr hard cap per key, then 429 — premium-gated for shared-key metering.",
+        "Results capped at 5000 per query (page[size] max 250 x 20 pages); use date/agency filters to narrow.",
+        "Requires an api.data.gov key (REGULATIONS_API_KEY)."
+      ]
+    },
+    "compliance": {
+      "license": "public-domain",
+      "tosUrl": "https://www.regulations.gov/user-notice",
+      "redistributionNotes": "US federal data, public domain. api.data.gov ToS restricts key sharing — same concern as BLS; needs human review before going live.",
+      "reviewedDate": null
+    },
+    "meta": {
+      "addedDate": "2026-06-11",
+      "lastTestedDate": null,
+      "connectorPath": "src/connectors/regulations-gov.ts"
+    }
+  },
+  {
+    "id": "sam-gov",
+    "name": "SAM.gov — Entity & Exclusions API",
+    "agency": "U.S. General Services Administration",
+    "category": "procurement",
+    "tier": "premium",
+    "status": "planned",
+    "api": {
+      "baseUrl": "https://api.sam.gov",
+      "protocol": "rest-json",
+      "docsUrl": "https://open.gsa.gov/api/entity-api/",
+      "endpoints": [
+        {
+          "id": "entity-management",
+          "path": "/entity-information/v3/entities",
+          "method": "GET",
+          "description": "Search registered federal entities (by UEI, CAGE, name, registration status)."
+        },
+        {
+          "id": "exclusions",
+          "path": "/entity-information/v4/exclusions",
+          "method": "GET",
+          "description": "Search the exclusions list (parties barred from federal contracts/assistance)."
+        }
+      ]
+    },
+    "auth": {
+      "type": "api-key",
+      "placement": "query",
+      "paramName": "api_key",
+      "credentialRef": "env:SAM_API_KEY",
+      "signupUrl": "https://sam.gov/profile/details"
+    },
+    "limits": {
+      "dailyQuota": null,
+      "perRequestMaxSeries": null,
+      "rateLimitBehavior": "error",
+      "notes": "Personal/system api_key required, tied to a SAM.gov account with role-based daily caps (often ~10 req/day for unauthenticated-tier keys, more for federal/system accounts). Tight per-key quotas — premium-gated."
+    },
+    "pricing": {
+      "model": "metered",
+      "feePerCallCents": 1
+    },
+    "llmDocs": {
+      "summary": "Federal entity registrations (UEI/CAGE, business details) and the government-wide exclusions (debarment) list from SAM.gov.",
+      "queryGuide": "GET /entity-information/v3/entities or /entity-information/v4/exclusions with query params such as ueiSAM, legalBusinessName, registrationStatus, samRegistered, and paging via page (0-based) and size. api_key is injected by the gateway. Field availability depends on the key's sensitivity role.",
+      "exampleQueries": [
+        {
+          "intent": "Look up an entity by UEI",
+          "request": {
+            "method": "GET",
+            "path": "/entity-information/v3/entities",
+            "params": {
+              "ueiSAM": "ABC123DEF456"
+            }
+          }
+        },
+        {
+          "intent": "Search active registrations by business name",
+          "request": {
+            "method": "GET",
+            "path": "/entity-information/v3/entities",
+            "params": {
+              "legalBusinessName": "Acme",
+              "registrationStatus": "A",
+              "size": "10"
+            }
+          }
+        }
+      ],
+      "gotchas": [
+        "api_key is tied to a SAM.gov account; quotas and which fields return depend on the account's role (public vs FOUO/sensitive).",
+        "Daily caps are low for public keys (~10/day) — premium-gated for metering.",
+        "Paging is page (0-based) and size.",
+        "Endpoint versions differ per resource (entities v3, exclusions v4) — confirm against the docs before implementing."
+      ]
+    },
+    "compliance": {
+      "license": "public-domain",
+      "tosUrl": "https://open.gsa.gov/api/entity-api/",
+      "redistributionNotes": "US federal data, public domain, but sensitive (FOUO) fields are access-controlled by key role and must not be redistributed. Needs human review before going live.",
+      "reviewedDate": null
+    },
+    "meta": {
+      "addedDate": "2026-06-11",
+      "lastTestedDate": null,
+      "connectorPath": "src/connectors/sam-gov.ts"
+    }
+  },
+  {
     "id": "sec-edgar",
     "name": "SEC EDGAR — company filings & XBRL facts",
     "agency": "U.S. Securities and Exchange Commission",
@@ -644,6 +1653,102 @@ export const SOURCES: readonly SourceSpec[] = [
       "addedDate": "2026-06-11",
       "lastTestedDate": "2026-06-11",
       "connectorPath": "src/connectors/sec-edgar.ts"
+    }
+  },
+  {
+    "id": "treasury-fiscal",
+    "name": "Treasury Fiscal Data — debt, spending & rates",
+    "agency": "U.S. Department of the Treasury (Bureau of the Fiscal Service)",
+    "category": "finance",
+    "tier": "free",
+    "status": "live",
+    "api": {
+      "baseUrl": "https://api.fiscaldata.treasury.gov/services/api/fiscal_service",
+      "protocol": "rest-json",
+      "docsUrl": "https://fiscaldata.treasury.gov/api-documentation/",
+      "endpoints": [
+        {
+          "id": "debt-to-penny",
+          "path": "/v2/accounting/od/debt_to_penny",
+          "method": "GET",
+          "description": "Total public debt outstanding, daily."
+        },
+        {
+          "id": "exchange-rates",
+          "path": "/v1/accounting/od/rates_of_exchange",
+          "method": "GET",
+          "description": "Treasury reporting rates of exchange by country/currency and quarter."
+        },
+        {
+          "id": "avg-interest-rates",
+          "path": "/v2/accounting/od/avg_interest_rates",
+          "method": "GET",
+          "description": "Average interest rates on US Treasury securities, monthly."
+        }
+      ]
+    },
+    "auth": {
+      "type": "none",
+      "placement": null,
+      "paramName": null,
+      "credentialRef": null,
+      "signupUrl": null
+    },
+    "limits": {
+      "dailyQuota": null,
+      "perRequestMaxSeries": null,
+      "rateLimitBehavior": "throttle",
+      "notes": "No API key. Default page[size] is 100; max page[size] is 10000. No published hard quota."
+    },
+    "pricing": {
+      "model": "free",
+      "feePerCallCents": null
+    },
+    "llmDocs": {
+      "summary": "Federal financial data: national debt, daily Treasury statement, average interest rates, exchange rates, and spending/revenue, by dataset.",
+      "queryGuide": "Each dataset is its own versioned path under the base. Shape the response with: fields (comma-separated columns), filter (e.g. record_date:gte:2024-01-01), sort (prefix '-' for descending, e.g. -record_date), page[size] and page[number], format=json (default). Field/column names are dataset-specific — see the dataset's docs page.",
+      "exampleQueries": [
+        {
+          "intent": "Latest national debt to the penny",
+          "request": {
+            "method": "GET",
+            "path": "/v2/accounting/od/debt_to_penny",
+            "params": {
+              "sort": "-record_date",
+              "page[size]": "1"
+            }
+          }
+        },
+        {
+          "intent": "2024 month-end exchange rates for the Euro",
+          "request": {
+            "method": "GET",
+            "path": "/v1/accounting/od/rates_of_exchange",
+            "params": {
+              "filter": "record_date:gte:2024-01-01,currency:eq:Euro",
+              "fields": "country_currency_desc,exchange_rate,record_date",
+              "sort": "-record_date"
+            }
+          }
+        }
+      ],
+      "gotchas": [
+        "Paging uses bracketed params: page[size] and page[number], not limit/offset.",
+        "filter syntax is field:operator:value (operators lt, lte, gt, gte, eq, in) joined by commas.",
+        "sort defaults to ascending; prefix the field with '-' for descending (e.g. -record_date).",
+        "Column names differ per dataset — request fields= using that dataset's documented column names."
+      ]
+    },
+    "compliance": {
+      "license": "public-domain",
+      "tosUrl": "https://fiscaldata.treasury.gov/api-documentation/",
+      "redistributionNotes": "US federal data, public domain. Free to redistribute; attribution requested.",
+      "reviewedDate": "2026-06-11"
+    },
+    "meta": {
+      "addedDate": "2026-06-11",
+      "lastTestedDate": "2026-06-11",
+      "connectorPath": "src/connectors/treasury-fiscal.ts"
     }
   },
   {
@@ -746,6 +1851,169 @@ export const SOURCES: readonly SourceSpec[] = [
       "addedDate": "2026-06-11",
       "lastTestedDate": "2026-06-11",
       "connectorPath": "src/connectors/usaspending.ts"
+    }
+  },
+  {
+    "id": "usgs-earthquake",
+    "name": "USGS Earthquake Catalog (FDSN event)",
+    "agency": "U.S. Geological Survey",
+    "category": "geology",
+    "tier": "free",
+    "status": "live",
+    "api": {
+      "baseUrl": "https://earthquake.usgs.gov/fdsnws/event/1",
+      "protocol": "rest-json",
+      "docsUrl": "https://earthquake.usgs.gov/fdsnws/event/1/",
+      "endpoints": [
+        {
+          "id": "query",
+          "path": "/query",
+          "method": "GET",
+          "description": "Search the earthquake catalog by time, magnitude, location, and depth; returns GeoJSON when format=geojson."
+        },
+        {
+          "id": "count",
+          "path": "/count",
+          "method": "GET",
+          "description": "Count matching events without returning them (same filter params as /query)."
+        }
+      ]
+    },
+    "auth": {
+      "type": "none",
+      "placement": null,
+      "paramName": null,
+      "credentialRef": null,
+      "signupUrl": null
+    },
+    "limits": {
+      "dailyQuota": null,
+      "perRequestMaxSeries": null,
+      "rateLimitBehavior": "error",
+      "notes": "No API key. A single query returns at most 20000 events; larger queries are rejected with HTTP 400 — narrow the time window or raise minmagnitude. Use /count to size a query first."
+    },
+    "pricing": {
+      "model": "free",
+      "feePerCallCents": null
+    },
+    "llmDocs": {
+      "summary": "Global real-time and historical earthquake catalog: magnitude, location, depth, and time for seismic events.",
+      "queryGuide": "GET /query?format=geojson with filters: starttime/endtime (ISO 8601 or YYYY-MM-DD), minmagnitude/maxmagnitude, latitude+longitude+maxradiuskm (radial), or minlatitude/maxlatitude/minlongitude/maxlongitude (box), mindepth/maxdepth, orderby (time, time-asc, magnitude, magnitude-asc), limit. Always set format=geojson for clean JSON; the default format is QuakeML XML. Use /count with the same params to size a result first.",
+      "exampleQueries": [
+        {
+          "intent": "Magnitude 5+ quakes worldwide in a one-day window",
+          "request": {
+            "method": "GET",
+            "path": "/query",
+            "params": {
+              "format": "geojson",
+              "starttime": "2024-01-01",
+              "endtime": "2024-01-02",
+              "minmagnitude": "5"
+            }
+          }
+        },
+        {
+          "intent": "Recent quakes within 200km of Los Angeles, strongest first",
+          "request": {
+            "method": "GET",
+            "path": "/query",
+            "params": {
+              "format": "geojson",
+              "latitude": "34.05",
+              "longitude": "-118.25",
+              "maxradiuskm": "200",
+              "minmagnitude": "3",
+              "orderby": "magnitude",
+              "limit": "20"
+            }
+          }
+        }
+      ],
+      "gotchas": [
+        "Set format=geojson — the default response format is QuakeML (XML), not JSON.",
+        "A query returning more than 20000 events fails with HTTP 400: narrow starttime/endtime or raise minmagnitude.",
+        "Times are UTC; bare dates (YYYY-MM-DD) imply 00:00:00 UTC.",
+        "Radial search needs latitude, longitude, AND maxradiuskm together."
+      ]
+    },
+    "compliance": {
+      "license": "public-domain",
+      "tosUrl": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits",
+      "redistributionNotes": "US federal data, public domain. Attribution to USGS requested.",
+      "reviewedDate": "2026-06-11"
+    },
+    "meta": {
+      "addedDate": "2026-06-11",
+      "lastTestedDate": "2026-06-11",
+      "connectorPath": "src/connectors/usgs-earthquake.ts"
+    }
+  },
+  {
+    "id": "usgs-water",
+    "name": "USGS Water Data (NWIS → OGC migration)",
+    "agency": "U.S. Geological Survey",
+    "category": "water",
+    "tier": "premium",
+    "status": "planned",
+    "api": {
+      "baseUrl": "https://api.waterdata.usgs.gov",
+      "protocol": "rest-json",
+      "docsUrl": "https://api.waterdata.usgs.gov/docs/",
+      "endpoints": [
+        {
+          "id": "ogc-collections",
+          "path": "/ogcapi/v0/collections",
+          "method": "GET",
+          "description": "PROVISIONAL — OGC API collections (new keyed Water Data API). Confirm exact paths before implementing; see notes.md."
+        }
+      ]
+    },
+    "auth": {
+      "type": "api-key",
+      "placement": "query",
+      "paramName": "api_key",
+      "credentialRef": "env:USGS_WATER_API_KEY",
+      "signupUrl": "https://api.waterdata.usgs.gov/signup/"
+    },
+    "limits": {
+      "dailyQuota": null,
+      "perRequestMaxSeries": null,
+      "rateLimitBehavior": "error",
+      "notes": "MIGRATION IN PROGRESS. Legacy NWIS (waterservices.usgs.gov) is keyless but being retired; the new api.waterdata.usgs.gov OGC API requires a key with per-key quotas. Endpoints below are provisional — vet before implementing."
+    },
+    "pricing": {
+      "model": "metered",
+      "feePerCallCents": 1
+    },
+    "llmDocs": {
+      "summary": "US streamflow, gage height, and water-quality observations from USGS monitoring sites (NWIS, migrating to the new OGC-based Water Data API).",
+      "queryGuide": "DO NOT rely on these endpoints yet — USGS is mid-migration from legacy NWIS (waterservices.usgs.gov/nwis/iv, keyless) to the new keyed OGC API at api.waterdata.usgs.gov. Confirm the target host, version, and collection paths against the live docs during the Vet phase before wiring a connector.",
+      "exampleQueries": [
+        {
+          "intent": "PROVISIONAL — list OGC collections once the migration target is confirmed",
+          "request": {
+            "method": "GET",
+            "path": "/ogcapi/v0/collections"
+          }
+        }
+      ],
+      "gotchas": [
+        "Endpoints are PROVISIONAL — USGS is migrating NWIS to a new keyed OGC API; legacy waterservices.usgs.gov may differ or be retired.",
+        "Do not guess paths: vet the live docs and confirm which host (legacy vs api.waterdata.usgs.gov) to target before implementing.",
+        "Premium-gated pending the keyed-API quota model."
+      ]
+    },
+    "compliance": {
+      "license": "public-domain",
+      "tosUrl": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits",
+      "redistributionNotes": "US federal data, public domain. Attribution to USGS requested. Endpoint/auth model unsettled during migration — review before going live.",
+      "reviewedDate": null
+    },
+    "meta": {
+      "addedDate": "2026-06-11",
+      "lastTestedDate": null,
+      "connectorPath": "src/connectors/usgs-water.ts"
     }
   }
 ] as const;

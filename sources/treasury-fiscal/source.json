@@ -1,0 +1,96 @@
+{
+  "id": "treasury-fiscal",
+  "name": "Treasury Fiscal Data — debt, spending & rates",
+  "agency": "U.S. Department of the Treasury (Bureau of the Fiscal Service)",
+  "category": "finance",
+  "tier": "free",
+  "status": "live",
+  "api": {
+    "baseUrl": "https://api.fiscaldata.treasury.gov/services/api/fiscal_service",
+    "protocol": "rest-json",
+    "docsUrl": "https://fiscaldata.treasury.gov/api-documentation/",
+    "endpoints": [
+      {
+        "id": "debt-to-penny",
+        "path": "/v2/accounting/od/debt_to_penny",
+        "method": "GET",
+        "description": "Total public debt outstanding, daily."
+      },
+      {
+        "id": "exchange-rates",
+        "path": "/v1/accounting/od/rates_of_exchange",
+        "method": "GET",
+        "description": "Treasury reporting rates of exchange by country/currency and quarter."
+      },
+      {
+        "id": "avg-interest-rates",
+        "path": "/v2/accounting/od/avg_interest_rates",
+        "method": "GET",
+        "description": "Average interest rates on US Treasury securities, monthly."
+      }
+    ]
+  },
+  "auth": {
+    "type": "none",
+    "placement": null,
+    "paramName": null,
+    "credentialRef": null,
+    "signupUrl": null
+  },
+  "limits": {
+    "dailyQuota": null,
+    "perRequestMaxSeries": null,
+    "rateLimitBehavior": "throttle",
+    "notes": "No API key. Default page[size] is 100; max page[size] is 10000. No published hard quota."
+  },
+  "pricing": {
+    "model": "free",
+    "feePerCallCents": null
+  },
+  "llmDocs": {
+    "summary": "Federal financial data: national debt, daily Treasury statement, average interest rates, exchange rates, and spending/revenue, by dataset.",
+    "queryGuide": "Each dataset is its own versioned path under the base. Shape the response with: fields (comma-separated columns), filter (e.g. record_date:gte:2024-01-01), sort (prefix '-' for descending, e.g. -record_date), page[size] and page[number], format=json (default). Field/column names are dataset-specific — see the dataset's docs page.",
+    "exampleQueries": [
+      {
+        "intent": "Latest national debt to the penny",
+        "request": {
+          "method": "GET",
+          "path": "/v2/accounting/od/debt_to_penny",
+          "params": {
+            "sort": "-record_date",
+            "page[size]": "1"
+          }
+        }
+      },
+      {
+        "intent": "2024 month-end exchange rates for the Euro",
+        "request": {
+          "method": "GET",
+          "path": "/v1/accounting/od/rates_of_exchange",
+          "params": {
+            "filter": "record_date:gte:2024-01-01,currency:eq:Euro",
+            "fields": "country_currency_desc,exchange_rate,record_date",
+            "sort": "-record_date"
+          }
+        }
+      }
+    ],
+    "gotchas": [
+      "Paging uses bracketed params: page[size] and page[number], not limit/offset.",
+      "filter syntax is field:operator:value (operators lt, lte, gt, gte, eq, in) joined by commas.",
+      "sort defaults to ascending; prefix the field with '-' for descending (e.g. -record_date).",
+      "Column names differ per dataset — request fields= using that dataset's documented column names."
+    ]
+  },
+  "compliance": {
+    "license": "public-domain",
+    "tosUrl": "https://fiscaldata.treasury.gov/api-documentation/",
+    "redistributionNotes": "US federal data, public domain. Free to redistribute; attribution requested.",
+    "reviewedDate": "2026-06-11"
+  },
+  "meta": {
+    "addedDate": "2026-06-11",
+    "lastTestedDate": "2026-06-11",
+    "connectorPath": "src/connectors/treasury-fiscal.ts"
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "id": "congress-gov",
+  "name": "Congress.gov API",
+  "agency": "Library of Congress",
+  "category": "legislative",
+  "tier": "free",
+  "status": "planned",
+  "api": {
+    "baseUrl": "https://api.congress.gov/v3",
+    "protocol": "rest-json",
+    "docsUrl": "https://gpo.congress.gov/",
+    "endpoints": [
+      {
+        "id": "bill",
+        "path": "/bill/{congress}/{billType}/{billNumber}",
+        "method": "GET",
+        "description": "Bill detail by congress, type (hr, s, hjres, ...), and number; list endpoints at /bill and /bill/{congress}."
+      },
+      {
+        "id": "member",
+        "path": "/member/{bioguideId}",
+        "method": "GET",
+        "description": "Member profile by bioguide id; list at /member."
+      }
+    ]
+  },
+  "auth": {
+    "type": "api-key",
+    "placement": "query",
+    "paramName": "api_key",
+    "credentialRef": "env:CONGRESS_API_KEY",
+    "signupUrl": "https://api.congress.gov/sign-up/"
+  },
+  "limits": {
+    "dailyQuota": null,
+    "perRequestMaxSeries": null,
+    "rateLimitBehavior": "error",
+    "notes": "Free api.data.gov key required. ~5000 requests/hour per key, then HTTP 429. Default limit 20, max 250 per page."
+  },
+  "pricing": {
+    "model": "free",
+    "feePerCallCents": null
+  },
+  "llmDocs": {
+    "summary": "US legislative data: bills, amendments, members, committees, the Congressional Record, nominations, and treaties from 1973 onward.",
+    "queryGuide": "Append ?format=json and the api_key (injected by the gateway). Resource lists at /bill, /member, /committee, /nomination; detail at /bill/{congress}/{billType}/{billNumber}. Page with offset and limit (max 250). Filter bill lists by fromDateTime/toDateTime and sort.",
+    "exampleQueries": [
+      {
+        "intent": "Detail for H.R. 1 of the 118th Congress",
+        "request": {
+          "method": "GET",
+          "path": "/bill/118/hr/1",
+          "params": { "format": "json" }
+        }
+      },
+      {
+        "intent": "Most recently updated bills",
+        "request": {
+          "method": "GET",
+          "path": "/bill",
+          "params": { "format": "json", "sort": "updateDate+desc", "limit": "20" }
+        }
+      }
+    ],
+    "gotchas": [
+      "Add format=json — the default response is XML.",
+      "billType is lowercase (hr, s, hjres, sjres, hconres, sconres, hres, sres).",
+      "Paging is offset/limit, limit max 250.",
+      "Requires a free api.data.gov key (CONGRESS_API_KEY); without it the gateway returns 503."
+    ]
+  },
+  "compliance": {
+    "license": "public-domain",
+    "tosUrl": "https://www.congress.gov/about/data-and-api",
+    "redistributionNotes": "US legislative data, public domain. api.data.gov key-sharing ToS applies — review before going live.",
+    "reviewedDate": null
+  },
+  "meta": {
+    "addedDate": "2026-06-11",
+    "lastTestedDate": null,
+    "connectorPath": "src/connectors/congress-gov.ts"
+  }
+}

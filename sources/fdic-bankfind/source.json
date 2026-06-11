@@ -1,0 +1,99 @@
+{
+  "id": "fdic-bankfind",
+  "name": "FDIC BankFind Suite",
+  "agency": "Federal Deposit Insurance Corporation",
+  "category": "finance",
+  "tier": "free",
+  "status": "live",
+  "api": {
+    "baseUrl": "https://api.fdic.gov/banks",
+    "protocol": "rest-json",
+    "docsUrl": "https://api.fdic.gov/banks/docs/",
+    "endpoints": [
+      {
+        "id": "institutions",
+        "path": "/institutions",
+        "method": "GET",
+        "description": "Search FDIC-insured institutions by name, location, charter, and status."
+      },
+      {
+        "id": "financials",
+        "path": "/financials",
+        "method": "GET",
+        "description": "Quarterly financial/call-report metrics per institution (by CERT)."
+      },
+      {
+        "id": "failures",
+        "path": "/failures",
+        "method": "GET",
+        "description": "Historical bank failures and assistance transactions."
+      }
+    ]
+  },
+  "auth": {
+    "type": "none",
+    "placement": null,
+    "paramName": null,
+    "credentialRef": null,
+    "signupUrl": null
+  },
+  "limits": {
+    "dailyQuota": null,
+    "perRequestMaxSeries": null,
+    "rateLimitBehavior": "throttle",
+    "notes": "No API key. Default limit is 10; max limit per request is 10000. Paginate with offset. No published hard quota."
+  },
+  "pricing": {
+    "model": "free",
+    "feePerCallCents": null
+  },
+  "llmDocs": {
+    "summary": "FDIC-insured bank directory, quarterly financial metrics, and historical failures, searchable by name, location, and identifier.",
+    "queryGuide": "GET /institutions, /financials, or /failures. Narrow with filters (Elasticsearch-style field:value, e.g. STALP:CA, joined with AND/OR), full-text with search, choose columns with fields (comma-separated), page with limit and offset, sort with sort_by and sort_order. format=json is the default. Discover field names from the docs (e.g. NAME, CITY, STALP, CERT, ACTIVE).",
+    "exampleQueries": [
+      {
+        "intent": "Active California banks, name and city only",
+        "request": {
+          "method": "GET",
+          "path": "/institutions",
+          "params": {
+            "filters": "STALP:CA AND ACTIVE:1",
+            "fields": "NAME,CITY,STALP,CERT",
+            "limit": "5"
+          }
+        }
+      },
+      {
+        "intent": "Bank failures in Illinois since 2008",
+        "request": {
+          "method": "GET",
+          "path": "/failures",
+          "params": {
+            "filters": "PSTALP:IL AND FAILYR:[2008 TO 2025]",
+            "fields": "NAME,CITYST,FAILDATE",
+            "sort_by": "FAILDATE",
+            "sort_order": "DESC",
+            "limit": "10"
+          }
+        }
+      }
+    ],
+    "gotchas": [
+      "Host migrated: the API is now api.fdic.gov/banks (the old banks.data.fdic.gov/api 301-redirects here).",
+      "Records are wrapped: each result is { data: {...}, score }, and the top level has meta.total — read .data[].data.",
+      "filters uses Elasticsearch query syntax: field:value, AND/OR, and ranges like FAILYR:[2008 TO 2025].",
+      "Default limit is 10 — set limit explicitly and paginate with offset for full pulls."
+    ]
+  },
+  "compliance": {
+    "license": "public-domain",
+    "tosUrl": "https://www.fdic.gov/policies/website-policies",
+    "redistributionNotes": "US federal data, public domain. Free to redistribute; attribution to FDIC requested.",
+    "reviewedDate": "2026-06-11"
+  },
+  "meta": {
+    "addedDate": "2026-06-11",
+    "lastTestedDate": "2026-06-11",
+    "connectorPath": "src/connectors/fdic-bankfind.ts"
+  }
+}

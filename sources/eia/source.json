@@ -1,0 +1,87 @@
+{
+  "id": "eia",
+  "name": "EIA Energy Data API (v2)",
+  "agency": "U.S. Energy Information Administration",
+  "category": "energy",
+  "tier": "free",
+  "status": "planned",
+  "api": {
+    "baseUrl": "https://api.eia.gov/v2",
+    "protocol": "rest-json",
+    "docsUrl": "https://www.eia.gov/opendata/documentation.php",
+    "endpoints": [
+      {
+        "id": "route-data",
+        "path": "/{route}/data",
+        "method": "GET",
+        "description": "Time-series data for a route (e.g. /electricity/retail-sales/data); pick facets, frequency, and data columns."
+      },
+      {
+        "id": "route-metadata",
+        "path": "/{route}",
+        "method": "GET",
+        "description": "Browse the route tree: child routes, available frequencies, facets, and data columns."
+      }
+    ]
+  },
+  "auth": {
+    "type": "api-key",
+    "placement": "query",
+    "paramName": "api_key",
+    "credentialRef": "env:EIA_API_KEY",
+    "signupUrl": "https://www.eia.gov/opendata/register.php"
+  },
+  "limits": {
+    "dailyQuota": null,
+    "perRequestMaxSeries": null,
+    "rateLimitBehavior": "error",
+    "notes": "Free key required (api_key query param). Up to 5000 rows per request; page with offset/length."
+  },
+  "pricing": {
+    "model": "free",
+    "feePerCallCents": null
+  },
+  "llmDocs": {
+    "summary": "US energy statistics: electricity prices and generation, petroleum, natural gas, coal, renewables, CO2 emissions, and international energy.",
+    "queryGuide": "The API is a route tree. GET a route (e.g. /electricity/retail-sales) to discover its frequencies, facets, and data columns, then GET /{route}/data with data[]=<column>, frequency=, facets[<id>][]=<value>, start=, end=, sort[0][column]=&sort[0][direction]=, offset, length (max 5000). api_key is injected by the gateway.",
+    "exampleQueries": [
+      {
+        "intent": "Browse the electricity retail-sales route metadata",
+        "request": {
+          "method": "GET",
+          "path": "/electricity/retail-sales"
+        }
+      },
+      {
+        "intent": "Monthly average retail electricity price, all sectors",
+        "request": {
+          "method": "GET",
+          "path": "/electricity/retail-sales/data",
+          "params": {
+            "frequency": "monthly",
+            "data[]": "price",
+            "start": "2023-01",
+            "length": "12"
+          }
+        }
+      }
+    ],
+    "gotchas": [
+      "Two-step: read a route's metadata to learn valid data[] columns and facet ids before requesting /data.",
+      "data columns and facets use bracketed array params: data[]=price, facets[stateid][]=CA.",
+      "length maxes at 5000 rows — page with offset.",
+      "Requires a free key (EIA_API_KEY); without it the gateway returns 503."
+    ]
+  },
+  "compliance": {
+    "license": "public-domain",
+    "tosUrl": "https://www.eia.gov/about/copyrights_reuse.php",
+    "redistributionNotes": "US federal data, public domain. Free to redistribute; attribution to EIA requested.",
+    "reviewedDate": null
+  },
+  "meta": {
+    "addedDate": "2026-06-11",
+    "lastTestedDate": null,
+    "connectorPath": "src/connectors/eia.ts"
+  }
+}

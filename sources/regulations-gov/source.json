@@ -1,0 +1,96 @@
+{
+  "id": "regulations-gov",
+  "name": "Regulations.gov API (v4)",
+  "agency": "U.S. General Services Administration / eRulemaking",
+  "category": "regulations",
+  "tier": "premium",
+  "status": "planned",
+  "api": {
+    "baseUrl": "https://api.regulations.gov/v4",
+    "protocol": "rest-json",
+    "docsUrl": "https://open.gsa.gov/api/regulationsgov/",
+    "endpoints": [
+      {
+        "id": "documents",
+        "path": "/documents",
+        "method": "GET",
+        "description": "Search regulatory documents (rules, proposed rules, notices, supporting materials)."
+      },
+      {
+        "id": "dockets",
+        "path": "/dockets",
+        "method": "GET",
+        "description": "Search rulemaking dockets."
+      },
+      {
+        "id": "comments",
+        "path": "/comments",
+        "method": "GET",
+        "description": "Search public comments submitted on documents/dockets."
+      }
+    ]
+  },
+  "auth": {
+    "type": "api-key",
+    "placement": "header",
+    "paramName": "X-Api-Key",
+    "credentialRef": "env:REGULATIONS_API_KEY",
+    "signupUrl": "https://open.gsa.gov/api/regulationsgov/#getting-started"
+  },
+  "limits": {
+    "dailyQuota": null,
+    "perRequestMaxSeries": null,
+    "rateLimitBehavior": "error",
+    "notes": "api.data.gov key required in X-Api-Key. Hard limit 1000 requests/hour per key, then HTTP 429. page[size] max 250; results capped at 5000 per query (20 pages)."
+  },
+  "pricing": {
+    "model": "metered",
+    "feePerCallCents": 1
+  },
+  "llmDocs": {
+    "summary": "US federal rulemaking: regulatory documents, dockets, and public comments from Regulations.gov.",
+    "queryGuide": "GET /documents, /dockets, or /comments with filter[*] params (e.g. filter[searchTerm], filter[agencyId], filter[postedDate][ge]), sort, page[size] (max 250), page[number]. The X-Api-Key header is injected by the gateway. Detail records are fetched by id at /documents/{id}, etc.",
+    "exampleQueries": [
+      {
+        "intent": "Search documents by term for an agency",
+        "request": {
+          "method": "GET",
+          "path": "/documents",
+          "params": {
+            "filter[searchTerm]": "emissions",
+            "filter[agencyId]": "EPA",
+            "page[size]": "5"
+          }
+        }
+      },
+      {
+        "intent": "Comments posted after a date",
+        "request": {
+          "method": "GET",
+          "path": "/comments",
+          "params": {
+            "filter[postedDate][ge]": "2024-01-01",
+            "page[size]": "10"
+          }
+        }
+      }
+    ],
+    "gotchas": [
+      "Filters and paging are bracketed: filter[searchTerm], page[size], page[number].",
+      "1000 req/hr hard cap per key, then 429 — premium-gated for shared-key metering.",
+      "Results capped at 5000 per query (page[size] max 250 x 20 pages); use date/agency filters to narrow.",
+      "Requires an api.data.gov key (REGULATIONS_API_KEY)."
+    ]
+  },
+  "compliance": {
+    "license": "public-domain",
+    "tosUrl": "https://www.regulations.gov/user-notice",
+    "redistributionNotes": "US federal data, public domain. api.data.gov ToS restricts key sharing — same concern as BLS; needs human review before going live.",
+    "reviewedDate": null
+  },
+  "meta": {
+    "addedDate": "2026-06-11",
+    "lastTestedDate": null,
+    "connectorPath": "src/connectors/regulations-gov.ts"
+  }
+}

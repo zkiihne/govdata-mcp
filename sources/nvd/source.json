@@ -1,0 +1,87 @@
+{
+  "id": "nvd",
+  "name": "NVD — National Vulnerability Database (CVE)",
+  "agency": "NIST (National Institute of Standards and Technology)",
+  "category": "cybersecurity",
+  "tier": "free",
+  "status": "planned",
+  "api": {
+    "baseUrl": "https://services.nvd.nist.gov/rest/json",
+    "protocol": "rest-json",
+    "docsUrl": "https://nvd.nist.gov/developers/vulnerabilities",
+    "endpoints": [
+      {
+        "id": "cves",
+        "path": "/cves/2.0",
+        "method": "GET",
+        "description": "Search CVE vulnerability records by id, keyword, CVSS severity, CPE, and date range."
+      },
+      {
+        "id": "cve-history",
+        "path": "/cvehistory/2.0",
+        "method": "GET",
+        "description": "Change history for CVE records."
+      }
+    ]
+  },
+  "auth": {
+    "type": "api-key",
+    "placement": "header",
+    "paramName": "apiKey",
+    "credentialRef": "env:NVD_API_KEY",
+    "signupUrl": "https://nvd.nist.gov/developers/request-an-api-key"
+  },
+  "limits": {
+    "dailyQuota": null,
+    "perRequestMaxSeries": null,
+    "rateLimitBehavior": "throttle",
+    "notes": "Works keyless at 5 requests per 30s rolling window; a free key raises it to 50 per 30s. resultsPerPage max 2000. Inject the key only when set (optional)."
+  },
+  "pricing": {
+    "model": "free",
+    "feePerCallCents": null
+  },
+  "llmDocs": {
+    "summary": "NIST National Vulnerability Database: CVE records with CVSS scores, affected products (CPE), references, and change history.",
+    "queryGuide": "GET /cves/2.0 with cveId=CVE-YYYY-NNNN for one record, or filters: keywordSearch=, cvssV3Severity=(LOW|MEDIUM|HIGH|CRITICAL), cpeName=, pubStartDate/pubEndDate or lastModStartDate/lastModEndDate (ISO 8601, max 120-day span), resultsPerPage (max 2000), startIndex. The apiKey header is injected only when configured (works keyless at lower limits).",
+    "exampleQueries": [
+      {
+        "intent": "Fetch one CVE by id",
+        "request": {
+          "method": "GET",
+          "path": "/cves/2.0",
+          "params": { "cveId": "CVE-2021-44228" }
+        }
+      },
+      {
+        "intent": "Critical CVEs matching a keyword",
+        "request": {
+          "method": "GET",
+          "path": "/cves/2.0",
+          "params": {
+            "keywordSearch": "openssl",
+            "cvssV3Severity": "CRITICAL",
+            "resultsPerPage": "10"
+          }
+        }
+      }
+    ],
+    "gotchas": [
+      "Date-range filters max out at a 120-day span per request; window larger pulls.",
+      "Pagination is startIndex/resultsPerPage (max 2000), with totalResults in the envelope.",
+      "Keyless is 5 req/30s — bursts get HTTP 403/429; set NVD_API_KEY to raise to 50/30s (optional injection).",
+      "cveId must be the full CVE-YYYY-NNNN form."
+    ]
+  },
+  "compliance": {
+    "license": "public-domain",
+    "tosUrl": "https://nvd.nist.gov/developers/terms-of-use",
+    "redistributionNotes": "US federal data, public domain. Terms request attribution and prohibit implying NIST endorsement.",
+    "reviewedDate": null
+  },
+  "meta": {
+    "addedDate": "2026-06-11",
+    "lastTestedDate": null,
+    "connectorPath": "src/connectors/nvd.ts"
+  }
+}

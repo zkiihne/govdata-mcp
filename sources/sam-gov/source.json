@@ -1,0 +1,83 @@
+{
+  "id": "sam-gov",
+  "name": "SAM.gov — Entity & Exclusions API",
+  "agency": "U.S. General Services Administration",
+  "category": "procurement",
+  "tier": "premium",
+  "status": "planned",
+  "api": {
+    "baseUrl": "https://api.sam.gov",
+    "protocol": "rest-json",
+    "docsUrl": "https://open.gsa.gov/api/entity-api/",
+    "endpoints": [
+      {
+        "id": "entity-management",
+        "path": "/entity-information/v3/entities",
+        "method": "GET",
+        "description": "Search registered federal entities (by UEI, CAGE, name, registration status)."
+      },
+      {
+        "id": "exclusions",
+        "path": "/entity-information/v4/exclusions",
+        "method": "GET",
+        "description": "Search the exclusions list (parties barred from federal contracts/assistance)."
+      }
+    ]
+  },
+  "auth": {
+    "type": "api-key",
+    "placement": "query",
+    "paramName": "api_key",
+    "credentialRef": "env:SAM_API_KEY",
+    "signupUrl": "https://sam.gov/profile/details"
+  },
+  "limits": {
+    "dailyQuota": null,
+    "perRequestMaxSeries": null,
+    "rateLimitBehavior": "error",
+    "notes": "Personal/system api_key required, tied to a SAM.gov account with role-based daily caps (often ~10 req/day for unauthenticated-tier keys, more for federal/system accounts). Tight per-key quotas — premium-gated."
+  },
+  "pricing": {
+    "model": "metered",
+    "feePerCallCents": 1
+  },
+  "llmDocs": {
+    "summary": "Federal entity registrations (UEI/CAGE, business details) and the government-wide exclusions (debarment) list from SAM.gov.",
+    "queryGuide": "GET /entity-information/v3/entities or /entity-information/v4/exclusions with query params such as ueiSAM, legalBusinessName, registrationStatus, samRegistered, and paging via page (0-based) and size. api_key is injected by the gateway. Field availability depends on the key's sensitivity role.",
+    "exampleQueries": [
+      {
+        "intent": "Look up an entity by UEI",
+        "request": {
+          "method": "GET",
+          "path": "/entity-information/v3/entities",
+          "params": { "ueiSAM": "ABC123DEF456" }
+        }
+      },
+      {
+        "intent": "Search active registrations by business name",
+        "request": {
+          "method": "GET",
+          "path": "/entity-information/v3/entities",
+          "params": { "legalBusinessName": "Acme", "registrationStatus": "A", "size": "10" }
+        }
+      }
+    ],
+    "gotchas": [
+      "api_key is tied to a SAM.gov account; quotas and which fields return depend on the account's role (public vs FOUO/sensitive).",
+      "Daily caps are low for public keys (~10/day) — premium-gated for metering.",
+      "Paging is page (0-based) and size.",
+      "Endpoint versions differ per resource (entities v3, exclusions v4) — confirm against the docs before implementing."
+    ]
+  },
+  "compliance": {
+    "license": "public-domain",
+    "tosUrl": "https://open.gsa.gov/api/entity-api/",
+    "redistributionNotes": "US federal data, public domain, but sensitive (FOUO) fields are access-controlled by key role and must not be redistributed. Needs human review before going live.",
+    "reviewedDate": null
+  },
+  "meta": {
+    "addedDate": "2026-06-11",
+    "lastTestedDate": null,
+    "connectorPath": "src/connectors/sam-gov.ts"
+  }
+}

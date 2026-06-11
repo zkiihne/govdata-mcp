@@ -1,0 +1,95 @@
+{
+  "id": "openfda",
+  "name": "openFDA API",
+  "agency": "U.S. Food and Drug Administration",
+  "category": "health",
+  "tier": "free",
+  "status": "planned",
+  "api": {
+    "baseUrl": "https://api.fda.gov",
+    "protocol": "rest-json",
+    "docsUrl": "https://open.fda.gov/apis/",
+    "endpoints": [
+      {
+        "id": "drug-event",
+        "path": "/drug/event.json",
+        "method": "GET",
+        "description": "Adverse event reports (FAERS) for drugs."
+      },
+      {
+        "id": "drug-enforcement",
+        "path": "/drug/enforcement.json",
+        "method": "GET",
+        "description": "Drug recall enforcement reports."
+      },
+      {
+        "id": "device-event",
+        "path": "/device/event.json",
+        "method": "GET",
+        "description": "Medical device adverse event reports (MAUDE)."
+      }
+    ]
+  },
+  "auth": {
+    "type": "api-key",
+    "placement": "query",
+    "paramName": "api_key",
+    "credentialRef": "env:OPENFDA_API_KEY",
+    "signupUrl": "https://open.fda.gov/apis/authentication/"
+  },
+  "limits": {
+    "dailyQuota": null,
+    "perRequestMaxSeries": null,
+    "rateLimitBehavior": "throttle",
+    "notes": "Works keyless at lower limits (240 req/min, 1000/day per IP); a free api_key raises it (240 req/min, 120000/day). Inject the key only when set (mirror census-acs)."
+  },
+  "pricing": {
+    "model": "free",
+    "feePerCallCents": null
+  },
+  "llmDocs": {
+    "summary": "FDA data on drugs, devices, and foods: adverse events, recalls/enforcement, product labels, and the NDC directory.",
+    "queryGuide": "Each domain has its own endpoint, e.g. /drug/event.json. Query with search=<field>:<value> (Lucene syntax, AND/OR, ranges, date ranges like [20240101+TO+20241231]), limit (max 1000), skip (max 25000), and count=<field> for aggregated counts instead of records. api_key is injected only when configured (works keyless otherwise).",
+    "exampleQueries": [
+      {
+        "intent": "Count adverse-event reports by reaction for a drug",
+        "request": {
+          "method": "GET",
+          "path": "/drug/event.json",
+          "params": {
+            "search": "patient.drug.medicinalproduct:aspirin",
+            "count": "patient.reaction.reactionmeddrapt.exact"
+          }
+        }
+      },
+      {
+        "intent": "Recent drug recall enforcement reports",
+        "request": {
+          "method": "GET",
+          "path": "/drug/enforcement.json",
+          "params": {
+            "search": "report_date:[20240101+TO+20241231]",
+            "limit": "5"
+          }
+        }
+      }
+    ],
+    "gotchas": [
+      "search uses Lucene field:value syntax; exact-match fields need the .exact suffix (especially for count=).",
+      "count= returns aggregated buckets, not raw records — different response shape.",
+      "Paging: limit max 1000, skip max 25000; beyond that, narrow the search.",
+      "Keyless works but is rate-limited per IP; set OPENFDA_API_KEY to raise the daily cap (optional injection)."
+    ]
+  },
+  "compliance": {
+    "license": "public-domain",
+    "tosUrl": "https://open.fda.gov/terms/",
+    "redistributionNotes": "US federal data, public domain (CC0). openFDA is not for clinical decisions; terms prohibit implying FDA endorsement.",
+    "reviewedDate": null
+  },
+  "meta": {
+    "addedDate": "2026-06-11",
+    "lastTestedDate": null,
+    "connectorPath": "src/connectors/openfda.ts"
+  }
+}
