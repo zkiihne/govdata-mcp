@@ -6,8 +6,52 @@ then query them with **raw passthrough** — whatever the upstream API returns i
 forwarded verbatim, no normalization. Tool descriptions are LLM-optimized so an
 agent learns to drive each upstream API inline.
 
-> Phase 0 scaffold: stdio transport, discovery tool, and the first live free
-> connector (NOAA). Not deployed.
+> Live: stdio transport for local use **and** a remote Streamable HTTP endpoint
+> deployed on Vercel. Discovery + the NOAA free connector are queryable now.
+
+## Remote endpoint (hosted)
+
+The gateway is deployed as a remote MCP server over Streamable HTTP:
+
+```
+https://govdata-mcp.vercel.app/api/mcp
+```
+
+No auth, no API key — discovery and the free NOAA connector work immediately;
+premium connectors return a `402` until billing is enabled.
+
+### Add it to Claude Desktop
+
+Claude Desktop speaks stdio, so bridge to the remote endpoint with
+[`mcp-remote`](https://www.npmjs.com/package/mcp-remote). In
+`claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "govdata": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://govdata-mcp.vercel.app/api/mcp"]
+    }
+  }
+}
+```
+
+### Add it to Cursor
+
+Cursor supports remote Streamable HTTP servers directly. In `.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "govdata": {
+      "url": "https://govdata-mcp.vercel.app/api/mcp"
+    }
+  }
+}
+```
+
+Any MCP client that supports Streamable HTTP can connect to the URL directly.
 
 ## The three tiers
 
