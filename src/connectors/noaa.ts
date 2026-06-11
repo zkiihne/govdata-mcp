@@ -4,8 +4,20 @@ import type {
   ExecuteResult,
   RawQuery,
 } from "./types.js";
+import type { AuthSpec } from "../catalog/schema.js";
+import { injectAuth } from "./inject.js";
 
+const ID = "noaa-weather";
 const UPSTREAM = "https://api.weather.gov";
+
+/** Mirrors sources/noaa-weather/source.json → auth (type none; injector no-ops). */
+const AUTH: AuthSpec = {
+  type: "none",
+  placement: null,
+  paramName: null,
+  credentialRef: null,
+  signupUrl: null,
+};
 
 /**
  * api.weather.gov asks every client to send a descriptive User-Agent so they
@@ -43,12 +55,12 @@ COMMON ERRORS
 - 403 / "User-Agent" complaint: a User-Agent header is required (this connector sets one automatically).`;
 
 export const noaaConnector: Connector = {
-  id: "noaa",
+  id: ID,
   tier: "free",
 
   describe(): ConnectorDescription {
     return {
-      id: "noaa",
+      id: ID,
       name: "Weather & Forecasts (NOAA / National Weather Service)",
       tier: "free",
       upstreamBaseUrl: UPSTREAM,
@@ -65,13 +77,17 @@ export const noaaConnector: Connector = {
       }
     }
 
+    const headers: Record<string, string> = {
+      "User-Agent": USER_AGENT,
+      Accept: "application/geo+json,application/json",
+      ...(rawQuery.body ? { "Content-Type": "application/json" } : {}),
+    };
+    // Generic credential injection per the source's auth block (no-op for NOAA).
+    injectAuth(AUTH, { url, headers });
+
     const res = await fetch(url, {
       method,
-      headers: {
-        "User-Agent": USER_AGENT,
-        Accept: "application/geo+json,application/json",
-        ...(rawQuery.body ? { "Content-Type": "application/json" } : {}),
-      },
+      headers,
       ...(rawQuery.body ? { body: JSON.stringify(rawQuery.body) } : {}),
     });
 

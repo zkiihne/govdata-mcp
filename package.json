@@ -10,10 +10,13 @@
     "govdata-mcp": "./dist/cli.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "npm run catalog && tsc",
     "start": "node dist/cli.js",
     "dev": "tsx src/cli.ts",
     "typecheck": "tsc --noEmit",
+    "validate": "tsx scripts/validate-sources.ts",
+    "catalog": "tsx scripts/build-catalog.ts",
+    "smoke": "tsx scripts/smoke.ts",
     "inspect": "npx @modelcontextprotocol/inspector tsx src/cli.ts"
   },
   "dependencies": {

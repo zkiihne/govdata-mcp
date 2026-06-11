@@ -9,7 +9,7 @@ import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js"
 
 const transport = new StdioClientTransport({
   command: "npx",
-  args: ["tsx", "src/index.ts"],
+  args: ["tsx", "src/cli.ts"],
 });
 
 const client = new Client({ name: "govdata-smoke", version: "0.1.0" }, {});
@@ -28,10 +28,10 @@ console.log("\n=== discover_data_sources ===");
 const disc = await client.callTool({ name: "discover_data_sources", arguments: {} });
 console.log(text(disc as never));
 
-console.log("\n=== query_data_source noaa /points/39.7456,-104.9903 ===");
+console.log("\n=== query_data_source noaa-weather /points/39.7456,-104.9903 ===");
 const points = await client.callTool({
   name: "query_data_source",
-  arguments: { connectorId: "noaa", path: "/points/39.7456,-104.9903" },
+  arguments: { connectorId: "noaa-weather", path: "/points/39.7456,-104.9903" },
 });
 const pointsText = text(points as never);
 console.log(pointsText.slice(0, 600));
@@ -42,10 +42,10 @@ try {
   const forecastUrl: string | undefined = parsed?.data?.properties?.forecast;
   if (forecastUrl) {
     const path = new URL(forecastUrl).pathname;
-    console.log(`\n=== query_data_source noaa ${path} ===`);
+    console.log(`\n=== query_data_source noaa-weather ${path} ===`);
     const fc = await client.callTool({
       name: "query_data_source",
-      arguments: { connectorId: "noaa", path },
+      arguments: { connectorId: "noaa-weather", path },
     });
     const fcParsed = JSON.parse(text(fc as never));
     const first = fcParsed?.data?.properties?.periods?.[0];
@@ -55,10 +55,10 @@ try {
   console.error("follow-up query failed:", e);
 }
 
-console.log("\n=== premium 402 stub (sec-filings) ===");
+console.log("\n=== premium 402 stub (sec-edgar) ===");
 const sec = await client.callTool({
   name: "query_data_source",
-  arguments: { connectorId: "sec-filings", path: "/submissions/CIK0000320193.json" },
+  arguments: { connectorId: "sec-edgar", path: "/submissions/CIK0000320193.json" },
 });
 console.log(text(sec as never));
 

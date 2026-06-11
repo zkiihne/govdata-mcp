@@ -58,7 +58,7 @@ export function registerTools(server: Server): void {
       },
       {
         name: QUERY_TOOL_NAME,
-        description: `Query a government/public-data source by id (call ${DISCOVERY_TOOL_NAME} first to list ids). RAW PASSTHROUGH: your query is forwarded to the upstream API verbatim and the response is returned unmodified. Premium sources return a 402 until billing is enabled.\n\n--- NOAA (id: "noaa") ---\n${noaaConnector.describe().description}`,
+        description: `Query a government/public-data source by id (call ${DISCOVERY_TOOL_NAME} first to list ids). RAW PASSTHROUGH: your query is forwarded to the upstream API verbatim and the response is returned unmodified. Premium sources return a 402 until billing is enabled; planned sources return a 501 until their connector ships.\n\n--- ${noaaConnector.describe().name} (id: "${noaaConnector.id}") ---\n${noaaConnector.describe().description}`,
         inputSchema: {
           type: "object",
           properties: {
