@@ -9,6 +9,11 @@ agent learns to drive each upstream API inline.
 > Live: stdio transport for local use **and** a remote Streamable HTTP endpoint
 > deployed on Vercel. Discovery + the NOAA free connector are queryable now.
 
+**Website:** <https://govdata-mcp.vercel.app> — landing page, live source
+[catalog](https://govdata-mcp.vercel.app/catalog.html), and the public catalog
+API at [`/api/catalog`](https://govdata-mcp.vercel.app/api/catalog) (the catalog
+page renders from this endpoint, so it stays in sync with `sources/`).
+
 ## Remote endpoint (hosted)
 
 The gateway is deployed as a remote MCP server over Streamable HTTP:
