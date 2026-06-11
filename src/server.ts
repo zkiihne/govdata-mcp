@@ -29,7 +29,18 @@ export function createServer(): Server {
     { name: "govdata-mcp", version: "0.1.0" },
     { capabilities: { tools: {} } },
   );
+  registerTools(server);
+  return server;
+}
 
+/**
+ * Register the gateway's tool handlers on a low-level MCP Server.
+ *
+ * Shared by every transport so registration logic is never duplicated:
+ * - createServer() (above) for stdio (src/transport/stdio.ts).
+ * - api/mcp.ts wraps mcp-handler's McpServer and passes its `.server` here.
+ */
+export function registerTools(server: Server): void {
   server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
       {
@@ -117,6 +128,4 @@ export function createServer(): Server {
       content: [{ type: "text", text: `Unknown tool: ${name}` }],
     };
   });
-
-  return server;
 }

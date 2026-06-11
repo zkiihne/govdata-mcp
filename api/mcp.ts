@@ -1,36 +1,36 @@
 /**
  * Streamable HTTP transport for govdata-mcp (Vercel serverless function).
  *
- * Remote MCP endpoint. Reuses the shared createServer() so tool registration is
- * identical to the stdio entry (src/index.ts) — no duplicated logic.
+ * Uses Vercel's official `mcp-handler` (formerly @vercel/mcp-adapter), which
+ * wires the MCP Streamable HTTP transport to the Web-standard fetch signature
+ * Vercel's Node runtime expects. Tool registration is the SAME code path as the
+ * stdio entry: mcp-handler hands us an McpServer, and we register our handlers
+ * on its underlying low-level Server via the shared registerTools().
  *
- * Stateless mode: a fresh Server + transport are created per request
- * (sessionIdGenerator: undefined). enableJsonResponse returns plain JSON-RPC
- * responses instead of opening an SSE stream, which suits short-lived
- * serverless invocations. Good enough until metering/sessions are needed.
+ * Stateless: no Redis configured, so SSE is disabled and each POST is a
+ * self-contained JSON-RPC exchange — a good fit for short serverless invokes.
  *
- * Endpoint: POST/GET/DELETE  https://<deployment>/api/mcp  (also /mcp via rewrite)
+ * Endpoint: POST  https://<deployment>/api/mcp   (basePath "/api" → "/api/mcp")
+ *           Also reachable at /mcp via the rewrite in vercel.json.
  */
-import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
-import { createServer } from "../src/server.js";
+import { createMcpHandler } from "mcp-handler";
+import { registerTools } from "../src/server.js";
 
-export const config = { runtime: "nodejs" };
+const handler = createMcpHandler(
+  (server) => {
+    // server is an McpServer; register on its underlying low-level Server so we
+    // reuse the exact stdio registration logic — no duplication.
+    registerTools(server.server);
+  },
+  {
+    serverInfo: { name: "govdata-mcp", version: "0.1.0" },
+    // We register handlers on the low-level Server directly (not via
+    // McpServer.tool()), so declare the tools capability explicitly — otherwise
+    // the SDK rejects tools/list with "Server does not support tools".
+    capabilities: { tools: {} },
+  },
+  { basePath: "/api", disableSse: true, maxDuration: 30 },
+);
 
-async function handler(request: Request): Promise<Response> {
-  const server = createServer();
-  const transport = new WebStandardStreamableHTTPServerTransport({
-    sessionIdGenerator: undefined, // stateless
-    enableJsonResponse: true,
-  });
-
-  await server.connect(transport);
-  // Stateless: the server/transport are per-request and torn down with the
-  // serverless invocation, so we don't close them here (closing could abort a
-  // response body that the runtime is still reading).
-  return transport.handleRequest(request);
-}
-
-export const GET = handler;
-export const POST = handler;
-export const DELETE = handler;
+export { handler as GET, handler as POST, handler as DELETE };
 export default handler;
