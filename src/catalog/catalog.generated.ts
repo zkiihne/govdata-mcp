@@ -509,7 +509,7 @@ export const SOURCES: readonly SourceSpec[] = [
     },
     "meta": {
       "addedDate": "2026-06-11",
-      "lastTestedDate": null,
+      "lastTestedDate": "2026-06-11",
       "connectorPath": "src/connectors/noaa.ts"
     }
   },
