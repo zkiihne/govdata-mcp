@@ -9,6 +9,12 @@ import { blsConnector } from "./connectors/bls.js";
 import { fredConnector } from "./connectors/fred.js";
 import { epaAirnowConnector } from "./connectors/epa-airnow.js";
 import { noaaClimateConnector } from "./connectors/noaa-climate.js";
+import { femaOpenConnector } from "./connectors/fema-open.js";
+import { clinicalTrialsConnector } from "./connectors/clinical-trials.js";
+import { treasuryFiscalConnector } from "./connectors/treasury-fiscal.js";
+import { usgsEarthquakeConnector } from "./connectors/usgs-earthquake.js";
+import { fdicBankfindConnector } from "./connectors/fdic-bankfind.js";
+import { federalRegisterConnector } from "./connectors/federal-register.js";
 
 /**
  * Registry of implemented connectors, keyed by id. As new connectors are wired,
@@ -23,6 +29,12 @@ const CONNECTORS: Record<string, Connector> = {
   [fredConnector.id]: fredConnector,
   [epaAirnowConnector.id]: epaAirnowConnector,
   [noaaClimateConnector.id]: noaaClimateConnector,
+  [femaOpenConnector.id]: femaOpenConnector,
+  [clinicalTrialsConnector.id]: clinicalTrialsConnector,
+  [treasuryFiscalConnector.id]: treasuryFiscalConnector,
+  [usgsEarthquakeConnector.id]: usgsEarthquakeConnector,
+  [fdicBankfindConnector.id]: fdicBankfindConnector,
+  [federalRegisterConnector.id]: federalRegisterConnector,
 };
 
 /** 402-style error object returned for premium connectors until metering lands. */

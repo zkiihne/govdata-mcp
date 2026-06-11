@@ -48,13 +48,25 @@ check("tools/list has discovery + query", tools.tools.length === 2,
   tools.tools.map((t) => t.name).join(","));
 
 const disc = JSON.parse(text((await client.callTool({ name: "discover_data_sources", arguments: {} })) as never));
-check("discovery returns 8 sources", disc.count === 8, `count=${disc.count}`);
+check("discovery returns 22 sources", disc.count === 22, `count=${disc.count}`);
 const statuses = Object.fromEntries(disc.sources.map((s: any) => [s.id, `${s.tier}/${s.status}`]));
 console.log("  statuses:", JSON.stringify(statuses));
 check("usaspending live", statuses["usaspending"] === "free/live");
 check("census-acs live", statuses["census-acs"] === "free/live");
 check("sec-edgar premium/live", statuses["sec-edgar"] === "premium/live");
 check("bls testing", statuses["bls-public-data"] === "free/testing");
+// second-wave keyless six: live
+check("fema-open live", statuses["fema-open"] === "free/live");
+check("clinical-trials live", statuses["clinical-trials"] === "free/live");
+check("treasury-fiscal live", statuses["treasury-fiscal"] === "free/live");
+check("usgs-earthquake live", statuses["usgs-earthquake"] === "free/live");
+check("fdic-bankfind live", statuses["fdic-bankfind"] === "free/live");
+check("federal-register live", statuses["federal-register"] === "free/live");
+// second-wave planned tiers
+check("congress-gov free/planned", statuses["congress-gov"] === "free/planned");
+check("openfda free/planned", statuses["openfda"] === "free/planned");
+check("regulations-gov premium/planned", statuses["regulations-gov"] === "premium/planned");
+check("usgs-water premium/planned", statuses["usgs-water"] === "premium/planned");
 
 // ---- regression: NOAA weather live (two-step) ----
 const pts = await call("noaa-weather", { path: "/points/39.7456,-104.9903" });
@@ -82,6 +94,49 @@ const cen = await call("census-acs", {
 });
 check("census-acs GET 200 (keyless)", cen.status === 200,
   `rows=${Array.isArray(cen?.data) ? cen.data.length : "?"}`);
+
+// ---- second-wave keyless six: live upstream calls ----
+const fema = await call("fema-open", {
+  path: "/v2/DisasterDeclarationsSummaries",
+  params: { "$top": "1", "$orderby": "declarationDate desc" },
+});
+check("fema-open GET 200", fema.status === 200,
+  `rows=${Array.isArray(fema?.data?.DisasterDeclarationsSummaries) ? fema.data.DisasterDeclarationsSummaries.length : "?"}`);
+
+const ct = await call("clinical-trials", {
+  path: "/studies",
+  params: { "query.cond": "diabetes", fields: "NCTId,BriefTitle", pageSize: "1" },
+});
+check("clinical-trials GET 200", ct.status === 200,
+  `studies=${Array.isArray(ct?.data?.studies) ? ct.data.studies.length : "?"}`);
+
+const debt = await call("treasury-fiscal", {
+  path: "/v2/accounting/od/debt_to_penny",
+  params: { sort: "-record_date", "page[size]": "1" },
+});
+check("treasury-fiscal debt_to_penny 200", debt.status === 200,
+  `debt=${debt?.data?.data?.[0]?.tot_pub_debt_out_amt ?? "?"}`);
+
+const quake = await call("usgs-earthquake", {
+  path: "/query",
+  params: { format: "geojson", starttime: "2024-01-01", endtime: "2024-01-02", minmagnitude: "5" },
+});
+check("usgs-earthquake geojson 200", quake.status === 200,
+  `features=${Array.isArray(quake?.data?.features) ? quake.data.features.length : "?"}`);
+
+const fdic = await call("fdic-bankfind", {
+  path: "/institutions",
+  params: { filters: "STALP:CA", fields: "NAME,CITY,STALP", limit: "1" },
+});
+check("fdic-bankfind GET 200", fdic.status === 200,
+  `total=${fdic?.data?.meta?.total ?? "?"}`);
+
+const fedreg = await call("federal-register", {
+  path: "/documents.json",
+  params: { "conditions[term]": "privacy", per_page: "1" },
+});
+check("federal-register GET 200", fedreg.status === 200,
+  `results=${Array.isArray(fedreg?.data?.results) ? fedreg.data.results.length : "?"}`);
 
 // ---- regression: premium 402 via router (sec-edgar) ----
 const sec402 = await call("sec-edgar", { path: "/submissions/CIK0000320193.json" });
