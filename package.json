@@ -7,14 +7,14 @@
     "node": ">=20"
   },
   "bin": {
-    "govdata-mcp": "./dist/index.js"
+    "govdata-mcp": "./dist/cli.js"
   },
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js",
-    "dev": "tsx src/index.ts",
+    "start": "node dist/cli.js",
+    "dev": "tsx src/cli.ts",
     "typecheck": "tsc --noEmit",
-    "inspect": "npx @modelcontextprotocol/inspector tsx src/index.ts"
+    "inspect": "npx @modelcontextprotocol/inspector tsx src/cli.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0"
