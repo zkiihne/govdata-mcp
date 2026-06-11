@@ -80,7 +80,7 @@ export const SOURCES: readonly SourceSpec[] = [
     "agency": "U.S. Census Bureau",
     "category": "demographics",
     "tier": "free",
-    "status": "planned",
+    "status": "live",
     "api": {
       "baseUrl": "https://api.census.gov/data",
       "protocol": "rest-json",
@@ -149,11 +149,11 @@ export const SOURCES: readonly SourceSpec[] = [
       "license": "public-domain",
       "tosUrl": "https://www.census.gov/data/developers/about/terms-of-service.html",
       "redistributionNotes": "US federal data, public domain. ToS requires attribution and prohibits implying Census endorsement.",
-      "reviewedDate": null
+      "reviewedDate": "2026-06-11"
     },
     "meta": {
       "addedDate": "2026-06-11",
-      "lastTestedDate": null,
+      "lastTestedDate": "2026-06-11",
       "connectorPath": "src/connectors/census-acs.ts"
     }
   },
@@ -519,7 +519,7 @@ export const SOURCES: readonly SourceSpec[] = [
     "agency": "U.S. Securities and Exchange Commission",
     "category": "finance",
     "tier": "premium",
-    "status": "planned",
+    "status": "live",
     "api": {
       "baseUrl": "https://data.sec.gov",
       "protocol": "rest-json",
@@ -572,6 +572,13 @@ export const SOURCES: readonly SourceSpec[] = [
             "method": "GET",
             "path": "/submissions/CIK0000320193.json"
           }
+        },
+        {
+          "intent": "Apple revenue across filings (us-gaap Revenues)",
+          "request": {
+            "method": "GET",
+            "path": "/api/xbrl/companyconcept/CIK0000320193/us-gaap/Revenues.json"
+          }
         }
       ],
       "gotchas": [
@@ -584,11 +591,11 @@ export const SOURCES: readonly SourceSpec[] = [
       "license": "public-domain",
       "tosUrl": "https://www.sec.gov/os/webmaster-faq#developers",
       "redistributionNotes": "US federal data, public domain. Premium tier reflects gateway metering, not upstream cost.",
-      "reviewedDate": null
+      "reviewedDate": "2026-06-11"
     },
     "meta": {
       "addedDate": "2026-06-11",
-      "lastTestedDate": null,
+      "lastTestedDate": "2026-06-11",
       "connectorPath": "src/connectors/sec-edgar.ts"
     }
   },
@@ -598,7 +605,7 @@ export const SOURCES: readonly SourceSpec[] = [
     "agency": "U.S. Department of the Treasury",
     "category": "spending",
     "tier": "free",
-    "status": "planned",
+    "status": "live",
     "api": {
       "baseUrl": "https://api.usaspending.gov/api/v2",
       "protocol": "rest-json",
@@ -640,23 +647,23 @@ export const SOURCES: readonly SourceSpec[] = [
       "queryGuide": "Most search endpoints are POST with a JSON 'filters' object. Build filters (time_period, agencies, award_type_codes) and POST to /search/spending_by_award/.",
       "exampleQueries": [
         {
-          "intent": "Contract awards in FY2025 for one agency",
+          "intent": "Contract awards for FY2024 (top 5 by amount)",
           "request": {
             "method": "POST",
             "path": "/search/spending_by_award/",
             "body": {
               "filters": {
-                "time_period": [
-                  {
-                    "start_date": "2024-10-01",
-                    "end_date": "2025-09-30"
-                  }
-                ],
                 "award_type_codes": [
                   "A",
                   "B",
                   "C",
                   "D"
+                ],
+                "time_period": [
+                  {
+                    "start_date": "2023-10-01",
+                    "end_date": "2024-09-30"
+                  }
                 ]
               },
               "fields": [
@@ -664,8 +671,15 @@ export const SOURCES: readonly SourceSpec[] = [
                 "Recipient Name",
                 "Award Amount"
               ],
-              "limit": 10
+              "limit": 5
             }
+          }
+        },
+        {
+          "intent": "List agency toptier codes (to resolve an agency name to a code)",
+          "request": {
+            "method": "GET",
+            "path": "/references/toptier_agencies/"
           }
         }
       ],
@@ -679,11 +693,11 @@ export const SOURCES: readonly SourceSpec[] = [
       "license": "public-domain",
       "tosUrl": "https://www.usaspending.gov/about",
       "redistributionNotes": "US federal data, public domain (DATA Act). Free to redistribute.",
-      "reviewedDate": null
+      "reviewedDate": "2026-06-11"
     },
     "meta": {
       "addedDate": "2026-06-11",
-      "lastTestedDate": null,
+      "lastTestedDate": "2026-06-11",
       "connectorPath": "src/connectors/usaspending.ts"
     }
   }

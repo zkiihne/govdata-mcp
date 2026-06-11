@@ -8,11 +8,23 @@ import {
   DISCOVERY_TOOL_DESCRIPTION,
   runDiscovery,
 } from "./tools/discovery.js";
-import { noaaConnector } from "./connectors/noaa.js";
-import { route } from "./router.js";
+import { route, CONNECTORS } from "./router.js";
 import type { RawQuery } from "./connectors/types.js";
 
 export const QUERY_TOOL_NAME = "query_data_source";
+
+/**
+ * Per-connector LLM docs block appended to the query tool description, built
+ * from every implemented connector so agents see each upstream's endpoint
+ * patterns inline. Premium connectors are included (their docs are useful) but
+ * querying them still returns 402 until billing lands.
+ */
+const CONNECTOR_DOCS = Object.values(CONNECTORS)
+  .map((c) => {
+    const d = c.describe();
+    return `--- ${d.name} (id: "${d.id}", tier: ${d.tier}) ---\n${d.description}`;
+  })
+  .join("\n\n");
 
 /**
  * Build a fully-configured MCP Server with all tools registered.
@@ -58,7 +70,7 @@ export function registerTools(server: Server): void {
       },
       {
         name: QUERY_TOOL_NAME,
-        description: `Query a government/public-data source by id (call ${DISCOVERY_TOOL_NAME} first to list ids). RAW PASSTHROUGH: your query is forwarded to the upstream API verbatim and the response is returned unmodified. Premium sources return a 402 until billing is enabled; planned sources return a 501 until their connector ships.\n\n--- ${noaaConnector.describe().name} (id: "${noaaConnector.id}") ---\n${noaaConnector.describe().description}`,
+        description: `Query a government/public-data source by id (call ${DISCOVERY_TOOL_NAME} first to list ids). RAW PASSTHROUGH: your query is forwarded to the upstream API verbatim and the response is returned unmodified. Premium sources return a 402 until billing is enabled; planned sources return a 501 until their connector ships; a connector whose server-side credential is unset returns a 503.\n\n${CONNECTOR_DOCS}`,
         inputSchema: {
           type: "object",
           properties: {
