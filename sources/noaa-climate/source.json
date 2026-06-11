@@ -4,15 +4,30 @@
   "agency": "NOAA National Centers for Environmental Information",
   "category": "climate",
   "tier": "free",
-  "status": "planned",
+  "status": "testing",
   "api": {
     "baseUrl": "https://www.ncei.noaa.gov/cdo-web/api/v2",
     "protocol": "rest-json",
     "docsUrl": "https://www.ncdc.noaa.gov/cdo-web/webservices/v2",
     "endpoints": [
-      { "id": "data", "path": "/data", "method": "GET", "description": "Historical climate observations by dataset, station, and date range" },
-      { "id": "stations", "path": "/stations", "method": "GET", "description": "List/lookup weather stations" },
-      { "id": "datasets", "path": "/datasets", "method": "GET", "description": "Available datasets (GHCND, GSOM, etc.)" }
+      {
+        "id": "data",
+        "path": "/data",
+        "method": "GET",
+        "description": "Historical climate observations by dataset, station, and date range"
+      },
+      {
+        "id": "stations",
+        "path": "/stations",
+        "method": "GET",
+        "description": "List/lookup weather stations"
+      },
+      {
+        "id": "datasets",
+        "path": "/datasets",
+        "method": "GET",
+        "description": "Available datasets (GHCND, GSOM, etc.)"
+      }
     ]
   },
   "auth": {
@@ -28,14 +43,40 @@
     "rateLimitBehavior": "hard-reject",
     "notes": "5 requests/second and 10,000 requests/day per token. Distinct from the keyless real-time api.weather.gov (noaa-weather)."
   },
-  "pricing": { "model": "free", "feePerCallCents": null },
+  "pricing": {
+    "model": "free",
+    "feePerCallCents": null
+  },
   "llmDocs": {
     "summary": "Historical/archival US climate records: daily and monthly temperature, precipitation, and station normals.",
     "queryGuide": "Pick a datasetid (e.g. GHCND for daily summaries), a stationid, and startdate/enddate, then call /data. Use /stations and /datasets for discovery.",
     "exampleQueries": [
-      { "intent": "Daily summaries for a station over a month", "request": { "method": "GET", "path": "/data", "params": { "datasetid": "GHCND", "stationid": "GHCND:USW00023174", "startdate": "2026-01-01", "enddate": "2026-01-31" } } }
+      {
+        "intent": "Daily summaries for one station, January 2026",
+        "request": {
+          "method": "GET",
+          "path": "/data",
+          "params": {
+            "datasetid": "GHCND",
+            "stationid": "GHCND:USW00023174",
+            "startdate": "2026-01-01",
+            "enddate": "2026-01-31"
+          }
+        }
+      },
+      {
+        "intent": "List available datasets (GHCND, GSOM, ...)",
+        "request": {
+          "method": "GET",
+          "path": "/datasets"
+        }
+      }
     ],
-    "gotchas": ["Token goes in a 'token' HTTP header, not a query param", "Date range max 1 year per request for daily data", "Separate from real-time forecasts — this is the historical archive"]
+    "gotchas": [
+      "Token goes in a 'token' HTTP header, not a query param",
+      "Date range max 1 year per request for daily data",
+      "Separate from real-time forecasts \u2014 this is the historical archive"
+    ]
   },
   "compliance": {
     "license": "public-domain",
@@ -43,5 +84,9 @@
     "redistributionNotes": "US federal data, public domain. Attribution to NOAA NCEI requested.",
     "reviewedDate": null
   },
-  "meta": { "addedDate": "2026-06-11", "lastTestedDate": null, "connectorPath": "src/connectors/noaa-climate.ts" }
+  "meta": {
+    "addedDate": "2026-06-11",
+    "lastTestedDate": null,
+    "connectorPath": "src/connectors/noaa-climate.ts"
+  }
 }

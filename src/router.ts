@@ -5,6 +5,10 @@ import { noaaConnector } from "./connectors/noaa.js";
 import { usaspendingConnector } from "./connectors/usaspending.js";
 import { secEdgarConnector } from "./connectors/sec-edgar.js";
 import { censusAcsConnector } from "./connectors/census-acs.js";
+import { blsConnector } from "./connectors/bls.js";
+import { fredConnector } from "./connectors/fred.js";
+import { epaAirnowConnector } from "./connectors/epa-airnow.js";
+import { noaaClimateConnector } from "./connectors/noaa-climate.js";
 
 /**
  * Registry of implemented connectors, keyed by id. As new connectors are wired,
@@ -15,6 +19,10 @@ const CONNECTORS: Record<string, Connector> = {
   [usaspendingConnector.id]: usaspendingConnector,
   [secEdgarConnector.id]: secEdgarConnector,
   [censusAcsConnector.id]: censusAcsConnector,
+  [blsConnector.id]: blsConnector,
+  [fredConnector.id]: fredConnector,
+  [epaAirnowConnector.id]: epaAirnowConnector,
+  [noaaClimateConnector.id]: noaaClimateConnector,
 };
 
 /** 402-style error object returned for premium connectors until metering lands. */

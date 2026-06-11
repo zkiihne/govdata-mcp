@@ -10,7 +10,7 @@ export const SOURCES: readonly SourceSpec[] = [
     "agency": "Bureau of Labor Statistics",
     "category": "economy",
     "tier": "free",
-    "status": "planned",
+    "status": "testing",
     "api": {
       "baseUrl": "https://api.bls.gov/publicAPI/v2",
       "protocol": "rest-json",
@@ -46,13 +46,31 @@ export const SOURCES: readonly SourceSpec[] = [
       "queryGuide": "Series IDs are structured codes, e.g. LAUCN040010000000005 = Local Area Unemployment, county-level. Prefix determines survey: LA=local unemployment, CU=CPI urban, CE=employment.",
       "exampleQueries": [
         {
-          "intent": "National unemployment rate, last 2 years",
+          "intent": "National unemployment rate, 2024-2026",
           "request": {
-            "seriesid": [
-              "LNS14000000"
-            ],
-            "startyear": "2024",
-            "endyear": "2026"
+            "method": "POST",
+            "path": "/timeseries/data/",
+            "body": {
+              "seriesid": [
+                "LNS14000000"
+              ],
+              "startyear": "2024",
+              "endyear": "2026"
+            }
+          }
+        },
+        {
+          "intent": "CPI (all urban consumers, all items), 2024-2026",
+          "request": {
+            "method": "POST",
+            "path": "/timeseries/data/",
+            "body": {
+              "seriesid": [
+                "CUUR0000SA0"
+              ],
+              "startyear": "2024",
+              "endyear": "2026"
+            }
           }
         }
       ],
@@ -163,7 +181,7 @@ export const SOURCES: readonly SourceSpec[] = [
     "agency": "Environmental Protection Agency",
     "category": "environment",
     "tier": "free",
-    "status": "planned",
+    "status": "testing",
     "api": {
       "baseUrl": "https://www.airnowapi.org",
       "protocol": "rest-json",
@@ -217,17 +235,28 @@ export const SOURCES: readonly SourceSpec[] = [
       "queryGuide": "Use zipCode or latLong observation endpoints for point lookups; use /aq/data/ with a bounding box (BBOX) for area scans. Request format=application/json explicitly.",
       "exampleQueries": [
         {
-          "intent": "Current AQI for a ZIP",
+          "intent": "Current AQI for ZIP 90210 (25-mile radius)",
           "request": {
             "method": "GET",
-            "url": "https://www.airnowapi.org/aq/observation/zipCode/current/?format=application/json&zipCode=90210&distance=25&API_KEY={key}"
+            "path": "/aq/observation/zipCode/current/",
+            "params": {
+              "format": "application/json",
+              "zipCode": "90210",
+              "distance": "25"
+            }
           }
         },
         {
-          "intent": "AQI forecast by lat/lon",
+          "intent": "AQI forecast by lat/lon for a date",
           "request": {
             "method": "GET",
-            "url": "https://www.airnowapi.org/aq/forecast/latLong/?format=application/json&latitude=34.09&longitude=-118.41&date=2026-06-11&API_KEY={key}"
+            "path": "/aq/forecast/latLong/",
+            "params": {
+              "format": "application/json",
+              "latitude": "34.09",
+              "longitude": "-118.41",
+              "date": "2026-06-11"
+            }
           }
         }
       ],
@@ -255,7 +284,7 @@ export const SOURCES: readonly SourceSpec[] = [
     "agency": "Federal Reserve Bank of St. Louis",
     "category": "economy",
     "tier": "free",
-    "status": "planned",
+    "status": "testing",
     "api": {
       "baseUrl": "https://api.stlouisfed.org/fred",
       "protocol": "rest-json",
@@ -297,12 +326,23 @@ export const SOURCES: readonly SourceSpec[] = [
       "queryGuide": "Identify a series_id (e.g. GDP, CPIAUCSL, UNRATE) then call /series/observations?series_id=...&file_type=json. Use /series/search to discover series_ids.",
       "exampleQueries": [
         {
-          "intent": "Monthly CPI (all urban) observations",
+          "intent": "Monthly CPI (all urban consumers) observations",
           "request": {
             "method": "GET",
             "path": "/series/observations",
             "params": {
               "series_id": "CPIAUCSL",
+              "file_type": "json"
+            }
+          }
+        },
+        {
+          "intent": "Search for unemployment-related series ids",
+          "request": {
+            "method": "GET",
+            "path": "/series/search",
+            "params": {
+              "search_text": "unemployment rate",
               "file_type": "json"
             }
           }
@@ -332,7 +372,7 @@ export const SOURCES: readonly SourceSpec[] = [
     "agency": "NOAA National Centers for Environmental Information",
     "category": "climate",
     "tier": "free",
-    "status": "planned",
+    "status": "testing",
     "api": {
       "baseUrl": "https://www.ncei.noaa.gov/cdo-web/api/v2",
       "protocol": "rest-json",
@@ -380,7 +420,7 @@ export const SOURCES: readonly SourceSpec[] = [
       "queryGuide": "Pick a datasetid (e.g. GHCND for daily summaries), a stationid, and startdate/enddate, then call /data. Use /stations and /datasets for discovery.",
       "exampleQueries": [
         {
-          "intent": "Daily summaries for a station over a month",
+          "intent": "Daily summaries for one station, January 2026",
           "request": {
             "method": "GET",
             "path": "/data",
@@ -390,6 +430,13 @@ export const SOURCES: readonly SourceSpec[] = [
               "startdate": "2026-01-01",
               "enddate": "2026-01-31"
             }
+          }
+        },
+        {
+          "intent": "List available datasets (GHCND, GSOM, ...)",
+          "request": {
+            "method": "GET",
+            "path": "/datasets"
           }
         }
       ],
