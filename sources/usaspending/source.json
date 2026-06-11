@@ -1,0 +1,46 @@
+{
+  "id": "usaspending",
+  "name": "USAspending — federal spending API",
+  "agency": "U.S. Department of the Treasury",
+  "category": "spending",
+  "tier": "free",
+  "status": "planned",
+  "api": {
+    "baseUrl": "https://api.usaspending.gov/api/v2",
+    "protocol": "rest-json",
+    "docsUrl": "https://api.usaspending.gov/docs/endpoints",
+    "endpoints": [
+      { "id": "spending-by-award", "path": "/search/spending_by_award/", "method": "POST", "description": "Search awards (contracts, grants) by filters" },
+      { "id": "agency-overview", "path": "/agency/{toptier_code}/", "method": "GET", "description": "Budgetary overview for a federal agency" }
+    ]
+  },
+  "auth": {
+    "type": "none",
+    "placement": null,
+    "paramName": null,
+    "credentialRef": null,
+    "signupUrl": null
+  },
+  "limits": {
+    "dailyQuota": null,
+    "perRequestMaxSeries": null,
+    "rateLimitBehavior": "throttle",
+    "notes": "No API key required. No published hard quota; be courteous with pagination (POST filters with page/limit)."
+  },
+  "pricing": { "model": "free", "feePerCallCents": null },
+  "llmDocs": {
+    "summary": "US federal government spending: contracts, grants, loans, and agency budgets, searchable by recipient, agency, location, and time.",
+    "queryGuide": "Most search endpoints are POST with a JSON 'filters' object. Build filters (time_period, agencies, award_type_codes) and POST to /search/spending_by_award/.",
+    "exampleQueries": [
+      { "intent": "Contract awards in FY2025 for one agency", "request": { "method": "POST", "path": "/search/spending_by_award/", "body": { "filters": { "time_period": [{ "start_date": "2024-10-01", "end_date": "2025-09-30" }], "award_type_codes": ["A", "B", "C", "D"] }, "fields": ["Award ID", "Recipient Name", "Award Amount"], "limit": 10 } } }
+    ],
+    "gotchas": ["Keyless but most useful endpoints are POST, not GET", "Filters object schema is strict — malformed filters return 422", "Large result sets require pagination via page/limit"]
+  },
+  "compliance": {
+    "license": "public-domain",
+    "tosUrl": "https://www.usaspending.gov/about",
+    "redistributionNotes": "US federal data, public domain (DATA Act). Free to redistribute.",
+    "reviewedDate": null
+  },
+  "meta": { "addedDate": "2026-06-11", "lastTestedDate": null, "connectorPath": "src/connectors/usaspending.ts" }
+}

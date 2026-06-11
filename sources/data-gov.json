@@ -1,0 +1,56 @@
+{
+  "id": "data-gov",
+  "name": "Data.gov CKAN Catalog API",
+  "agency": "U.S. General Services Administration",
+  "category": "catalog",
+  "tier": "free",
+  "status": "planned",
+  "api": {
+    "baseUrl": "https://catalog.data.gov/api/3/action",
+    "protocol": "rest-json",
+    "docsUrl": "https://docs.ckan.org/en/latest/api/",
+    "endpoints": [
+      { "id": "package-search", "path": "/package_search", "method": "GET", "description": "Search datasets in the catalog" },
+      { "id": "package-show", "path": "/package_show", "method": "GET", "description": "Full metadata for a dataset by id/name" },
+      { "id": "organization-list", "path": "/organization_list", "method": "GET", "description": "List publishing organizations" }
+    ]
+  },
+  "auth": {
+    "type": "none",
+    "placement": null,
+    "paramName": null,
+    "credentialRef": null,
+    "signupUrl": null
+  },
+  "limits": {
+    "dailyQuota": null,
+    "perRequestMaxSeries": null,
+    "rateLimitBehavior": "throttle",
+    "notes": "Standard CKAN action API; no key for read. No documented hard quota. This is a metadata catalog (dataset discovery), not a data API — actual data lives at each dataset's resource URLs."
+  },
+  "pricing": { "model": "free", "feePerCallCents": null },
+  "llmDocs": {
+    "summary": "Discovery catalog of 250k+ US government datasets across agencies. CKAN action API. Returns dataset metadata and links to resources; not the data itself.",
+    "queryGuide": "Use /package_search?q=&rows=&start= for discovery and fq= for faceted filters (e.g. organization, tags). Then /package_show?id= to get a dataset's resources (downloadable files / sub-APIs). Treat this as a router to other sources.",
+    "exampleQueries": [
+      { "intent": "Find datasets about wildfire", "request": { "method": "GET", "url": "https://catalog.data.gov/api/3/action/package_search?q=wildfire&rows=10" } },
+      { "intent": "Get resources for a specific dataset", "request": { "method": "GET", "url": "https://catalog.data.gov/api/3/action/package_show?id={dataset-name-or-id}" } }
+    ],
+    "gotchas": [
+      "Returns metadata only; the real data is in each result's 'resources' array (CSV/JSON/API endpoints of varying quality).",
+      "Resource quality and freshness vary wildly across agencies; many links rot.",
+      "CKAN responses wrap payload in {success, result}; read result.results for search."
+    ]
+  },
+  "compliance": {
+    "license": "mixed",
+    "tosUrl": "https://www.data.gov/about",
+    "redistributionNotes": "Catalog metadata is public domain; individual datasets carry their own licenses — check each dataset's license_id before redistributing.",
+    "reviewedDate": null
+  },
+  "meta": {
+    "addedDate": "2026-06-11",
+    "lastTestedDate": null,
+    "connectorPath": "src/connectors/data-gov.ts"
+  }
+}

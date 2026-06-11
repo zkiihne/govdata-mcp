@@ -1,0 +1,46 @@
+{
+  "id": "fred",
+  "name": "FRED — Federal Reserve Economic Data",
+  "agency": "Federal Reserve Bank of St. Louis",
+  "category": "economy",
+  "tier": "free",
+  "status": "planned",
+  "api": {
+    "baseUrl": "https://api.stlouisfed.org/fred",
+    "protocol": "rest-json",
+    "docsUrl": "https://fred.stlouisfed.org/docs/api/fred/",
+    "endpoints": [
+      { "id": "series-observations", "path": "/series/observations", "method": "GET", "description": "Observation values for an economic data series by series_id" },
+      { "id": "series-search", "path": "/series/search", "method": "GET", "description": "Search series by text" }
+    ]
+  },
+  "auth": {
+    "type": "api-key",
+    "placement": "query",
+    "paramName": "api_key",
+    "credentialRef": "env:FRED_API_KEY",
+    "signupUrl": "https://fredaccount.stlouisfed.org/apikeys"
+  },
+  "limits": {
+    "dailyQuota": null,
+    "perRequestMaxSeries": null,
+    "rateLimitBehavior": "hard-reject",
+    "notes": "120 requests/minute per key. Default response is XML — request file_type=json explicitly."
+  },
+  "pricing": { "model": "free", "feePerCallCents": null },
+  "llmDocs": {
+    "summary": "US and international macroeconomic time series: GDP, inflation, interest rates, employment, money supply.",
+    "queryGuide": "Identify a series_id (e.g. GDP, CPIAUCSL, UNRATE) then call /series/observations?series_id=...&file_type=json. Use /series/search to discover series_ids.",
+    "exampleQueries": [
+      { "intent": "Monthly CPI (all urban) observations", "request": { "method": "GET", "path": "/series/observations", "params": { "series_id": "CPIAUCSL", "file_type": "json" } } }
+    ],
+    "gotchas": ["Must pass file_type=json or you get XML", "api_key is required on every call", "Series IDs are case-sensitive uppercase codes"]
+  },
+  "compliance": {
+    "license": "other",
+    "tosUrl": "https://fred.stlouisfed.org/docs/api/terms_of_use.html",
+    "redistributionNotes": "Free API key required; underlying series may carry third-party copyright/licensing — check series-level notes before redistribution.",
+    "reviewedDate": null
+  },
+  "meta": { "addedDate": "2026-06-11", "lastTestedDate": null, "connectorPath": "src/connectors/fred.ts" }
+}

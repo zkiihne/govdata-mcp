@@ -1,0 +1,46 @@
+{
+  "id": "census-acs",
+  "name": "US Census Bureau — American Community Survey",
+  "agency": "U.S. Census Bureau",
+  "category": "demographics",
+  "tier": "free",
+  "status": "planned",
+  "api": {
+    "baseUrl": "https://api.census.gov/data",
+    "protocol": "rest-json",
+    "docsUrl": "https://www.census.gov/data/developers/data-sets/acs-5year.html",
+    "endpoints": [
+      { "id": "acs5", "path": "/{year}/acs/acs5", "method": "GET", "description": "ACS 5-year detailed tables: select variables with get=, geography with for=/in=" }
+    ]
+  },
+  "auth": {
+    "type": "api-key",
+    "placement": "query",
+    "paramName": "key",
+    "credentialRef": "env:CENSUS_API_KEY",
+    "signupUrl": "https://api.census.gov/data/key_signup.html"
+  },
+  "limits": {
+    "dailyQuota": null,
+    "perRequestMaxSeries": null,
+    "rateLimitBehavior": "throttle",
+    "notes": "Calls without a key are limited to ~500/day per IP; a free key raises the cap. Max 50 variables per get= request."
+  },
+  "pricing": { "model": "free", "feePerCallCents": null },
+  "llmDocs": {
+    "summary": "US population, income, housing, education and demographic estimates by geography (nation, state, county, tract, block group).",
+    "queryGuide": "Returns a JSON array-of-arrays; row 0 is the header. Select variables via get= (e.g. NAME,B01001_001E) and geography via for=/in=. e.g. B01001_001E = total population.",
+    "exampleQueries": [
+      { "intent": "Total population by state, 2022 ACS5", "request": { "method": "GET", "path": "/2022/acs/acs5", "params": { "get": "NAME,B01001_001E", "for": "state:*" } } },
+      { "intent": "Median household income for one county", "request": { "method": "GET", "path": "/2022/acs/acs5", "params": { "get": "NAME,B19013_001E", "for": "county:031", "in": "state:08" } } }
+    ],
+    "gotchas": ["Response is array-of-arrays, not array-of-objects", "Variable codes end in E for estimate, M for margin of error", "Geography hierarchy matters: 'in=' is required for sub-state geos"]
+  },
+  "compliance": {
+    "license": "public-domain",
+    "tosUrl": "https://www.census.gov/data/developers/about/terms-of-service.html",
+    "redistributionNotes": "US federal data, public domain. ToS requires attribution and prohibits implying Census endorsement.",
+    "reviewedDate": null
+  },
+  "meta": { "addedDate": "2026-06-11", "lastTestedDate": null, "connectorPath": "src/connectors/census-acs.ts" }
+}

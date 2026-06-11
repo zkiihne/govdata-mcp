@@ -1,0 +1,57 @@
+{
+  "id": "govinfo",
+  "name": "GovInfo API",
+  "agency": "U.S. Government Publishing Office",
+  "category": "legal-regulatory",
+  "tier": "free",
+  "status": "planned",
+  "api": {
+    "baseUrl": "https://api.govinfo.gov",
+    "protocol": "rest-json",
+    "docsUrl": "https://api.govinfo.gov/docs/",
+    "endpoints": [
+      { "id": "collections", "path": "/collections", "method": "GET", "description": "List available collections (BILLS, FR, CFR, USCODE, PLAW, etc.)" },
+      { "id": "collection-updates", "path": "/collections/{collection}/{startDate}", "method": "GET", "description": "Packages in a collection updated since a date" },
+      { "id": "packages", "path": "/packages/{packageId}/summary", "method": "GET", "description": "Metadata and download links for a package" },
+      { "id": "search", "path": "/search", "method": "POST", "description": "Full-text search across collections" }
+    ]
+  },
+  "auth": {
+    "type": "api-key",
+    "placement": "query",
+    "paramName": "api_key",
+    "credentialRef": "env:GOVINFO_API_KEY",
+    "signupUrl": "https://api.data.gov/signup/"
+  },
+  "limits": {
+    "dailyQuota": null,
+    "perRequestMaxSeries": null,
+    "rateLimitBehavior": "hard-reject",
+    "notes": "Uses api.data.gov key (1,000 requests/hour default per key). Search endpoint paginates via offsetMark."
+  },
+  "pricing": { "model": "free", "feePerCallCents": null },
+  "llmDocs": {
+    "summary": "Official publications from all three branches: Federal Register, CFR, US Code, public laws, bills, Congressional Record, court opinions, budget. Bulk and granular access to authenticated PDFs/XML.",
+    "queryGuide": "Browse by collection (/collections/{code}/{startDate}/{endDate}) or full-text search (POST /search with a query and collection filter). Package summaries link to PDF, XML, MODS, and PREMIS downloads. Use offsetMark (not page numbers) for search pagination.",
+    "exampleQueries": [
+      { "intent": "List all collections", "request": { "method": "GET", "url": "https://api.govinfo.gov/collections?api_key={key}" } },
+      { "intent": "Full-text search public laws for 'infrastructure'", "request": { "method": "POST", "url": "https://api.govinfo.gov/search?api_key={key}", "body": { "query": "collection:PLAW infrastructure", "pageSize": 20, "offsetMark": "*" } } }
+    ],
+    "gotchas": [
+      "Search pagination uses offsetMark='*' for the first page then the returned nextOffsetMark — not numeric offsets.",
+      "Collection codes are uppercase abbreviations (BILLS, FR, CFR, USCODE, PLAW).",
+      "Actual document content is downloaded from links in the package summary, not inline."
+    ]
+  },
+  "compliance": {
+    "license": "public-domain",
+    "tosUrl": "https://www.govinfo.gov/about/policies",
+    "redistributionNotes": "Public domain. GPO provides authenticated (digitally signed) documents; preserve provenance if authenticity matters.",
+    "reviewedDate": null
+  },
+  "meta": {
+    "addedDate": "2026-06-11",
+    "lastTestedDate": null,
+    "connectorPath": "src/connectors/govinfo.ts"
+  }
+}

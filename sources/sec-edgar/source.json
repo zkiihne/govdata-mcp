@@ -1,0 +1,47 @@
+{
+  "id": "sec-edgar",
+  "name": "SEC EDGAR — company filings & XBRL facts",
+  "agency": "U.S. Securities and Exchange Commission",
+  "category": "finance",
+  "tier": "premium",
+  "status": "planned",
+  "api": {
+    "baseUrl": "https://data.sec.gov",
+    "protocol": "rest-json",
+    "docsUrl": "https://www.sec.gov/edgar/sec-api-documentation",
+    "endpoints": [
+      { "id": "submissions", "path": "/submissions/CIK{cik}.json", "method": "GET", "description": "All filings for a company by zero-padded 10-digit CIK" },
+      { "id": "company-concept", "path": "/api/xbrl/companyconcept/CIK{cik}/{taxonomy}/{tag}.json", "method": "GET", "description": "One tagged XBRL financial fact across all filings" },
+      { "id": "company-facts", "path": "/api/xbrl/companyfacts/CIK{cik}.json", "method": "GET", "description": "All XBRL facts for a company" }
+    ]
+  },
+  "auth": {
+    "type": "none",
+    "placement": null,
+    "paramName": null,
+    "credentialRef": null,
+    "signupUrl": null
+  },
+  "limits": {
+    "dailyQuota": null,
+    "perRequestMaxSeries": null,
+    "rateLimitBehavior": "hard-reject",
+    "notes": "No key, but a descriptive User-Agent (AppName contact@email) is mandatory. Max ~10 requests/sec per IP."
+  },
+  "pricing": { "model": "metered", "feePerCallCents": 2 },
+  "llmDocs": {
+    "summary": "US public-company filings, financial statements, and XBRL-tagged facts from SEC EDGAR.",
+    "queryGuide": "CIK must be zero-padded to 10 digits. Start from /submissions/CIK{cik}.json to list filings, or pull a single metric via companyconcept (taxonomy us-gaap, tag e.g. Revenues).",
+    "exampleQueries": [
+      { "intent": "All filings for Apple (CIK 320193)", "request": { "method": "GET", "path": "/submissions/CIK0000320193.json" } }
+    ],
+    "gotchas": ["CIK must be zero-padded to 10 digits", "User-Agent header is mandatory", "Premium tier — metered behind HTTP 402 until billing is enabled"]
+  },
+  "compliance": {
+    "license": "public-domain",
+    "tosUrl": "https://www.sec.gov/os/webmaster-faq#developers",
+    "redistributionNotes": "US federal data, public domain. Premium tier reflects gateway metering, not upstream cost.",
+    "reviewedDate": null
+  },
+  "meta": { "addedDate": "2026-06-11", "lastTestedDate": null, "connectorPath": "src/connectors/sec-edgar.ts" }
+}

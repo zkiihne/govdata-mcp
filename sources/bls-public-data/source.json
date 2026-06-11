@@ -1,0 +1,45 @@
+{
+  "id": "bls-public-data",
+  "name": "BLS Public Data API",
+  "agency": "Bureau of Labor Statistics",
+  "category": "economy",
+  "tier": "free",
+  "status": "planned",
+  "api": {
+    "baseUrl": "https://api.bls.gov/publicAPI/v2",
+    "protocol": "rest-json",
+    "docsUrl": "https://www.bls.gov/developers/",
+    "endpoints": [
+      { "id": "timeseries", "path": "/timeseries/data/", "method": "POST", "description": "Fetch one or more series by ID over a year range" }
+    ]
+  },
+  "auth": {
+    "type": "api-key",
+    "placement": "body",
+    "paramName": "registrationkey",
+    "credentialRef": "env:BLS_API_KEY",
+    "signupUrl": "https://data.bls.gov/registrationEngine/"
+  },
+  "limits": {
+    "dailyQuota": 500,
+    "perRequestMaxSeries": 50,
+    "rateLimitBehavior": "hard-reject",
+    "notes": "Quota is per key — multiplexing risk, monitor usage"
+  },
+  "pricing": { "model": "free", "feePerCallCents": null },
+  "llmDocs": {
+    "summary": "US labor statistics: unemployment, CPI, wages, employment by industry and region.",
+    "queryGuide": "Series IDs are structured codes, e.g. LAUCN040010000000005 = Local Area Unemployment, county-level. Prefix determines survey: LA=local unemployment, CU=CPI urban, CE=employment.",
+    "exampleQueries": [
+      { "intent": "National unemployment rate, last 2 years", "request": { "seriesid": ["LNS14000000"], "startyear": "2024", "endyear": "2026" } }
+    ],
+    "gotchas": ["POST not GET for multi-series", "Years are strings, not ints", "No discovery endpoint — series IDs must be constructed or known"]
+  },
+  "compliance": {
+    "license": "public-domain",
+    "tosUrl": "https://www.bls.gov/developers/termsOfService.htm",
+    "redistributionNotes": "ToS prohibits sharing registration keys; centralized key use needs review",
+    "reviewedDate": null
+  },
+  "meta": { "addedDate": "2026-06-11", "lastTestedDate": null, "connectorPath": "src/connectors/bls.ts" }
+}

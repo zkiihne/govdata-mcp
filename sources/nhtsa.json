@@ -1,0 +1,57 @@
+{
+  "id": "nhtsa",
+  "name": "NHTSA APIs (vPIC, Recalls, Safety Ratings, Complaints)",
+  "agency": "National Highway Traffic Safety Administration",
+  "category": "transportation",
+  "tier": "free",
+  "status": "planned",
+  "api": {
+    "baseUrl": "https://vpic.nhtsa.dot.gov/api",
+    "protocol": "rest-json",
+    "docsUrl": "https://vpic.nhtsa.dot.gov/api/",
+    "endpoints": [
+      { "id": "decode-vin", "path": "/vehicles/DecodeVinValues/{vin}", "method": "GET", "description": "Decode a VIN into make/model/year/specs (vPIC)" },
+      { "id": "recalls", "path": "https://api.nhtsa.gov/recalls/recallsByVehicle", "method": "GET", "description": "Recalls by make/model/year (api.nhtsa.gov)" },
+      { "id": "safety-ratings", "path": "https://api.nhtsa.gov/SafetyRatings", "method": "GET", "description": "NCAP crash-test safety ratings" },
+      { "id": "complaints", "path": "https://api.nhtsa.gov/complaints/complaintsByVehicle", "method": "GET", "description": "Consumer complaints by vehicle" }
+    ]
+  },
+  "auth": {
+    "type": "none",
+    "placement": null,
+    "paramName": null,
+    "credentialRef": null,
+    "signupUrl": null
+  },
+  "limits": {
+    "dailyQuota": null,
+    "perRequestMaxSeries": null,
+    "rateLimitBehavior": "throttle",
+    "notes": "No key, no published quota. Note this entry spans two host families: vpic.nhtsa.dot.gov (VIN decode) and api.nhtsa.gov (recalls/ratings/complaints). Connector must route per function."
+  },
+  "pricing": { "model": "free", "feePerCallCents": null },
+  "llmDocs": {
+    "summary": "Vehicle data: VIN decoding (vPIC), safety recalls, NCAP crash-test ratings, and consumer complaints. No key. Two API hosts under one logical source.",
+    "queryGuide": "Append ?format=json. VIN decode lives at vpic.nhtsa.dot.gov; recalls/ratings/complaints live at api.nhtsa.gov with make/model/modelYear query params. Safety ratings is a drill-down: year -> make -> model -> variant -> VehicleId.",
+    "exampleQueries": [
+      { "intent": "Decode a VIN", "request": { "method": "GET", "url": "https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValues/1HGCM82633A004352?format=json" } },
+      { "intent": "Recalls for a 2022 Honda Civic", "request": { "method": "GET", "url": "https://api.nhtsa.gov/recalls/recallsByVehicle?make=honda&model=civic&modelYear=2022" } }
+    ],
+    "gotchas": [
+      "Two different base hosts; do not assume one host serves all functions.",
+      "Safety Ratings requires walking the hierarchy to obtain a VehicleId before fetching the actual ratings.",
+      "format=json is needed on vPIC or you get XML."
+    ]
+  },
+  "compliance": {
+    "license": "public-domain",
+    "tosUrl": "https://www.nhtsa.gov/",
+    "redistributionNotes": "Public domain US government data.",
+    "reviewedDate": null
+  },
+  "meta": {
+    "addedDate": "2026-06-11",
+    "lastTestedDate": null,
+    "connectorPath": "src/connectors/nhtsa.ts"
+  }
+}

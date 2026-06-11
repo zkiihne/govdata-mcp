@@ -1,10 +1,10 @@
 {
-  "id": "nws-weather",
+  "id": "noaa-weather",
   "name": "NWS / NOAA Weather API",
   "agency": "National Weather Service (NOAA)",
   "category": "weather",
   "tier": "free",
-  "status": "planned",
+  "status": "live",
   "api": {
     "baseUrl": "https://api.weather.gov",
     "protocol": "rest-json",
@@ -35,11 +35,11 @@
     "summary": "US weather forecasts, hourly forecasts, active alerts, and station observations. No API key; two-step flow (geocode point -> follow returned forecast URLs).",
     "queryGuide": "Always start with GET /points/{lat},{lon}; the response 'properties' contains gridId, gridX, gridY, and ready-made forecast/forecastHourly URLs. Do not construct gridpoint URLs by hand. US locations only.",
     "exampleQueries": [
-      { "intent": "Forecast for Washington DC", "request": { "method": "GET", "url": "https://api.weather.gov/points/38.8977,-77.0365" } },
-      { "intent": "Active alerts for a state", "request": { "method": "GET", "url": "https://api.weather.gov/alerts/active?area=CA" } }
+      { "intent": "Forecast for Washington DC (step 1: resolve point)", "request": { "method": "GET", "path": "/points/38.8977,-77.0365" } },
+      { "intent": "Active alerts for a state", "request": { "method": "GET", "path": "/alerts/active", "params": { "area": "CA" } } }
     ],
     "gotchas": [
-      "User-Agent header is mandatory; include a contact email or you get 403.",
+      "User-Agent header is mandatory; include a contact email or you get 403 (the connector sets one automatically).",
       "Coordinates must be lat,lon (not lon,lat) and have limited decimal precision (API may 301-redirect to truncated coords).",
       "Only covers US territory; non-US points return 404.",
       "Two requests minimum per forecast (points then forecast)."
@@ -49,11 +49,11 @@
     "license": "public-domain",
     "tosUrl": "https://www.weather.gov/disclaimer",
     "redistributionNotes": "US federal government work, public domain. Free to redistribute; do not imply NWS endorsement.",
-    "reviewedDate": null
+    "reviewedDate": "2026-06-11"
   },
   "meta": {
     "addedDate": "2026-06-11",
     "lastTestedDate": null,
-    "connectorPath": "src/connectors/nws-weather.ts"
+    "connectorPath": "src/connectors/noaa.ts"
   }
 }

@@ -1,0 +1,59 @@
+{
+  "id": "openfda",
+  "name": "openFDA API",
+  "agency": "Food and Drug Administration",
+  "category": "health",
+  "tier": "free",
+  "status": "planned",
+  "api": {
+    "baseUrl": "https://api.fda.gov",
+    "protocol": "rest-json",
+    "docsUrl": "https://open.fda.gov/apis/",
+    "endpoints": [
+      { "id": "drug-event", "path": "/drug/event.json", "method": "GET", "description": "Adverse drug event reports (FAERS)" },
+      { "id": "drug-label", "path": "/drug/label.json", "method": "GET", "description": "Structured product labeling (drug labels)" },
+      { "id": "drug-enforcement", "path": "/drug/enforcement.json", "method": "GET", "description": "Drug recall enforcement reports" },
+      { "id": "device-event", "path": "/device/event.json", "method": "GET", "description": "Medical device adverse event reports (MAUDE)" },
+      { "id": "food-enforcement", "path": "/food/enforcement.json", "method": "GET", "description": "Food recall enforcement reports" }
+    ]
+  },
+  "auth": {
+    "type": "api-key",
+    "placement": "query",
+    "paramName": "api_key",
+    "credentialRef": "env:OPENFDA_API_KEY",
+    "signupUrl": "https://open.fda.gov/apis/authentication/"
+  },
+  "limits": {
+    "dailyQuota": 120000,
+    "perRequestMaxSeries": null,
+    "rateLimitBehavior": "hard-reject",
+    "notes": "Without key: 240 requests/min, 1,000/day per IP. With key: 240 requests/min, 120,000/day per key. Pagination capped at skip<=25,000 (use search_after for deeper)."
+  },
+  "pricing": { "model": "free", "feePerCallCents": null },
+  "llmDocs": {
+    "summary": "FDA data on drugs, devices, foods: adverse events, recalls, product labels, NDC directory. Lucene-style search with count aggregations.",
+    "queryGuide": "Use search= with Lucene syntax (field:value, AND/OR, ranges like [20240101 TO 20241231]). Use count= to get aggregated frequency tables (very efficient for 'top N'). limit (max 1000) and skip for pagination.",
+    "exampleQueries": [
+      { "intent": "Top adverse reactions for a drug", "request": { "method": "GET", "url": "https://api.fda.gov/drug/event.json?search=patient.drug.medicinalproduct:\"ibuprofen\"&count=patient.reaction.reactionmeddrapt.exact&api_key={key}" } },
+      { "intent": "Recent Class I drug recalls", "request": { "method": "GET", "url": "https://api.fda.gov/drug/enforcement.json?search=classification:\"Class I\"&limit=20&api_key={key}" } }
+    ],
+    "gotchas": [
+      "Use .exact suffix on fields for count aggregations or you get tokenized partial-word counts.",
+      "skip is capped at 25,000; deeper paging needs search_after or tighter queries.",
+      "Data are reports (e.g. FAERS), not confirmed causation — never infer that a drug caused an event from counts alone.",
+      "Field names are deeply nested; consult each endpoint's field reference."
+    ]
+  },
+  "compliance": {
+    "license": "public-domain",
+    "tosUrl": "https://open.fda.gov/terms/",
+    "redistributionNotes": "Public domain. openFDA terms require not using the data to identify individuals and including a disclaimer that data are not FDA-verified for clinical use.",
+    "reviewedDate": null
+  },
+  "meta": {
+    "addedDate": "2026-06-11",
+    "lastTestedDate": null,
+    "connectorPath": "src/connectors/openfda.ts"
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "id": "fcc",
+  "name": "FCC APIs (Broadband Map + License View)",
+  "agency": "Federal Communications Commission",
+  "category": "telecom",
+  "tier": "free",
+  "status": "planned",
+  "api": {
+    "baseUrl": "https://broadbandmap.fcc.gov/nbm/map/api",
+    "protocol": "rest-json",
+    "docsUrl": "https://us-fcc.app.box.com/v/bdc-public-data-api-spec",
+    "endpoints": [
+      { "id": "bdc-availability", "path": "/published/national/published-data", "method": "GET", "description": "National Broadband Data Collection availability files (BDC)" },
+      { "id": "area-api", "path": "https://geo.fcc.gov/api/census/area", "method": "GET", "description": "Resolve lat/lon to Census block / county / state (FCC Area API)" },
+      { "id": "license-view", "path": "https://data.fcc.gov/api/license-view/basicSearch/getLicenses", "method": "GET", "description": "Search FCC spectrum/radio licenses (License View)" }
+    ]
+  },
+  "auth": {
+    "type": "registration",
+    "placement": "header",
+    "paramName": "username/hash_value",
+    "credentialRef": "env:FCC_BDC_API_TOKEN",
+    "signupUrl": "https://bdc.fcc.gov/"
+  },
+  "limits": {
+    "dailyQuota": null,
+    "perRequestMaxSeries": null,
+    "rateLimitBehavior": "throttle",
+    "notes": "Mixed: Broadband Data Collection (BDC) API requires a registered username + API hash token; the geo.fcc.gov Area API and License View are open (no key). Verify BDC auth header names and any per-token limits against the current BDC spec."
+  },
+  "pricing": { "model": "free", "feePerCallCents": null },
+  "llmDocs": {
+    "summary": "Broadband availability/coverage (FCC National Broadband Map / BDC), lat-lon-to-census-geography lookups (Area API), and spectrum license search (License View). Three distinct services under one source.",
+    "queryGuide": "For point-to-geography lookups use geo.fcc.gov/api/census/area?lat=&lon=&format=json (open). For broadband availability use the BDC published-data API with username + hash token headers. For licenses use License View basicSearch with format=json.",
+    "exampleQueries": [
+      { "intent": "Census block for a coordinate", "request": { "method": "GET", "url": "https://geo.fcc.gov/api/census/area?lat=38.26&lon=-77.51&format=json" } },
+      { "intent": "Search radio licenses by name", "request": { "method": "GET", "url": "https://data.fcc.gov/api/license-view/basicSearch/getLicenses?searchValue=verizon&format=json" } }
+    ],
+    "gotchas": [
+      "Three different hosts/services; only BDC requires auth — route per function.",
+      "BDC availability data is large and file-based (downloadable datasets), not row-level point queries.",
+      "Confirm current BDC API auth scheme; FCC has changed token/header conventions over time."
+    ]
+  },
+  "compliance": {
+    "license": "public-domain",
+    "tosUrl": "https://www.fcc.gov/",
+    "redistributionNotes": "Public domain US government data. BDC availability data has provider-submitted accuracy caveats; note as-of dates.",
+    "reviewedDate": null
+  },
+  "meta": {
+    "addedDate": "2026-06-11",
+    "lastTestedDate": null,
+    "connectorPath": "src/connectors/fcc.ts"
+  }
+}
