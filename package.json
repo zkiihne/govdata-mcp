@@ -1,0 +1,28 @@
+{
+  "name": "govdata-mcp",
+  "version": "0.1.0",
+  "description": "MCP gateway giving agents access to government and public data through one proxy. Raw passthrough, LLM-optimized tool docs, server-held credentials.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "govdata-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "inspect": "npx @modelcontextprotocol/inspector tsx src/index.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "@types/node": "^20.14.0"
+  },
+  "license": "MIT"
+}
