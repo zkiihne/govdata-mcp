@@ -1,0 +1,57 @@
+{
+  "id": "epa-airnow",
+  "name": "EPA AirNow API",
+  "agency": "Environmental Protection Agency",
+  "category": "environment",
+  "tier": "free",
+  "status": "planned",
+  "api": {
+    "baseUrl": "https://www.airnowapi.org",
+    "protocol": "rest-json",
+    "docsUrl": "https://docs.airnowapi.org/",
+    "endpoints": [
+      { "id": "observation-by-zip", "path": "/aq/observation/zipCode/current/", "method": "GET", "description": "Current AQI observations by ZIP code" },
+      { "id": "observation-by-latlon", "path": "/aq/observation/latLong/current/", "method": "GET", "description": "Current AQI observations by lat/lon" },
+      { "id": "forecast-by-zip", "path": "/aq/forecast/zipCode/", "method": "GET", "description": "AQI forecast by ZIP code" },
+      { "id": "data", "path": "/aq/data/", "method": "GET", "description": "Raw monitoring data by bounding box and parameter over a time range" }
+    ]
+  },
+  "auth": {
+    "type": "api-key",
+    "placement": "query",
+    "paramName": "API_KEY",
+    "credentialRef": "env:AIRNOW_API_KEY",
+    "signupUrl": "https://docs.airnowapi.org/account/request/"
+  },
+  "limits": {
+    "dailyQuota": null,
+    "perRequestMaxSeries": null,
+    "rateLimitBehavior": "hard-reject",
+    "notes": "Default rate limit ~500 requests/hour per key (confirm in account dashboard). Verify exact hourly cap before relying on it."
+  },
+  "pricing": { "model": "free", "feePerCallCents": null },
+  "llmDocs": {
+    "summary": "Real-time and forecast US air quality (AQI) for ozone, PM2.5, PM10 by ZIP, lat/lon, or bounding box.",
+    "queryGuide": "Use zipCode or latLong observation endpoints for point lookups; use /aq/data/ with a bounding box (BBOX) for area scans. Request format=application/json explicitly.",
+    "exampleQueries": [
+      { "intent": "Current AQI for a ZIP", "request": { "method": "GET", "url": "https://www.airnowapi.org/aq/observation/zipCode/current/?format=application/json&zipCode=90210&distance=25&API_KEY={key}" } },
+      { "intent": "AQI forecast by lat/lon", "request": { "method": "GET", "url": "https://www.airnowapi.org/aq/forecast/latLong/?format=application/json&latitude=34.09&longitude=-118.41&date=2026-06-11&API_KEY={key}" } }
+    ],
+    "gotchas": [
+      "format parameter is literally 'application/json' as a query value, not an Accept header.",
+      "Coverage gaps where no nearby monitor exists; empty array means no station in range, not an error.",
+      "Hourly rate limit is enforced and resets hourly; batch/cache aggressively."
+    ]
+  },
+  "compliance": {
+    "license": "public-domain",
+    "tosUrl": "https://docs.airnowapi.org/faq",
+    "redistributionNotes": "US federal data, public domain. AirNow ToS requires attribution to AirNow and prohibits implying EPA endorsement.",
+    "reviewedDate": null
+  },
+  "meta": {
+    "addedDate": "2026-06-11",
+    "lastTestedDate": null,
+    "connectorPath": "src/connectors/epa-airnow.ts"
+  }
+}

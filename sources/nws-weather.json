@@ -1,0 +1,59 @@
+{
+  "id": "nws-weather",
+  "name": "NWS / NOAA Weather API",
+  "agency": "National Weather Service (NOAA)",
+  "category": "weather",
+  "tier": "free",
+  "status": "planned",
+  "api": {
+    "baseUrl": "https://api.weather.gov",
+    "protocol": "rest-json",
+    "docsUrl": "https://www.weather.gov/documentation/services-web-api",
+    "endpoints": [
+      { "id": "points", "path": "/points/{lat},{lon}", "method": "GET", "description": "Resolve a lat/lon to grid, forecast office, and forecast URLs" },
+      { "id": "forecast", "path": "/gridpoints/{office}/{gridX},{gridY}/forecast", "method": "GET", "description": "12-hour-period forecast for a grid cell" },
+      { "id": "hourly", "path": "/gridpoints/{office}/{gridX},{gridY}/forecast/hourly", "method": "GET", "description": "Hourly forecast for a grid cell" },
+      { "id": "alerts-active", "path": "/alerts/active", "method": "GET", "description": "Active watches/warnings/advisories, filterable by area/point/zone" },
+      { "id": "stations-observations", "path": "/stations/{stationId}/observations/latest", "method": "GET", "description": "Latest observation from a station" }
+    ]
+  },
+  "auth": {
+    "type": "none",
+    "placement": null,
+    "paramName": null,
+    "credentialRef": null,
+    "signupUrl": null
+  },
+  "limits": {
+    "dailyQuota": null,
+    "perRequestMaxSeries": null,
+    "rateLimitBehavior": "throttle",
+    "notes": "No published hard quota. Requires a descriptive User-Agent header (contact email) or requests are rejected. Responses cached; respect Cache-Control/Expires."
+  },
+  "pricing": { "model": "free", "feePerCallCents": null },
+  "llmDocs": {
+    "summary": "US weather forecasts, hourly forecasts, active alerts, and station observations. No API key; two-step flow (geocode point -> follow returned forecast URLs).",
+    "queryGuide": "Always start with GET /points/{lat},{lon}; the response 'properties' contains gridId, gridX, gridY, and ready-made forecast/forecastHourly URLs. Do not construct gridpoint URLs by hand. US locations only.",
+    "exampleQueries": [
+      { "intent": "Forecast for Washington DC", "request": { "method": "GET", "url": "https://api.weather.gov/points/38.8977,-77.0365" } },
+      { "intent": "Active alerts for a state", "request": { "method": "GET", "url": "https://api.weather.gov/alerts/active?area=CA" } }
+    ],
+    "gotchas": [
+      "User-Agent header is mandatory; include a contact email or you get 403.",
+      "Coordinates must be lat,lon (not lon,lat) and have limited decimal precision (API may 301-redirect to truncated coords).",
+      "Only covers US territory; non-US points return 404.",
+      "Two requests minimum per forecast (points then forecast)."
+    ]
+  },
+  "compliance": {
+    "license": "public-domain",
+    "tosUrl": "https://www.weather.gov/disclaimer",
+    "redistributionNotes": "US federal government work, public domain. Free to redistribute; do not imply NWS endorsement.",
+    "reviewedDate": null
+  },
+  "meta": {
+    "addedDate": "2026-06-11",
+    "lastTestedDate": null,
+    "connectorPath": "src/connectors/nws-weather.ts"
+  }
+}

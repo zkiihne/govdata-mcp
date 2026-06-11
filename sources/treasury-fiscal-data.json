@@ -1,0 +1,56 @@
+{
+  "id": "treasury-fiscal-data",
+  "name": "Treasury Fiscal Data API",
+  "agency": "U.S. Department of the Treasury (Bureau of the Fiscal Service)",
+  "category": "economy",
+  "tier": "free",
+  "status": "planned",
+  "api": {
+    "baseUrl": "https://api.fiscaldata.treasury.gov/services/api/fiscal_service",
+    "protocol": "rest-json",
+    "docsUrl": "https://fiscaldata.treasury.gov/api-documentation/",
+    "endpoints": [
+      { "id": "debt-to-penny", "path": "/v2/accounting/od/debt_to_penny", "method": "GET", "description": "Daily total public debt outstanding" },
+      { "id": "exchange-rates", "path": "/v1/accounting/od/rates_of_exchange", "method": "GET", "description": "Treasury reporting rates of exchange" },
+      { "id": "avg-interest-rates", "path": "/v2/accounting/od/avg_interest_rates", "method": "GET", "description": "Average interest rates on US Treasury securities" }
+    ]
+  },
+  "auth": {
+    "type": "none",
+    "placement": null,
+    "paramName": null,
+    "credentialRef": null,
+    "signupUrl": null
+  },
+  "limits": {
+    "dailyQuota": null,
+    "perRequestMaxSeries": null,
+    "rateLimitBehavior": "throttle",
+    "notes": "No key and no published hard quota. Default page size 100, max page[size]=10000. Be polite on bulk pulls."
+  },
+  "pricing": { "model": "free", "feePerCallCents": null },
+  "llmDocs": {
+    "summary": "Federal financial data: national debt, daily Treasury statement, interest rates on Treasury securities, exchange rates, spending/revenue. No key required.",
+    "queryGuide": "Each dataset is its own endpoint path. Use fields=, filter= (e.g. record_date:gte:2025-01-01), sort=-record_date, and page[size]=. Discover datasets and field names from the API documentation site.",
+    "exampleQueries": [
+      { "intent": "Latest national debt figure", "request": { "method": "GET", "url": "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/debt_to_penny?sort=-record_date&page[size]=1" } },
+      { "intent": "USD-EUR Treasury exchange rate in 2025", "request": { "method": "GET", "url": "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/od/rates_of_exchange?filter=country_currency_desc:eq:Euro Zone-Euro,record_date:gte:2025-01-01" } }
+    ],
+    "gotchas": [
+      "Filter syntax is field:operator:value (eq, gte, lte, in, etc.) — not standard query params.",
+      "Default page size is 100; large datasets need pagination via page[number].",
+      "Each dataset has different field names and date columns; consult the dataset's metadata."
+    ]
+  },
+  "compliance": {
+    "license": "public-domain",
+    "tosUrl": "https://fiscaldata.treasury.gov/api-documentation/",
+    "redistributionNotes": "Public domain US government data, free to use and redistribute.",
+    "reviewedDate": null
+  },
+  "meta": {
+    "addedDate": "2026-06-11",
+    "lastTestedDate": null,
+    "connectorPath": "src/connectors/treasury-fiscal-data.ts"
+  }
+}

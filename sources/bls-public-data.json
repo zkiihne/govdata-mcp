@@ -1,0 +1,55 @@
+{
+  "id": "bls-public-data",
+  "name": "BLS Public Data API",
+  "agency": "Bureau of Labor Statistics",
+  "category": "economy",
+  "tier": "free",
+  "status": "planned",
+  "api": {
+    "baseUrl": "https://api.bls.gov/publicAPI/v2",
+    "protocol": "rest-json",
+    "docsUrl": "https://www.bls.gov/developers/",
+    "endpoints": [
+      { "id": "timeseries", "path": "/timeseries/data/", "method": "POST", "description": "Fetch one or more series by ID over a year range (JSON body)" },
+      { "id": "timeseries-get", "path": "/timeseries/data/{seriesId}", "method": "GET", "description": "Fetch a single series by ID (limited, no key features)" }
+    ]
+  },
+  "auth": {
+    "type": "api-key",
+    "placement": "body",
+    "paramName": "registrationkey",
+    "credentialRef": "env:BLS_API_KEY",
+    "signupUrl": "https://data.bls.gov/registrationEngine/"
+  },
+  "limits": {
+    "dailyQuota": 500,
+    "perRequestMaxSeries": 50,
+    "rateLimitBehavior": "hard-reject",
+    "notes": "Registered v2: 500 queries/day, 50 series/query, up to 20 years/query. Unregistered v1: 25 queries/day, 25 series, 10 years. Quota is per key — multiplexing risk, monitor usage."
+  },
+  "pricing": { "model": "free", "feePerCallCents": null },
+  "llmDocs": {
+    "summary": "BLS time series: CPI (inflation), unemployment, employment (CES), wages, JOLTS, PPI. POST series IDs with a year range, get back data points.",
+    "queryGuide": "POST JSON to /timeseries/data/ with {seriesid:[...], startyear, endyear, registrationkey}. Series IDs are structured codes (e.g. CUUR0000SA0 = CPI-U all items; LNS14000000 = unemployment rate). Set catalog/calculations/annualaverage flags as needed.",
+    "exampleQueries": [
+      { "intent": "CPI-U all items 2023-2025", "request": { "method": "POST", "url": "https://api.bls.gov/publicAPI/v2/timeseries/data/", "body": { "seriesid": ["CUUR0000SA0"], "startyear": "2023", "endyear": "2025", "registrationkey": "{key}" } } },
+      { "intent": "National unemployment rate", "request": { "method": "POST", "url": "https://api.bls.gov/publicAPI/v2/timeseries/data/", "body": { "seriesid": ["LNS14000000"], "startyear": "2024", "endyear": "2025", "registrationkey": "{key}" } } }
+    ],
+    "gotchas": [
+      "Series IDs are opaque coded strings; wrong code returns an empty series, not an error.",
+      "Max 20 years per request — split longer ranges.",
+      "Daily quota is 500 and per-key; cache results and avoid re-pulling unchanged history."
+    ]
+  },
+  "compliance": {
+    "license": "public-domain",
+    "tosUrl": "https://www.bls.gov/developers/termsOfService.htm",
+    "redistributionNotes": "Public domain. Cite BLS as source; do not imply BLS endorsement.",
+    "reviewedDate": null
+  },
+  "meta": {
+    "addedDate": "2026-06-11",
+    "lastTestedDate": null,
+    "connectorPath": "src/connectors/bls-public-data.ts"
+  }
+}

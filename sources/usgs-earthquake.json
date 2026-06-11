@@ -1,0 +1,55 @@
+{
+  "id": "usgs-earthquake",
+  "name": "USGS Earthquake Catalog API",
+  "agency": "U.S. Geological Survey",
+  "category": "environment",
+  "tier": "free",
+  "status": "planned",
+  "api": {
+    "baseUrl": "https://earthquake.usgs.gov/fdsnws/event/1",
+    "protocol": "rest-json",
+    "docsUrl": "https://earthquake.usgs.gov/fdsnws/event/1/",
+    "endpoints": [
+      { "id": "query", "path": "/query", "method": "GET", "description": "Query earthquake events by time, magnitude, location radius, depth; format=geojson" },
+      { "id": "count", "path": "/count", "method": "GET", "description": "Count of events matching a query without returning them" }
+    ]
+  },
+  "auth": {
+    "type": "none",
+    "placement": null,
+    "paramName": null,
+    "credentialRef": null,
+    "signupUrl": null
+  },
+  "limits": {
+    "dailyQuota": null,
+    "perRequestMaxSeries": null,
+    "rateLimitBehavior": "hard-reject",
+    "notes": "Single query limited to 20,000 events; requests that would exceed this return HTTP 400. Use time windows or magnitude floors to page."
+  },
+  "pricing": { "model": "free", "feePerCallCents": null },
+  "llmDocs": {
+    "summary": "Global earthquake event catalog (real-time and historical) via the FDSN event web service. No key. GeoJSON output.",
+    "queryGuide": "Always set format=geojson. Filter with starttime, endtime, minmagnitude, and a radius (latitude/longitude/maxradiuskm) or bounding box. Use /count first to check result size before /query.",
+    "exampleQueries": [
+      { "intent": "M4.5+ quakes in the last day worldwide", "request": { "method": "GET", "url": "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2026-06-10&minmagnitude=4.5" } },
+      { "intent": "Quakes within 100km of LA in 2025", "request": { "method": "GET", "url": "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&latitude=34.05&longitude=-118.24&maxradiuskm=100&starttime=2025-01-01&endtime=2025-12-31" } }
+    ],
+    "gotchas": [
+      "20,000-event hard cap per query; broad time+low magnitude queries 400 out — paginate by time.",
+      "Times are UTC ISO8601; omitting endtime defaults to present.",
+      "There are convenience GeoJSON feeds (e.g. summary/all_day.geojson) for common windows that need no parameters."
+    ]
+  },
+  "compliance": {
+    "license": "public-domain",
+    "tosUrl": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits",
+    "redistributionNotes": "USGS data is public domain. Attribution to USGS recommended.",
+    "reviewedDate": null
+  },
+  "meta": {
+    "addedDate": "2026-06-11",
+    "lastTestedDate": null,
+    "connectorPath": "src/connectors/usgs-earthquake.ts"
+  }
+}

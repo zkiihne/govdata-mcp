@@ -1,0 +1,58 @@
+{
+  "id": "fred",
+  "name": "FRED (Federal Reserve Economic Data) API",
+  "agency": "Federal Reserve Bank of St. Louis",
+  "category": "economy",
+  "tier": "free",
+  "status": "planned",
+  "api": {
+    "baseUrl": "https://api.stlouisfed.org/fred",
+    "protocol": "rest-json",
+    "docsUrl": "https://fred.stlouisfed.org/docs/api/fred/",
+    "endpoints": [
+      { "id": "series-observations", "path": "/series/observations", "method": "GET", "description": "Observations (data points) for a series ID" },
+      { "id": "series", "path": "/series", "method": "GET", "description": "Metadata for a series" },
+      { "id": "series-search", "path": "/series/search", "method": "GET", "description": "Search for series by text" },
+      { "id": "category-series", "path": "/category/series", "method": "GET", "description": "Series within a FRED category" }
+    ]
+  },
+  "auth": {
+    "type": "api-key",
+    "placement": "query",
+    "paramName": "api_key",
+    "credentialRef": "env:FRED_API_KEY",
+    "signupUrl": "https://fredaccount.stlouisfed.org/apikeys"
+  },
+  "limits": {
+    "dailyQuota": null,
+    "perRequestMaxSeries": 1,
+    "rateLimitBehavior": "hard-reject",
+    "notes": "~120 requests/minute per key (HTTP 429 over limit). One series per observations call. No hard daily cap documented."
+  },
+  "pricing": { "model": "free", "feePerCallCents": null },
+  "llmDocs": {
+    "summary": "800k+ US and international economic time series: GDP, inflation, interest rates, employment, money supply, exchange rates. Single best source for macro series.",
+    "queryGuide": "Always set file_type=json. Get data via /series/observations?series_id=. Find series IDs with /series/search?search_text=. Common IDs: GDP, GDPC1 (real GDP), UNRATE (unemployment), CPIAUCSL (CPI), DGS10 (10yr Treasury), FEDFUNDS. Use observation_start/observation_end and units (e.g. pc1 for YoY %) to transform.",
+    "exampleQueries": [
+      { "intent": "10-year Treasury yield since 2020", "request": { "method": "GET", "url": "https://api.stlouisfed.org/fred/series/observations?series_id=DGS10&observation_start=2020-01-01&file_type=json&api_key={key}" } },
+      { "intent": "Search for series about 'median household income'", "request": { "method": "GET", "url": "https://api.stlouisfed.org/fred/series/search?search_text=median+household+income&file_type=json&api_key={key}" } }
+    ],
+    "gotchas": [
+      "file_type=json is required or you get XML.",
+      "Only one series_id per observations request; loop for multiple.",
+      "Missing values come back as '.' in the value field — handle before numeric parsing.",
+      "Rate limit is per-minute (~120); burst loops trigger 429."
+    ]
+  },
+  "compliance": {
+    "license": "mixed",
+    "tosUrl": "https://fred.stlouisfed.org/docs/api/terms_of_use.html",
+    "redistributionNotes": "FRED API ToS requires attribution to FRED. Underlying series carry source-specific copyrights (some third-party series restrict redistribution); check each series' copyright field before redistributing.",
+    "reviewedDate": null
+  },
+  "meta": {
+    "addedDate": "2026-06-11",
+    "lastTestedDate": null,
+    "connectorPath": "src/connectors/fred.ts"
+  }
+}
