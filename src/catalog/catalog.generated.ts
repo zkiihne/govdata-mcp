@@ -10,7 +10,7 @@ export const SOURCES: readonly SourceSpec[] = [
     "agency": "U.S. Bureau of Economic Analysis",
     "category": "economy",
     "tier": "free",
-    "status": "planned",
+    "status": "live",
     "api": {
       "baseUrl": "https://apps.bea.gov/api",
       "protocol": "rest-json",
@@ -83,11 +83,11 @@ export const SOURCES: readonly SourceSpec[] = [
       "license": "public-domain",
       "tosUrl": "https://apps.bea.gov/api/_pdf/bea_web_service_api_user_guide.pdf",
       "redistributionNotes": "US federal data, public domain. Terms require attribution and prohibit implying BEA endorsement.",
-      "reviewedDate": null
+      "reviewedDate": "2026-06-11"
     },
     "meta": {
       "addedDate": "2026-06-11",
-      "lastTestedDate": null,
+      "lastTestedDate": "2026-06-11",
       "connectorPath": "src/connectors/bea.ts"
     }
   },
@@ -355,7 +355,7 @@ export const SOURCES: readonly SourceSpec[] = [
     "agency": "Library of Congress",
     "category": "legislative",
     "tier": "free",
-    "status": "planned",
+    "status": "live",
     "api": {
       "baseUrl": "https://api.congress.gov/v3",
       "protocol": "rest-json",
@@ -430,11 +430,11 @@ export const SOURCES: readonly SourceSpec[] = [
       "license": "public-domain",
       "tosUrl": "https://www.congress.gov/about/data-and-api",
       "redistributionNotes": "US legislative data, public domain. api.data.gov key-sharing ToS applies — review before going live.",
-      "reviewedDate": null
+      "reviewedDate": "2026-06-11"
     },
     "meta": {
       "addedDate": "2026-06-11",
-      "lastTestedDate": null,
+      "lastTestedDate": "2026-06-11",
       "connectorPath": "src/connectors/congress-gov.ts"
     }
   },
@@ -444,7 +444,7 @@ export const SOURCES: readonly SourceSpec[] = [
     "agency": "U.S. Energy Information Administration",
     "category": "energy",
     "tier": "free",
-    "status": "planned",
+    "status": "live",
     "api": {
       "baseUrl": "https://api.eia.gov/v2",
       "protocol": "rest-json",
@@ -517,11 +517,11 @@ export const SOURCES: readonly SourceSpec[] = [
       "license": "public-domain",
       "tosUrl": "https://www.eia.gov/about/copyrights_reuse.php",
       "redistributionNotes": "US federal data, public domain. Free to redistribute; attribution to EIA requested.",
-      "reviewedDate": null
+      "reviewedDate": "2026-06-11"
     },
     "meta": {
       "addedDate": "2026-06-11",
-      "lastTestedDate": null,
+      "lastTestedDate": "2026-06-11",
       "connectorPath": "src/connectors/eia.ts"
     }
   },
@@ -1206,7 +1206,7 @@ export const SOURCES: readonly SourceSpec[] = [
     "agency": "NIST (National Institute of Standards and Technology)",
     "category": "cybersecurity",
     "tier": "free",
-    "status": "planned",
+    "status": "live",
     "api": {
       "baseUrl": "https://services.nvd.nist.gov/rest/json",
       "protocol": "rest-json",
@@ -1281,11 +1281,11 @@ export const SOURCES: readonly SourceSpec[] = [
       "license": "public-domain",
       "tosUrl": "https://nvd.nist.gov/developers/terms-of-use",
       "redistributionNotes": "US federal data, public domain. Terms request attribution and prohibit implying NIST endorsement.",
-      "reviewedDate": null
+      "reviewedDate": "2026-06-11"
     },
     "meta": {
       "addedDate": "2026-06-11",
-      "lastTestedDate": null,
+      "lastTestedDate": "2026-06-11",
       "connectorPath": "src/connectors/nvd.ts"
     }
   },
@@ -1295,7 +1295,7 @@ export const SOURCES: readonly SourceSpec[] = [
     "agency": "U.S. Food and Drug Administration",
     "category": "health",
     "tier": "free",
-    "status": "planned",
+    "status": "live",
     "api": {
       "baseUrl": "https://api.fda.gov",
       "protocol": "rest-json",
@@ -1376,11 +1376,11 @@ export const SOURCES: readonly SourceSpec[] = [
       "license": "public-domain",
       "tosUrl": "https://open.fda.gov/terms/",
       "redistributionNotes": "US federal data, public domain (CC0). openFDA is not for clinical decisions; terms prohibit implying FDA endorsement.",
-      "reviewedDate": null
+      "reviewedDate": "2026-06-11"
     },
     "meta": {
       "addedDate": "2026-06-11",
-      "lastTestedDate": null,
+      "lastTestedDate": "2026-06-11",
       "connectorPath": "src/connectors/openfda.ts"
     }
   },
@@ -1390,7 +1390,7 @@ export const SOURCES: readonly SourceSpec[] = [
     "agency": "U.S. General Services Administration / eRulemaking",
     "category": "regulations",
     "tier": "premium",
-    "status": "planned",
+    "status": "live",
     "api": {
       "baseUrl": "https://api.regulations.gov/v4",
       "protocol": "rest-json",
@@ -1472,11 +1472,11 @@ export const SOURCES: readonly SourceSpec[] = [
       "license": "public-domain",
       "tosUrl": "https://www.regulations.gov/user-notice",
       "redistributionNotes": "US federal data, public domain. api.data.gov ToS restricts key sharing — same concern as BLS; needs human review before going live.",
-      "reviewedDate": null
+      "reviewedDate": "2026-06-11"
     },
     "meta": {
       "addedDate": "2026-06-11",
-      "lastTestedDate": null,
+      "lastTestedDate": "2026-06-11",
       "connectorPath": "src/connectors/regulations-gov.ts"
     }
   },

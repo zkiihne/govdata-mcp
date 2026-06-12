@@ -4,7 +4,7 @@
   "agency": "Library of Congress",
   "category": "legislative",
   "tier": "free",
-  "status": "planned",
+  "status": "live",
   "api": {
     "baseUrl": "https://api.congress.gov/v3",
     "protocol": "rest-json",
@@ -73,11 +73,11 @@
     "license": "public-domain",
     "tosUrl": "https://www.congress.gov/about/data-and-api",
     "redistributionNotes": "US legislative data, public domain. api.data.gov key-sharing ToS applies — review before going live.",
-    "reviewedDate": null
+    "reviewedDate": "2026-06-11"
   },
   "meta": {
     "addedDate": "2026-06-11",
-    "lastTestedDate": null,
+    "lastTestedDate": "2026-06-11",
     "connectorPath": "src/connectors/congress-gov.ts"
   }
 }

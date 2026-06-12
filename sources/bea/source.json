@@ -4,7 +4,7 @@
   "agency": "U.S. Bureau of Economic Analysis",
   "category": "economy",
   "tier": "free",
-  "status": "planned",
+  "status": "live",
   "api": {
     "baseUrl": "https://apps.bea.gov/api",
     "protocol": "rest-json",
@@ -74,11 +74,11 @@
     "license": "public-domain",
     "tosUrl": "https://apps.bea.gov/api/_pdf/bea_web_service_api_user_guide.pdf",
     "redistributionNotes": "US federal data, public domain. Terms require attribution and prohibit implying BEA endorsement.",
-    "reviewedDate": null
+    "reviewedDate": "2026-06-11"
   },
   "meta": {
     "addedDate": "2026-06-11",
-    "lastTestedDate": null,
+    "lastTestedDate": "2026-06-11",
     "connectorPath": "src/connectors/bea.ts"
   }
 }

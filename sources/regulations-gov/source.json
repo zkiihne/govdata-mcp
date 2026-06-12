@@ -4,7 +4,7 @@
   "agency": "U.S. General Services Administration / eRulemaking",
   "category": "regulations",
   "tier": "premium",
-  "status": "planned",
+  "status": "live",
   "api": {
     "baseUrl": "https://api.regulations.gov/v4",
     "protocol": "rest-json",
@@ -86,11 +86,11 @@
     "license": "public-domain",
     "tosUrl": "https://www.regulations.gov/user-notice",
     "redistributionNotes": "US federal data, public domain. api.data.gov ToS restricts key sharing — same concern as BLS; needs human review before going live.",
-    "reviewedDate": null
+    "reviewedDate": "2026-06-11"
   },
   "meta": {
     "addedDate": "2026-06-11",
-    "lastTestedDate": null,
+    "lastTestedDate": "2026-06-11",
     "connectorPath": "src/connectors/regulations-gov.ts"
   }
 }

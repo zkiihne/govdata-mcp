@@ -54,7 +54,7 @@ console.log("  statuses:", JSON.stringify(statuses));
 check("usaspending live", statuses["usaspending"] === "free/live");
 check("census-acs live", statuses["census-acs"] === "free/live");
 check("sec-edgar premium/live", statuses["sec-edgar"] === "premium/live");
-check("bls testing", statuses["bls-public-data"] === "free/testing");
+check("bls-public-data live", statuses["bls-public-data"] === "free/live");
 // second-wave keyless six: live
 check("fema-open live", statuses["fema-open"] === "free/live");
 check("clinical-trials live", statuses["clinical-trials"] === "free/live");
@@ -62,10 +62,11 @@ check("treasury-fiscal live", statuses["treasury-fiscal"] === "free/live");
 check("usgs-earthquake live", statuses["usgs-earthquake"] === "free/live");
 check("fdic-bankfind live", statuses["fdic-bankfind"] === "free/live");
 check("federal-register live", statuses["federal-register"] === "free/live");
-// second-wave planned tiers
-check("congress-gov free/planned", statuses["congress-gov"] === "free/planned");
-check("openfda free/planned", statuses["openfda"] === "free/planned");
-check("regulations-gov premium/planned", statuses["regulations-gov"] === "premium/planned");
+// second-wave connectors now live (keys configured)
+check("congress-gov live", statuses["congress-gov"] === "free/live");
+check("openfda live", statuses["openfda"] === "free/live");
+check("regulations-gov premium/live", statuses["regulations-gov"] === "premium/live");
+// still-planned premium (no connector / no key)
 check("usgs-water premium/planned", statuses["usgs-water"] === "premium/planned");
 
 // ---- regression: NOAA weather live (two-step) ----

@@ -4,7 +4,7 @@
   "agency": "U.S. Energy Information Administration",
   "category": "energy",
   "tier": "free",
-  "status": "planned",
+  "status": "live",
   "api": {
     "baseUrl": "https://api.eia.gov/v2",
     "protocol": "rest-json",
@@ -77,11 +77,11 @@
     "license": "public-domain",
     "tosUrl": "https://www.eia.gov/about/copyrights_reuse.php",
     "redistributionNotes": "US federal data, public domain. Free to redistribute; attribution to EIA requested.",
-    "reviewedDate": null
+    "reviewedDate": "2026-06-11"
   },
   "meta": {
     "addedDate": "2026-06-11",
-    "lastTestedDate": null,
+    "lastTestedDate": "2026-06-11",
     "connectorPath": "src/connectors/eia.ts"
   }
 }

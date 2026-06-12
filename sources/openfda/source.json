@@ -4,7 +4,7 @@
   "agency": "U.S. Food and Drug Administration",
   "category": "health",
   "tier": "free",
-  "status": "planned",
+  "status": "live",
   "api": {
     "baseUrl": "https://api.fda.gov",
     "protocol": "rest-json",
@@ -85,11 +85,11 @@
     "license": "public-domain",
     "tosUrl": "https://open.fda.gov/terms/",
     "redistributionNotes": "US federal data, public domain (CC0). openFDA is not for clinical decisions; terms prohibit implying FDA endorsement.",
-    "reviewedDate": null
+    "reviewedDate": "2026-06-11"
   },
   "meta": {
     "addedDate": "2026-06-11",
-    "lastTestedDate": null,
+    "lastTestedDate": "2026-06-11",
     "connectorPath": "src/connectors/openfda.ts"
   }
 }

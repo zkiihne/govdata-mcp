@@ -4,7 +4,7 @@
   "agency": "NIST (National Institute of Standards and Technology)",
   "category": "cybersecurity",
   "tier": "free",
-  "status": "planned",
+  "status": "live",
   "api": {
     "baseUrl": "https://services.nvd.nist.gov/rest/json",
     "protocol": "rest-json",
@@ -77,11 +77,11 @@
     "license": "public-domain",
     "tosUrl": "https://nvd.nist.gov/developers/terms-of-use",
     "redistributionNotes": "US federal data, public domain. Terms request attribution and prohibit implying NIST endorsement.",
-    "reviewedDate": null
+    "reviewedDate": "2026-06-11"
   },
   "meta": {
     "addedDate": "2026-06-11",
-    "lastTestedDate": null,
+    "lastTestedDate": "2026-06-11",
     "connectorPath": "src/connectors/nvd.ts"
   }
 }
