@@ -175,6 +175,12 @@ function crashResult(c: Case, e: Error): CaseResult {
       pass: false,
       failureCategory: "gave-up",
       notes: `Harness crash: ${e.message}`,
+      usage: { inputTokens: 0, outputTokens: 0 },
+    },
+    usage: {
+      agent: { inputTokens: 0, outputTokens: 0 },
+      grader: { inputTokens: 0, outputTokens: 0 },
+      total: { inputTokens: 0, outputTokens: 0 },
     },
   };
 }
@@ -259,7 +265,21 @@ async function main(): Promise<void> {
       try {
         const transcript = await runCase(c, tools);
         const grade = await gradeCase(transcript, c.successCriteria);
-        result = { case: c, transcript, grade };
+        const agentUsage = transcript.usage ?? { inputTokens: 0, outputTokens: 0 };
+        const graderUsage = grade.usage ?? { inputTokens: 0, outputTokens: 0 };
+        result = {
+          case: c,
+          transcript,
+          grade,
+          usage: {
+            agent: agentUsage,
+            grader: graderUsage,
+            total: {
+              inputTokens: agentUsage.inputTokens + graderUsage.inputTokens,
+              outputTokens: agentUsage.outputTokens + graderUsage.outputTokens,
+            },
+          },
+        };
       } catch (e) {
         result = crashResult(c, e as Error);
       }

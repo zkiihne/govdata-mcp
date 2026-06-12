@@ -84,6 +84,24 @@ export interface GradeResult {
     | null;
   /** Short human-readable explanation. */
   notes: string;
+  /** Token usage for the grader's own Messages API call(s), if available. */
+  usage?: TokenUsage;
+}
+
+/** Input/output token counts summed across one or more Anthropic API responses. */
+export interface TokenUsage {
+  inputTokens: number;
+  outputTokens: number;
+}
+
+/** Per-case token usage split by phase, with the combined total. */
+export interface CaseUsage {
+  /** Tokens spent in the blind-agent loop (all rounds). */
+  agent: TokenUsage;
+  /** Tokens spent by the grader. */
+  grader: TokenUsage;
+  /** agent + grader. */
+  total: TokenUsage;
 }
 
 /** One fully-evaluated case: the case, its transcript, and the grade. */
@@ -91,4 +109,6 @@ export interface CaseResult {
   case: Case;
   transcript: Transcript;
   grade: GradeResult;
+  /** Combined agent + grader token usage for this case, if available. */
+  usage?: CaseUsage;
 }

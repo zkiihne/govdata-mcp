@@ -106,6 +106,10 @@ export async function gradeCase(
     maxTokens: 1024,
   });
 
+  const usage = resp.usage
+    ? { inputTokens: resp.usage.input_tokens, outputTokens: resp.usage.output_tokens }
+    : { inputTokens: 0, outputTokens: 0 };
+
   const toolUse = resp.content.find(
     (b): b is Extract<ContentBlock, { type: "tool_use" }> =>
       b.type === "tool_use" && b.name === "record_grade",
@@ -120,6 +124,7 @@ export async function gradeCase(
       pass: false,
       failureCategory: "gave-up",
       notes: "Grader did not return a structured verdict.",
+      usage,
     };
   }
 
@@ -133,5 +138,6 @@ export async function gradeCase(
     pass: !!g.pass,
     failureCategory: g.failureCategory ?? (g.pass ? null : "gave-up"),
     notes: g.notes ?? "",
+    usage,
   };
 }

@@ -127,6 +127,45 @@ function buildSummary(results: CaseResult[], notRun: Case[]): string {
   }
   lines.push("");
 
+  // Token usage + rough USD estimate. Sonnet 4.6 pricing: $3 / 1M input, $15 / 1M output.
+  const SONNET_INPUT_PER_MTOK = 3;
+  const SONNET_OUTPUT_PER_MTOK = 15;
+  let agentIn = 0, agentOut = 0, graderIn = 0, graderOut = 0;
+  let usageCases = 0;
+  for (const r of results) {
+    if (!r.usage) continue;
+    usageCases++;
+    agentIn += r.usage.agent.inputTokens;
+    agentOut += r.usage.agent.outputTokens;
+    graderIn += r.usage.grader.inputTokens;
+    graderOut += r.usage.grader.outputTokens;
+  }
+  const totalIn = agentIn + graderIn;
+  const totalOut = agentOut + graderOut;
+  const usd = (inTok: number, outTok: number) =>
+    (inTok / 1e6) * SONNET_INPUT_PER_MTOK + (outTok / 1e6) * SONNET_OUTPUT_PER_MTOK;
+  const fmtUsd = (n: number) => `$${n.toFixed(4)}`;
+
+  lines.push("## Token usage & cost");
+  lines.push("");
+  if (usageCases === 0) {
+    lines.push("No token usage recorded (results predate cost tracking).");
+  } else {
+    if (usageCases < total) {
+      lines.push(`> ${usageCases}/${total} graded case(s) have usage data; the rest predate cost tracking.`);
+      lines.push("");
+    }
+    lines.push("| phase | input tokens | output tokens | est. cost |");
+    lines.push("| --- | --- | --- | --- |");
+    lines.push(`| agent | ${agentIn.toLocaleString()} | ${agentOut.toLocaleString()} | ${fmtUsd(usd(agentIn, agentOut))} |`);
+    lines.push(`| grader | ${graderIn.toLocaleString()} | ${graderOut.toLocaleString()} | ${fmtUsd(usd(graderIn, graderOut))} |`);
+    lines.push(`| **total** | **${totalIn.toLocaleString()}** | **${totalOut.toLocaleString()}** | **${fmtUsd(usd(totalIn, totalOut))}** |`);
+    lines.push("");
+    const meanUsd = usd(totalIn, totalOut) / usageCases;
+    lines.push(`Mean cost per case: ${fmtUsd(meanUsd)} (over ${usageCases} case(s)). Pricing: Sonnet 4.6 @ $3/1M input, $15/1M output.`);
+  }
+  lines.push("");
+
   lines.push("## Failure categories");
   lines.push("");
   const fcEntries = Object.entries(failCounts).sort((a, b) => b[1] - a[1]);
