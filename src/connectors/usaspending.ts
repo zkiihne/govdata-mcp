@@ -37,13 +37,30 @@ PARAMETER FORMAT
 - filters.award_type_codes: contracts ["A","B","C","D"], grants ["02","03","04","05"], loans ["07","08"].
 - fields is an array of display column names exactly as documented (e.g. "Award ID","Recipient Name","Award Amount").
 
+FILTER OBJECT SHAPES (the filters schema is strict — use these exact shapes)
+- Agency: filters.agencies is an array of {type, tier, name}. type is "awarding" or "funding";
+  tier is "toptier" or "subtier"; the agency is identified by its NAME, e.g.
+  {"type":"awarding","tier":"toptier","name":"Department of Veterans Affairs"}.
+  IMPORTANT: there is NO toptier_code key here. Passing {"toptier_code":"036"} is rejected
+  and — confusingly — surfaces as 422 "Missing value: 'filters' is a required field" (the
+  whole filters object is treated as invalid). Use name. Resolve names via GET /references/toptier_agencies/.
+- Place of performance: filters.place_of_performance_locations is an array of location objects,
+  e.g. {"country":"USA","state":"CA"} (state is the 2-letter USPS code).
+- Time period: filters.time_period is an array of {start_date, end_date} in "YYYY-MM-DD".
+- Award types: filters.award_type_codes — grants ["02","03","04","05"], contracts ["A","B","C","D"], loans ["07","08"].
+
 EXAMPLE QUERIES
 1. Contract awards for FY2024 (top 5 by amount):
    method "POST", path "/search/spending_by_award/", body {"filters":{"award_type_codes":["A","B","C","D"],"time_period":[{"start_date":"2023-10-01","end_date":"2024-09-30"}]},"fields":["Award ID","Recipient Name","Award Amount"],"limit":5}
-2. List agency codes:
+2. Multi-filter: VA grants performed in California for FY2023 (agency BY NAME, not code):
+   method "POST", path "/search/spending_by_award/", body {"filters":{"agencies":[{"type":"awarding","tier":"toptier","name":"Department of Veterans Affairs"}],"award_type_codes":["02","03","04","05"],"place_of_performance_locations":[{"country":"USA","state":"CA"}],"time_period":[{"start_date":"2022-10-01","end_date":"2023-09-30"}]},"fields":["Award ID","Recipient Name","Award Amount"],"limit":10}
+3. List agency codes/names:
    method "GET", path "/references/toptier_agencies/"
 
 COMMON ERRORS
+- 422 "Missing value: 'filters' is a required field" EVEN WHEN you sent filters: an unrecognized
+  key inside filters (most often a toptier_code in the agencies filter — use name instead) invalidates
+  the whole object. Check every filter against FILTER OBJECT SHAPES above.
 - 422 on /search/*: malformed filters object — check award_type_codes and time_period shape. The filters schema is strict.
 - 405 / empty: you sent GET to a POST-only search endpoint. Set method "POST" and supply a body.
 - Large result sets: paginate with body.page (1-based) and body.limit; do not expect everything in one call.`;

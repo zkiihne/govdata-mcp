@@ -18,6 +18,8 @@ export interface Case {
   successCriteria: string;
   /** Author-assigned difficulty label, free-form (e.g. "easy" | "medium" | "hard"). */
   difficulty?: string;
+  /** Optional author note (e.g. source-overlap rationale); informational, not graded. */
+  notes?: string;
 }
 
 /** One MCP tool invocation the agent made, plus the (truncated) upstream response. */

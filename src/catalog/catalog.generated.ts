@@ -130,7 +130,7 @@ export const SOURCES: readonly SourceSpec[] = [
     },
     "llmDocs": {
       "summary": "US labor statistics: unemployment, CPI, wages, employment by industry and region.",
-      "queryGuide": "Series IDs are structured codes, e.g. LAUCN040010000000005 = Local Area Unemployment, county-level. Prefix determines survey: LA=local unemployment, CU=CPI urban, CE=employment.",
+      "queryGuide": "Series IDs are structured codes, e.g. LAUCN040010000000005 = Local Area Unemployment, county-level. Prefix determines survey: LA=local unemployment, CU=CPI urban, CE=employment. BLS is the authoritative/primary source for US CPI and inflation. CPI-U all-items (US city average, not seasonally adjusted) is series CUUR0000SA0. To compute an inflation rate from CPI: pull CUUR0000SA0 over a year range, take the index value for a month and the SAME month 12 months earlier, and compute year-over-year percent change = (newer - older) / older * 100. Each data point in Results.series[].data[] has year, period (M01-M12), and value (the index level).",
       "exampleQueries": [
         {
           "intent": "National unemployment rate, 2024-2026",
@@ -159,12 +159,27 @@ export const SOURCES: readonly SourceSpec[] = [
               "endyear": "2026"
             }
           }
+        },
+        {
+          "intent": "Year-over-year CPI inflation rate (CPI-U all items): pull two June points 12 months apart, then % change",
+          "request": {
+            "method": "POST",
+            "path": "/timeseries/data/",
+            "body": {
+              "seriesid": [
+                "CUUR0000SA0"
+              ],
+              "startyear": "2022",
+              "endyear": "2023"
+            }
+          }
         }
       ],
       "gotchas": [
         "POST not GET for multi-series",
         "Years are strings, not ints",
-        "No discovery endpoint — series IDs must be constructed or known"
+        "No discovery endpoint — series IDs must be constructed or known",
+        "For CPI/inflation, CUUR0000SA0 is the canonical CPI-U all-items series; compute inflation as YoY % change between same-month points 12 months apart."
       ]
     },
     "compliance": {

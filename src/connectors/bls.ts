@@ -32,11 +32,20 @@ PARAMETER FORMAT
 - startyear/endyear: STRINGS, not ints ("2024"), max 20-year span per request.
 - Always POST with a JSON body; there is no useful GET form for multi-series.
 
+CPI / INFLATION (BLS is the authoritative US source)
+- CPI-U, all items, US city average, not seasonally adjusted = series CUUR0000SA0.
+- To get a year-over-year inflation rate: pull CUUR0000SA0 over a span, then take the index
+  value for a month and the SAME month 12 months earlier and compute
+  (newer - older) / older * 100. Each Results.series[].data[] point has year, period (M01-M12), value.
+
 EXAMPLE QUERIES
 1. National unemployment rate, 2024-2026:
    method "POST", path "/timeseries/data/", body {"seriesid":["LNS14000000"],"startyear":"2024","endyear":"2026"}
 2. CPI (all urban consumers, all items), 2024-2026:
    method "POST", path "/timeseries/data/", body {"seriesid":["CUUR0000SA0"],"startyear":"2024","endyear":"2026"}
+3. CPI inflation rate: pull CUUR0000SA0 for two years, then % change between the same month 12mo apart:
+   method "POST", path "/timeseries/data/", body {"seriesid":["CUUR0000SA0"],"startyear":"2022","endyear":"2023"}
+   then inflation = (June-2023 value - June-2022 value) / June-2022 value * 100.
 
 COMMON ERRORS
 - "credential not configured": BLS_API_KEY is unset on the gateway — v2 rejects keyless multi-series requests.

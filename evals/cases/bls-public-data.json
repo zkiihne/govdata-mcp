@@ -10,7 +10,8 @@
     "id": "bls-public-data-02",
     "sourceId": "bls-public-data",
     "intent": "How much has the cost of living in the U.S. risen over the past year? Give me an inflation figure based on consumer prices.",
-    "successCriteria": "Answer derives a year-over-year inflation rate from the BLS Consumer Price Index for All Urban Consumers, All Items (series CUUR0000SA0, not seasonally adjusted, or CUSR0000SA0 seasonally adjusted). It must (a) pull at least two CPI index values 12 months apart and (b) compute a percentage change, reporting an inflation rate as a plausible percent (roughly 1%–6% in normal recent years), attributed to BLS CPI. The hard part is recognizing CPI as the right series, fetching two points a year apart, and computing the percent change rather than reporting a raw index level.",
-    "difficulty": "hard"
+    "successCriteria": "Answer derives a year-over-year inflation rate from the Consumer Price Index, obtained from EITHER acceptable CPI source: (i) BLS Public Data — CPI for All Urban Consumers, All Items, series CUUR0000SA0 (NSA) or CUSR0000SA0 (SA); or (ii) FRED — series CPIAUCSL (CPI-U All Items, SA) or CPIAUCNS (NSA). FRED republishes the BLS CPI series, so either source is legitimate here. Regardless of source, the answer must (a) pull at least two CPI index values 12 months apart and (b) compute a percentage change, reporting an inflation rate as a plausible percent (roughly 1%-6% in normal recent years), attributed to the Consumer Price Index. The hard part is recognizing CPI as the right series, fetching two points a year apart, and computing the percent change rather than reporting a raw index level. Do NOT require the BLS source specifically — a correct CPI-derived figure from FRED passes equally.",
+    "difficulty": "hard",
+    "notes": "Source overlap: CPI is published by BLS (CUUR0000SA0) but also republished by FRED (CPIAUCSL). Both are correct homes for a consumer-price inflation figure, so success accepts either. The original criteria over-pinned to BLS and failed a correct FRED-derived answer."
   }
 ]

@@ -34,14 +34,24 @@ PARAMETER FORMAT (bracketed conditions)
 - conditions[publication_date][gte]/[lte]: YYYY-MM-DD.
 - fields[]: returned columns (title, type, publication_date, html_url, ...). per_page (max 1000), page, order=newest.
 
+BRACKET / ARRAY PARAM SYNTAX (important)
+- Params whose name ends in "[]" (fields[], conditions[type][], conditions[agencies][]) are
+  REPEATED keys upstream: fields[]=title&fields[]=publication_date. To request more than one
+  value, pass an ARRAY as the param value, e.g. "fields[]": ["title","publication_date"].
+  A single value may be passed as a plain string. Passing only one string for a [] param
+  returns just that one value — that is the cause of "I asked for several fields but only got one".
+
 EXAMPLE QUERIES
 1. Recent proposed rules mentioning 'privacy':
    "GET", "/documents.json", params {"conditions[term]":"privacy","conditions[type][]":"PRORULE","per_page":"5","order":"newest"}
-2. SEC docs in a date range, titles only:
+2. Offshore-wind RULEs, returning title + publication_date (note the array value for fields[]):
+   "GET", "/documents.json", params {"conditions[term]":"offshore wind","conditions[type][]":"RULE","fields[]":["title","publication_date"],"per_page":"10","order":"newest"}
+3. SEC docs in a date range, titles only:
    "GET", "/documents.json", params {"conditions[agencies][]":"securities-and-exchange-commission","conditions[publication_date][gte]":"2024-01-01","conditions[publication_date][lte]":"2024-03-31","fields[]":"title","per_page":"10"}
 
 COMMON ERRORS
-- Array filters need the trailing []: conditions[type][], conditions[agencies][], fields[].
+- Array filters need the trailing []: conditions[type][], conditions[agencies][], fields[]. To send
+  multiple values for one, pass an array (see BRACKET / ARRAY PARAM SYNTAX), not a comma-joined string.
 - Agencies are slugs, not display names. Deep pagination is capped (~2000) — narrow with date/agency.`;
 
 export const federalRegisterConnector: Connector = {
