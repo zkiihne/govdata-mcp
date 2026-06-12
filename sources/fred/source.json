@@ -4,7 +4,7 @@
   "agency": "Federal Reserve Bank of St. Louis",
   "category": "economy",
   "tier": "free",
-  "status": "testing",
+  "status": "live",
   "api": {
     "baseUrl": "https://api.stlouisfed.org/fred",
     "protocol": "rest-json",
@@ -78,11 +78,11 @@
     "license": "other",
     "tosUrl": "https://fred.stlouisfed.org/docs/api/terms_of_use.html",
     "redistributionNotes": "Free API key required; underlying series may carry third-party copyright/licensing \u2014 check series-level notes before redistribution.",
-    "reviewedDate": null
+    "reviewedDate": "2026-06-11"
   },
   "meta": {
     "addedDate": "2026-06-11",
-    "lastTestedDate": null,
+    "lastTestedDate": "2026-06-11",
     "connectorPath": "src/connectors/fred.ts"
   }
 }

@@ -4,7 +4,7 @@
   "agency": "Environmental Protection Agency",
   "category": "environment",
   "tier": "free",
-  "status": "testing",
+  "status": "live",
   "api": {
     "baseUrl": "https://www.airnowapi.org",
     "protocol": "rest-json",
@@ -93,11 +93,11 @@
     "license": "public-domain",
     "tosUrl": "https://docs.airnowapi.org/faq",
     "redistributionNotes": "US federal data, public domain. AirNow ToS requires attribution to AirNow and prohibits implying EPA endorsement.",
-    "reviewedDate": null
+    "reviewedDate": "2026-06-11"
   },
   "meta": {
     "addedDate": "2026-06-11",
-    "lastTestedDate": null,
+    "lastTestedDate": "2026-06-11",
     "connectorPath": "src/connectors/epa-airnow.ts"
   }
 }

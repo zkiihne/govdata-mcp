@@ -4,7 +4,7 @@
   "agency": "NOAA National Centers for Environmental Information",
   "category": "climate",
   "tier": "free",
-  "status": "testing",
+  "status": "live",
   "api": {
     "baseUrl": "https://www.ncei.noaa.gov/cdo-web/api/v2",
     "protocol": "rest-json",
@@ -82,11 +82,11 @@
     "license": "public-domain",
     "tosUrl": "https://www.ncdc.noaa.gov/cdo-web/termsofuse",
     "redistributionNotes": "US federal data, public domain. Attribution to NOAA NCEI requested.",
-    "reviewedDate": null
+    "reviewedDate": "2026-06-11"
   },
   "meta": {
     "addedDate": "2026-06-11",
-    "lastTestedDate": null,
+    "lastTestedDate": "2026-06-11",
     "connectorPath": "src/connectors/noaa-climate.ts"
   }
 }

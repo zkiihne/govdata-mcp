@@ -97,7 +97,7 @@ export const SOURCES: readonly SourceSpec[] = [
     "agency": "Bureau of Labor Statistics",
     "category": "economy",
     "tier": "free",
-    "status": "testing",
+    "status": "live",
     "api": {
       "baseUrl": "https://api.bls.gov/publicAPI/v2",
       "protocol": "rest-json",
@@ -171,11 +171,11 @@ export const SOURCES: readonly SourceSpec[] = [
       "license": "public-domain",
       "tosUrl": "https://www.bls.gov/developers/termsOfService.htm",
       "redistributionNotes": "ToS prohibits sharing registration keys; centralized key use needs review",
-      "reviewedDate": null
+      "reviewedDate": "2026-06-11"
     },
     "meta": {
       "addedDate": "2026-06-11",
-      "lastTestedDate": null,
+      "lastTestedDate": "2026-06-11",
       "connectorPath": "src/connectors/bls.ts"
     }
   },
@@ -531,7 +531,7 @@ export const SOURCES: readonly SourceSpec[] = [
     "agency": "Environmental Protection Agency",
     "category": "environment",
     "tier": "free",
-    "status": "testing",
+    "status": "live",
     "api": {
       "baseUrl": "https://www.airnowapi.org",
       "protocol": "rest-json",
@@ -620,11 +620,11 @@ export const SOURCES: readonly SourceSpec[] = [
       "license": "public-domain",
       "tosUrl": "https://docs.airnowapi.org/faq",
       "redistributionNotes": "US federal data, public domain. AirNow ToS requires attribution to AirNow and prohibits implying EPA endorsement.",
-      "reviewedDate": null
+      "reviewedDate": "2026-06-11"
     },
     "meta": {
       "addedDate": "2026-06-11",
-      "lastTestedDate": null,
+      "lastTestedDate": "2026-06-11",
       "connectorPath": "src/connectors/epa-airnow.ts"
     }
   },
@@ -924,7 +924,7 @@ export const SOURCES: readonly SourceSpec[] = [
     "agency": "Federal Reserve Bank of St. Louis",
     "category": "economy",
     "tier": "free",
-    "status": "testing",
+    "status": "live",
     "api": {
       "baseUrl": "https://api.stlouisfed.org/fred",
       "protocol": "rest-json",
@@ -998,11 +998,11 @@ export const SOURCES: readonly SourceSpec[] = [
       "license": "other",
       "tosUrl": "https://fred.stlouisfed.org/docs/api/terms_of_use.html",
       "redistributionNotes": "Free API key required; underlying series may carry third-party copyright/licensing — check series-level notes before redistribution.",
-      "reviewedDate": null
+      "reviewedDate": "2026-06-11"
     },
     "meta": {
       "addedDate": "2026-06-11",
-      "lastTestedDate": null,
+      "lastTestedDate": "2026-06-11",
       "connectorPath": "src/connectors/fred.ts"
     }
   },
@@ -1012,7 +1012,7 @@ export const SOURCES: readonly SourceSpec[] = [
     "agency": "NOAA National Centers for Environmental Information",
     "category": "climate",
     "tier": "free",
-    "status": "testing",
+    "status": "live",
     "api": {
       "baseUrl": "https://www.ncei.noaa.gov/cdo-web/api/v2",
       "protocol": "rest-json",
@@ -1090,11 +1090,11 @@ export const SOURCES: readonly SourceSpec[] = [
       "license": "public-domain",
       "tosUrl": "https://www.ncdc.noaa.gov/cdo-web/termsofuse",
       "redistributionNotes": "US federal data, public domain. Attribution to NOAA NCEI requested.",
-      "reviewedDate": null
+      "reviewedDate": "2026-06-11"
     },
     "meta": {
       "addedDate": "2026-06-11",
-      "lastTestedDate": null,
+      "lastTestedDate": "2026-06-11",
       "connectorPath": "src/connectors/noaa-climate.ts"
     }
   },

@@ -4,7 +4,7 @@
   "agency": "Bureau of Labor Statistics",
   "category": "economy",
   "tier": "free",
-  "status": "testing",
+  "status": "live",
   "api": {
     "baseUrl": "https://api.bls.gov/publicAPI/v2",
     "protocol": "rest-json",
@@ -78,11 +78,11 @@
     "license": "public-domain",
     "tosUrl": "https://www.bls.gov/developers/termsOfService.htm",
     "redistributionNotes": "ToS prohibits sharing registration keys; centralized key use needs review",
-    "reviewedDate": null
+    "reviewedDate": "2026-06-11"
   },
   "meta": {
     "addedDate": "2026-06-11",
-    "lastTestedDate": null,
+    "lastTestedDate": "2026-06-11",
     "connectorPath": "src/connectors/bls.ts"
   }
 }
