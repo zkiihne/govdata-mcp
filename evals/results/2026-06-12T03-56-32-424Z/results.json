@@ -1,0 +1,112 @@
+[
+  {
+    "case": {
+      "id": "bls-public-data-01",
+      "sourceId": "bls-public-data",
+      "intent": "What has the U.S. national unemployment rate been over the past couple of years?",
+      "successCriteria": "Answer comes from BLS (Labor Force Statistics / CPS, series LNS14000000, the seasonally adjusted national unemployment rate). It must report at least one recent monthly unemployment rate as a percentage in a plausible range (roughly 3%–6%), expressed as a percent and attributed to the Bureau of Labor Statistics. The agent must POST to the BLS timeseries endpoint with a year range as strings.",
+      "difficulty": "basic"
+    },
+    "transcript": {
+      "caseId": "bls-public-data-01",
+      "intent": "What has the U.S. national unemployment rate been over the past couple of years?",
+      "sourceId": "bls-public-data",
+      "assistantTurns": [
+        {
+          "round": 2,
+          "text": "Here is the U.S. national unemployment rate (seasonally adjusted) over the past ~3 years, sourced from the Bureau of Labor Statistics (BLS):\n\n---\n\n### 📊 U.S. National Unemployment Rate (2023–2025)\n\n#### **2023** — Historically Low, Holding Steady\n| Month | Rate |\n|-------|------|\n| January | 3.5% |\n| February | 3.6% |\n| March | 3.5% |\n| April | 3.4% ← *low point* |\n| May | 3.6% |\n| June | 3.6% |\n| July | 3.5% |\n| August | 3.7% |\n| September | 3.7% |\n| October | 3.9% |\n| November | 3.7% |\n| December | 3.8% |\n\n#### **2024** — Gradual Rise\n| Month | Rate |\n|-------|------|\n| January | 3.7% |\n| February | 3.9% |\n| March | 3.9% |\n| April | 3.9% |\n| May | 3.9% |\n| June | 4.1% |\n| July | 4.2% |\n| August | 4.2% |\n| September | 4.1% |\n| October | 4.1% |\n| November | 4.2% |\n| December | 4.1% |\n\n#### **2025** — Slightly Elevated\n| Month | Rate |\n|-------|------|\n| January | 4.0% |\n| February | 4.2% |\n| March | 4.2% |\n| April | 4.2% |\n| May | 4.3% |\n| June | 4.1% |\n| July | 4.3% |\n| August | 4.3% |\n| September | 4.4% |\n| October | *(unavailable — lapse in appropriations)* |\n| November | 4.5% |\n| December | 4.4% |\n\n---\n\n### Key Takeaways:\n- **2023** was characterized by very low unemployment, dipping to **3.4%** in April — a multi-decade low.\n- **2024** saw a gradual uptick, crossing the **4%** threshold mid-year and settling around **4.1–4.2%** by year-end.\n- **2025** has seen rates in the **4.1–4.5%** range, reflecting a modest softening of the labor market compared to the tight conditions of 2023."
+        }
+      ],
+      "toolCalls": [
+        {
+          "round": 1,
+          "tool": "query_data_source",
+          "args": {
+            "connectorId": "bls-public-data",
+            "path": "/timeseries/data/",
+            "method": "POST",
+            "body": {
+              "seriesid": [
+                "LNS14000000"
+              ],
+              "startyear": "2023",
+              "endyear": "2025"
+            }
+          },
+          "rawResponse": "{\n  \"status\": 200,\n  \"data\": {\n    \"status\": \"REQUEST_SUCCEEDED\",\n    \"responseTime\": 79,\n    \"message\": [],\n    \"Results\": {\n      \"series\": [\n        {\n          \"seriesID\": \"LNS14000000\",\n          \"data\": [\n            {\n              \"year\": \"2025\",\n              \"period\": \"M12\",\n              \"periodName\": \"December\",\n              \"value\": \"4.4\",\n              \"footnotes\": [\n                {}\n              ]\n            },\n            {\n              \"year\": \"2025\",\n              \"period\": \"M11\",\n              \"periodName\": \"November\",\n              \"value\": \"4.5\",\n              \"footnotes\": [\n                {}\n              ]\n            },\n            {\n              \"year\": \"2025\",\n              \"period\": \"M10\",\n              \"periodName\": \"October\",\n              \"value\": \"-\",\n              \"footnotes\": [\n                {\n                  \"code\": \"9\",\n                  \"text\": \"Data unavailable due to the 2025 lapse in appropriations.\"\n                }\n              ]\n            },\n            {\n              \"year\": \"2025\",\n              \"period\": \"M09\",\n              \"periodName\": \"September\",\n              \"value\": \"4.4\",\n              \"footnotes\": [\n                {}\n              ]\n            },\n            {\n              \"year\": \"2025\",\n              \"period\": \"M08\",\n              \"periodName\": \"August\",\n              \"value\": \"4.3\",\n              \"footnotes\": [\n                {}\n              ]\n            },\n            {\n              \"year\": \"2025\",\n              \"period\": \"M07\",\n              \"periodName\": \"July\",\n              \"value\": \"4.3\",\n              \"footnotes\": [\n                {}\n              ]\n            },\n            {\n              \"year\": \"2025\",\n              \"period\": \"M06\",\n              \"periodName\": \"June\",\n              \"value\": \"4.1\",\n              \"footnotes\": [\n                {}\n              ]\n            },\n            {\n              \"year\": \"2025\",\n              \"period\": \"M05\",\n              \"periodName\": \"May\",\n              \"value\": \"4.3\",\n       …[truncated]",
+          "errored": false
+        }
+      ],
+      "roundsUsed": 1,
+      "finalAnswer": "Here is the U.S. national unemployment rate (seasonally adjusted) over the past ~3 years, sourced from the Bureau of Labor Statistics (BLS):\n\n---\n\n### 📊 U.S. National Unemployment Rate (2023–2025)\n\n#### **2023** — Historically Low, Holding Steady\n| Month | Rate |\n|-------|------|\n| January | 3.5% |\n| February | 3.6% |\n| March | 3.5% |\n| April | 3.4% ← *low point* |\n| May | 3.6% |\n| June | 3.6% |\n| July | 3.5% |\n| August | 3.7% |\n| September | 3.7% |\n| October | 3.9% |\n| November | 3.7% |\n| December | 3.8% |\n\n#### **2024** — Gradual Rise\n| Month | Rate |\n|-------|------|\n| January | 3.7% |\n| February | 3.9% |\n| March | 3.9% |\n| April | 3.9% |\n| May | 3.9% |\n| June | 4.1% |\n| July | 4.2% |\n| August | 4.2% |\n| September | 4.1% |\n| October | 4.1% |\n| November | 4.2% |\n| December | 4.1% |\n\n#### **2025** — Slightly Elevated\n| Month | Rate |\n|-------|------|\n| January | 4.0% |\n| February | 4.2% |\n| March | 4.2% |\n| April | 4.2% |\n| May | 4.3% |\n| June | 4.1% |\n| July | 4.3% |\n| August | 4.3% |\n| September | 4.4% |\n| October | *(unavailable — lapse in appropriations)* |\n| November | 4.5% |\n| December | 4.4% |\n\n---\n\n### Key Takeaways:\n- **2023** was characterized by very low unemployment, dipping to **3.4%** in April — a multi-decade low.\n- **2024** saw a gradual uptick, crossing the **4%** threshold mid-year and settling around **4.1–4.2%** by year-end.\n- **2025** has seen rates in the **4.1–4.5%** range, reflecting a modest softening of the labor market compared to the tight conditions of 2023.",
+      "error": null,
+      "usage": {
+        "inputTokens": 25923,
+        "outputTokens": 781
+      }
+    },
+    "grade": {
+      "correctSource": true,
+      "firstQueryValid": true,
+      "attemptsToUsefulData": 1,
+      "meetsCriteria": true,
+      "pass": true,
+      "failureCategory": null,
+      "notes": "The agent correctly POSTed to the BLS timeseries endpoint (bls-public-data, /timeseries/data/) with series LNS14000000 and startyear/endyear as strings. The response succeeded and returned multiple monthly unemployment rates in the 3%–6% plausible range. The final answer is attributed to BLS and reports recent monthly rates accurately (e.g., December 2025: 4.4%, November 2025: 4.5%), satisfying all success criteria."
+    }
+  },
+  {
+    "case": {
+      "id": "bls-public-data-02",
+      "sourceId": "bls-public-data",
+      "intent": "How much has the cost of living in the U.S. risen over the past year? Give me an inflation figure based on consumer prices.",
+      "successCriteria": "Answer derives a year-over-year inflation rate from the BLS Consumer Price Index for All Urban Consumers, All Items (series CUUR0000SA0, not seasonally adjusted, or CUSR0000SA0 seasonally adjusted). It must (a) pull at least two CPI index values 12 months apart and (b) compute a percentage change, reporting an inflation rate as a plausible percent (roughly 1%–6% in normal recent years), attributed to BLS CPI. The hard part is recognizing CPI as the right series, fetching two points a year apart, and computing the percent change rather than reporting a raw index level.",
+      "difficulty": "hard"
+    },
+    "transcript": {
+      "caseId": "bls-public-data-02",
+      "intent": "How much has the cost of living in the U.S. risen over the past year? Give me an inflation figure based on consumer prices.",
+      "sourceId": "bls-public-data",
+      "assistantTurns": [
+        {
+          "round": 2,
+          "text": "Here is the latest U.S. inflation figure based on the **Consumer Price Index for All Urban Consumers (CPI-U)**, sourced from the Federal Reserve (FRED):\n\n---\n\n### 📊 U.S. Inflation — Year-Over-Year (CPI-U)\n\n| Period | CPI Value |\n|---|---|\n| **May 2025** | 320.620 |\n| **May 2026** | 333.979 |\n\n**Year-over-Year Change: +4.2%**\n\n> **Calculation:** (333.979 − 320.620) / 320.620 × 100 = **+4.16%**\n\n---\n\n### What This Means\n- The cost of living in the U.S. has risen approximately **4.2% over the past year** (May 2025 → May 2026).\n- This is based on the **CPI-U**, which tracks the average change in prices paid by urban consumers for a broad basket of goods and services — including food, housing, transportation, medical care, and apparel.\n- A 4.2% rate means that something costing **$100 a year ago** would cost about **$104.20 today**.\n\n> **Data source:** U.S. Bureau of Labor Statistics (BLS) via FRED, Series **CPIAUCSL** (seasonally adjusted). Most recent data point: May 2026."
+        }
+      ],
+      "toolCalls": [
+        {
+          "round": 1,
+          "tool": "query_data_source",
+          "args": {
+            "connectorId": "fred",
+            "path": "/series/observations",
+            "params": {
+              "series_id": "CPIAUCSL",
+              "file_type": "json",
+              "sort_order": "desc",
+              "limit": "13"
+            }
+          },
+          "rawResponse": "{\n  \"status\": 200,\n  \"data\": {\n    \"realtime_start\": \"2026-06-10\",\n    \"realtime_end\": \"2026-06-10\",\n    \"observation_start\": \"1600-01-01\",\n    \"observation_end\": \"9999-12-31\",\n    \"units\": \"lin\",\n    \"output_type\": 1,\n    \"file_type\": \"json\",\n    \"order_by\": \"observation_date\",\n    \"sort_order\": \"desc\",\n    \"count\": 953,\n    \"offset\": 0,\n    \"limit\": 13,\n    \"observations\": [\n      {\n        \"realtime_start\": \"2026-06-10\",\n        \"realtime_end\": \"2026-06-10\",\n        \"date\": \"2026-05-01\",\n        \"value\": \"333.979\"\n      },\n      {\n        \"realtime_start\": \"2026-06-10\",\n        \"realtime_end\": \"2026-06-10\",\n        \"date\": \"2026-04-01\",\n        \"value\": \"332.407\"\n      },\n      {\n        \"realtime_start\": \"2026-06-10\",\n        \"realtime_end\": \"2026-06-10\",\n        \"date\": \"2026-03-01\",\n        \"value\": \"330.293\"\n      },\n      {\n        \"realtime_start\": \"2026-06-10\",\n        \"realtime_end\": \"2026-06-10\",\n        \"date\": \"2026-02-01\",\n        \"value\": \"327.460\"\n      },\n      {\n        \"realtime_start\": \"2026-06-10\",\n        \"realtime_end\": \"2026-06-10\",\n        \"date\": \"2026-01-01\",\n        \"value\": \"326.588\"\n      },\n      {\n        \"realtime_start\": \"2026-06-10\",\n        \"realtime_end\": \"2026-06-10\",\n        \"date\": \"2025-12-01\",\n        \"value\": \"326.031\"\n      },\n      {\n        \"realtime_start\": \"2026-06-10\",\n        \"realtime_end\": \"2026-06-10\",\n        \"date\": \"2025-11-01\",\n        \"value\": \"325.063\"\n      },\n      {\n        \"realtime_start\": \"2026-06-10\",\n        \"realtime_end\": \"2026-06-10\",\n        \"date\": \"2025-10-01\",\n        \"value\": \".\"\n      },\n      {\n        \"realtime_start\": \"2026-06-10\",\n        \"realtime_end\": \"2026-06-10\",\n        \"date\": \"2025-09-01\",\n        \"value\": \"324.245\"\n      },\n      {\n        \"realtime_start\": \"2026-06-10\",\n        \"realtime_end\": \"2026-06-10\",\n        \"date\": \"2025-08-01\",\n        \"value\": \"323.291\"\n      },\n      {\n        \"realtime_start\": \"2026-06-10\",\n        \"realtime_end\": \"2026-06-10\",\n        \"date\": \"2025-07-01\",\n        \"value\": \"322.169\"\n      },\n  …[truncated]",
+          "errored": false
+        }
+      ],
+      "roundsUsed": 1,
+      "finalAnswer": "Here is the latest U.S. inflation figure based on the **Consumer Price Index for All Urban Consumers (CPI-U)**, sourced from the Federal Reserve (FRED):\n\n---\n\n### 📊 U.S. Inflation — Year-Over-Year (CPI-U)\n\n| Period | CPI Value |\n|---|---|\n| **May 2025** | 320.620 |\n| **May 2026** | 333.979 |\n\n**Year-over-Year Change: +4.2%**\n\n> **Calculation:** (333.979 − 320.620) / 320.620 × 100 = **+4.16%**\n\n---\n\n### What This Means\n- The cost of living in the U.S. has risen approximately **4.2% over the past year** (May 2025 → May 2026).\n- This is based on the **CPI-U**, which tracks the average change in prices paid by urban consumers for a broad basket of goods and services — including food, housing, transportation, medical care, and apparel.\n- A 4.2% rate means that something costing **$100 a year ago** would cost about **$104.20 today**.\n\n> **Data source:** U.S. Bureau of Labor Statistics (BLS) via FRED, Series **CPIAUCSL** (seasonally adjusted). Most recent data point: May 2026.",
+      "error": null,
+      "usage": {
+        "inputTokens": 24742,
+        "outputTokens": 458
+      }
+    },
+    "grade": {
+      "correctSource": false,
+      "firstQueryValid": true,
+      "attemptsToUsefulData": 1,
+      "meetsCriteria": true,
+      "pass": true,
+      "failureCategory": "wrong-source",
+      "notes": ""
+    }
+  }
+]

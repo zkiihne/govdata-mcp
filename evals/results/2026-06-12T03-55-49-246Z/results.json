@@ -1,0 +1,119 @@
+[
+  {
+    "case": {
+      "id": "noaa-weather-01",
+      "sourceId": "noaa-weather",
+      "intent": "What's the weather forecast for Washington, D.C. over the next few days?",
+      "successCriteria": "Returns an official US National Weather Service forecast for the Washington, D.C. area: a sequence of named forecast periods (e.g. 'Today', 'Tonight', 'Tuesday') each with a temperature in Fahrenheit and a short text description (e.g. 'Sunny', 'Chance of rain'). Must reflect the two-step api.weather.gov flow (resolve the lat/lon ~38.90,-77.04 to a grid, then the forecast), not a generic guess.",
+      "difficulty": "basic"
+    },
+    "transcript": {
+      "caseId": "noaa-weather-01",
+      "intent": "What's the weather forecast for Washington, D.C. over the next few days?",
+      "sourceId": "noaa-weather",
+      "assistantTurns": [
+        {
+          "round": 1,
+          "text": "I'll get the weather forecast for Washington, D.C. in two steps — first looking up the grid point, then fetching the forecast!"
+        },
+        {
+          "round": 2,
+          "text": "Got the grid info. Now fetching the actual forecast!"
+        },
+        {
+          "round": 3,
+          "text": "Here's the weather forecast for **Washington, D.C.** over the next several days, according to the National Weather Service:\n\n---\n\n🌙 **Tonight**\n- Mostly Cloudy | Low: **73°F**\n- SW wind ~1 mph | Very slight chance of rain (<10%)\n\n☀️⛈️ **Friday (June 12)**\n- Mostly Sunny, then **Showers & Thunderstorms** after 4 PM — *some storms could be severe*\n- High: **95°F** | Heat index up to **102°F**\n- W wind 1–8 mph | 80% chance of precipitation\n\n⛈️ **Friday Night**\n- Showers & Thunderstorms before 9 PM (possibly severe), then Partly Cloudy\n- Low: **67°F** | 80% chance of precipitation\n\n☀️ **Saturday (June 13)**\n- Sunny | High: **88°F** | NW wind ~5 mph\n- No rain expected\n\n🌙 **Saturday Night**\n- Mostly Clear | Low: **67°F** | Calm\n\n⛈️ **Sunday (June 14)**\n- Partly Sunny, then **Showers & Thunderstorms Likely** after 2 PM\n- High: **92°F** | SW wind 2–12 mph | 60% chance of precipitation\n\n🌧️ **Sunday Night**\n- Showers & Thunderstorms Likely | Low: **65°F** | 60% chance of precipitation\n\n☀️ **Monday (June 15)**\n- Mostly Sunny | High: **82°F** | NW wind ~7 mph | Only 10% chance of rain\n\n---\n\n**Summary:** It's going to be a hot, stormy stretch for D.C.! Expect a potentially dangerous heat event on **Friday** (heat index near 102°F) with severe thunderstorms in the afternoon. **Saturday** offers a nice break with sunshine and lower humidity, but more storms return by **Sunday**. Temperatures gradually cool heading into next week."
+        }
+      ],
+      "toolCalls": [
+        {
+          "round": 1,
+          "tool": "query_data_source",
+          "args": {
+            "connectorId": "noaa-weather",
+            "path": "/points/38.8951,-77.0364"
+          },
+          "rawResponse": "{\n  \"status\": 200,\n  \"data\": {\n    \"@context\": [\n      \"https://geojson.org/geojson-ld/geojson-context.jsonld\",\n      {\n        \"@version\": \"1.1\",\n        \"wx\": \"https://api.weather.gov/ontology#\",\n        \"s\": \"https://schema.org/\",\n        \"geo\": \"http://www.opengis.net/ont/geosparql#\",\n        \"unit\": \"http://codes.wmo.int/common/unit/\",\n        \"@vocab\": \"https://api.weather.gov/ontology#\",\n        \"geometry\": {\n          \"@id\": \"s:GeoCoordinates\",\n          \"@type\": \"geo:wktLiteral\"\n        },\n        \"city\": \"s:addressLocality\",\n        \"state\": \"s:addressRegion\",\n        \"distance\": {\n          \"@id\": \"s:Distance\",\n          \"@type\": \"s:QuantitativeValue\"\n        },\n        \"bearing\": {\n          \"@type\": \"s:QuantitativeValue\"\n        },\n        \"value\": {\n          \"@id\": \"s:value\"\n        },\n        \"unitCode\": {\n          \"@id\": \"s:unitCode\",\n          \"@type\": \"@id\"\n        },\n        \"forecastOffice\": {\n          \"@type\": \"@id\"\n        },\n        \"forecastGridData\": {\n          \"@type\": \"@id\"\n        },\n        \"publicZone\": {\n          \"@type\": \"@id\"\n        },\n        \"county\": {\n          \"@type\": \"@id\"\n        }\n      }\n    ],\n    \"id\": \"https://api.weather.gov/points/38.8951,-77.0364\",\n    \"type\": \"Feature\",\n    \"geometry\": {\n      \"type\": \"Point\",\n      \"coordinates\": [\n        -77.0364,\n        38.8951\n      ]\n    },\n    \"properties\": {\n      \"@id\": \"https://api.weather.gov/points/38.8951,-77.0364\",\n      \"@type\": \"wx:Point\",\n      \"cwa\": \"LWX\",\n      \"type\": \"land\",\n      \"forecastOffice\": \"https://api.weather.gov/offices/LWX\",\n      \"gridId\": \"LWX\",\n      \"gridX\": 97,\n      \"gridY\": 71,\n      \"forecast\": \"https://api.weather.gov/gridpoints/LWX/97,71/forecast\",\n      \"forecastHourly\": \"https://api.weather.gov/gridpoints/LWX/97,71/forecast/hourly\",\n      \"forecastGridData\": \"https://api.weather.gov/gridpoints/LWX/97,71\",\n      \"observationStations\": \"https://api.weather.gov/gridpoints/LWX/97,71/stations\",\n      \"relativeLocation\": {\n        \"type\": \"Feature\",\n        \"geometry\": {\n          \"ty…[truncated]",
+          "errored": false
+        },
+        {
+          "round": 2,
+          "tool": "query_data_source",
+          "args": {
+            "connectorId": "noaa-weather",
+            "path": "/gridpoints/LWX/97,71/forecast"
+          },
+          "rawResponse": "{\n  \"status\": 200,\n  \"data\": {\n    \"@context\": [\n      \"https://geojson.org/geojson-ld/geojson-context.jsonld\",\n      {\n        \"@version\": \"1.1\",\n        \"wx\": \"https://api.weather.gov/ontology#\",\n        \"geo\": \"http://www.opengis.net/ont/geosparql#\",\n        \"unit\": \"http://codes.wmo.int/common/unit/\",\n        \"@vocab\": \"https://api.weather.gov/ontology#\"\n      }\n    ],\n    \"type\": \"Feature\",\n    \"geometry\": {\n      \"type\": \"Polygon\",\n      \"coordinates\": [\n        [\n          [\n            -77.0125,\n            38.8759\n          ],\n          [\n            -77.0088,\n            38.8979\n          ],\n          [\n            -77.037,\n            38.9008\n          ],\n          [\n            -77.0408,\n            38.8788\n          ],\n          [\n            -77.0125,\n            38.8759\n          ]\n        ]\n      ]\n    },\n    \"properties\": {\n      \"units\": \"us\",\n      \"forecastGenerator\": \"BaselineForecastGenerator\",\n      \"generatedAt\": \"2026-06-12T03:56:04+00:00\",\n      \"updateTime\": \"2026-06-12T02:53:37+00:00\",\n      \"validTimes\": \"2026-06-11T20:00:00+00:00/P7DT5H\",\n      \"elevation\": {\n        \"unitCode\": \"wmoUnit:m\",\n        \"value\": 6.096\n      },\n      \"periods\": [\n        {\n          \"number\": 1,\n          \"name\": \"Tonight\",\n          \"startTime\": \"2026-06-11T23:00:00-04:00\",\n          \"endTime\": \"2026-06-12T06:00:00-04:00\",\n          \"isDaytime\": false,\n          \"temperature\": 73,\n          \"temperatureUnit\": \"F\",\n          \"temperatureTrend\": null,\n          \"probabilityOfPrecipitation\": {\n            \"unitCode\": \"wmoUnit:percent\",\n            \"value\": 9\n          },\n          \"windSpeed\": \"1 mph\",\n          \"windDirection\": \"SW\",\n          \"icon\": \"https://api.weather.gov/icons/land/night/bkn?size=medium\",\n          \"shortForecast\": \"Mostly Cloudy\",\n          \"detailedForecast\": \"Mostly cloudy, with a low around 73. Southwest wind around 1 mph. New rainfall amounts less than a tenth of an inch possible.\"\n        },\n        {\n          \"number\": 2,\n          \"name\": \"Friday\",\n          \"startTime\": \"202…[truncated]",
+          "errored": false
+        }
+      ],
+      "roundsUsed": 2,
+      "finalAnswer": "Here's the weather forecast for **Washington, D.C.** over the next several days, according to the National Weather Service:\n\n---\n\n🌙 **Tonight**\n- Mostly Cloudy | Low: **73°F**\n- SW wind ~1 mph | Very slight chance of rain (<10%)\n\n☀️⛈️ **Friday (June 12)**\n- Mostly Sunny, then **Showers & Thunderstorms** after 4 PM — *some storms could be severe*\n- High: **95°F** | Heat index up to **102°F**\n- W wind 1–8 mph | 80% chance of precipitation\n\n⛈️ **Friday Night**\n- Showers & Thunderstorms before 9 PM (possibly severe), then Partly Cloudy\n- Low: **67°F** | 80% chance of precipitation\n\n☀️ **Saturday (June 13)**\n- Sunny | High: **88°F** | NW wind ~5 mph\n- No rain expected\n\n🌙 **Saturday Night**\n- Mostly Clear | Low: **67°F** | Calm\n\n⛈️ **Sunday (June 14)**\n- Partly Sunny, then **Showers & Thunderstorms Likely** after 2 PM\n- High: **92°F** | SW wind 2–12 mph | 60% chance of precipitation\n\n🌧️ **Sunday Night**\n- Showers & Thunderstorms Likely | Low: **65°F** | 60% chance of precipitation\n\n☀️ **Monday (June 15)**\n- Mostly Sunny | High: **82°F** | NW wind ~7 mph | Only 10% chance of rain\n\n---\n\n**Summary:** It's going to be a hot, stormy stretch for D.C.! Expect a potentially dangerous heat event on **Friday** (heat index near 102°F) with severe thunderstorms in the afternoon. **Saturday** offers a nice break with sunshine and lower humidity, but more storms return by **Sunday**. Temperatures gradually cool heading into next week.",
+      "error": null,
+      "usage": {
+        "inputTokens": 42677,
+        "outputTokens": 714
+      }
+    },
+    "grade": {
+      "correctSource": true,
+      "firstQueryValid": true,
+      "attemptsToUsefulData": 1,
+      "meetsCriteria": true,
+      "pass": true,
+      "failureCategory": null,
+      "notes": "The agent correctly used the noaa-weather source and executed the two-step api.weather.gov flow: first resolving lat/lon (~38.8951,-77.0364) to a grid (LWX/97,71), then fetching the forecast. The final answer provides multiple named forecast periods (Tonight, Friday, Friday Night, Saturday, etc.) each with a temperature in Fahrenheit and a short text description, fully satisfying the success criteria."
+    }
+  },
+  {
+    "case": {
+      "id": "noaa-weather-02",
+      "sourceId": "noaa-weather",
+      "intent": "Are there any active weather warnings or watches in Florida right now?",
+      "successCriteria": "Returns the set of currently active NWS alerts (warnings/watches/advisories) for Florida, filtered by state area code FL. Answer should either list active alert events with their headlines/event types (e.g. 'Hurricane Warning', 'Heat Advisory', 'Rip Current Statement') or correctly state that there are none active. Must come from the api.weather.gov active-alerts endpoint filtered to FL, not a generic forecast.",
+      "difficulty": "hard"
+    },
+    "transcript": {
+      "caseId": "noaa-weather-02",
+      "intent": "Are there any active weather warnings or watches in Florida right now?",
+      "sourceId": "noaa-weather",
+      "assistantTurns": [
+        {
+          "round": 2,
+          "text": "There are currently **no active weather warnings, watches, or advisories in Florida**. 🌤️\n\nThe National Weather Service confirmed this as of the latest update at **3:56 AM UTC on June 12, 2026** — the alerts list for Florida is completely clear right now."
+        }
+      ],
+      "toolCalls": [
+        {
+          "round": 1,
+          "tool": "query_data_source",
+          "args": {
+            "connectorId": "noaa-weather",
+            "path": "/alerts/active",
+            "params": {
+              "area": "FL"
+            }
+          },
+          "rawResponse": "{\n  \"status\": 200,\n  \"data\": {\n    \"@context\": {\n      \"@version\": \"1.1\"\n    },\n    \"type\": \"FeatureCollection\",\n    \"features\": [],\n    \"title\": \"Current watches, warnings, and advisories for Florida\",\n    \"updated\": \"2026-06-12T03:56:22+00:00\"\n  },\n  \"contentType\": \"application/geo+json\"\n}",
+          "errored": false
+        }
+      ],
+      "roundsUsed": 1,
+      "finalAnswer": "There are currently **no active weather warnings, watches, or advisories in Florida**. 🌤️\n\nThe National Weather Service confirmed this as of the latest update at **3:56 AM UTC on June 12, 2026** — the alerts list for Florida is completely clear right now.",
+      "error": null,
+      "usage": {
+        "inputTokens": 23822,
+        "outputTokens": 170
+      }
+    },
+    "grade": {
+      "correctSource": true,
+      "firstQueryValid": true,
+      "attemptsToUsefulData": 1,
+      "meetsCriteria": true,
+      "pass": true,
+      "failureCategory": null,
+      "notes": "The agent queried the correct source (noaa-weather) at /alerts/active with area=FL in round 1. The response returned an empty features array, and the agent correctly interpreted this as no active alerts for Florida, satisfying the success criteria."
+    }
+  }
+]

@@ -1,0 +1,116 @@
+[
+  {
+    "case": {
+      "id": "usgs-earthquake-01",
+      "sourceId": "usgs-earthquake",
+      "intent": "What were the biggest earthquakes in the world over the past week?",
+      "successCriteria": "Returns recent significant earthquakes worldwide from the past ~7 days, each with a magnitude, a place/location description, and an event time (UTC), ordered by magnitude with the largest first. Must come from the USGS earthquake catalog with a starttime/endtime spanning the last week and a magnitude filter, returned as GeoJSON (not QuakeML XML), not a generic news recap.",
+      "difficulty": "basic"
+    },
+    "transcript": {
+      "caseId": "usgs-earthquake-01",
+      "intent": "What were the biggest earthquakes in the world over the past week?",
+      "sourceId": "usgs-earthquake",
+      "assistantTurns": [
+        {
+          "round": 1,
+          "text": "I'll fetch the latest earthquake data from the USGS Earthquake Catalog right away!"
+        },
+        {
+          "round": 2,
+          "text": "Here are the **top 10 biggest earthquakes worldwide** from July 7–14, 2025, ranked by magnitude:\n\n| # | Magnitude | Location | Date (UTC) | Alert |\n|---|-----------|----------|------------|-------|\n| 1 | **M 6.2** | 213 km WSW of Riverton, New Zealand | Jul 7, 2025 | 🟢 Green |\n| 2 | **M 5.7** | 3 km SSW of Amatitlán, Guatemala | Jul 8, 2025 | 🟡 Yellow |\n| 3 | **M 5.3** | 44 km S of Port-Vila, Vanuatu | Jul 13, 2025 | — |\n| 4 | **M 5.3** | Kermadec Islands, New Zealand | Jul 12, 2025 | — |\n| 5 | **M 5.3** | Izu Islands, Japan region | Jul 9, 2025 | — |\n| 6 | **M 5.2** | 285 km SSE of Port Blair, India | Jul 13, 2025 | 🟢 Green |\n| 7 | **M 5.2** | 89 km WNW of Hihifo, Tonga | Jul 10, 2025 | — |\n| 8 | **M 5.2** | 17 km SSW of El Hoyo, Argentina | Jul 9, 2025 | — |\n| 9 | **M 5.2** | 105 km SSE of Lorengau, Papua New Guinea | Jul 8, 2025 | — |\n| 10 | **M 5.2** | 109 km SSE of Lorengau, Papua New Guinea | Jul 8, 2025 | — |\n\n### Key Highlights:\n- 🏆 **Largest quake**: A **magnitude 6.2** struck off the southern coast of **New Zealand** (near Riverton) on July 7. It was felt by 23 people and received a **green (low impact) alert**.\n- ⚠️ **Most impactful**: The **M 5.7 in Guatemala** (near Amatitlán, south of Guatemala City) received a **yellow alert** and was felt by 158 people, with notably high shaking intensity (CDI 7.4).\n- 🌏 The Pacific Rim dominated, with events spread across New Zealand, Vanuatu, Japan, Tonga, and Papua New Guinea — consistent with the seismically active \"Ring of Fire.\"\n- No **tsunami warnings** were issued for any of these events."
+        }
+      ],
+      "toolCalls": [
+        {
+          "round": 1,
+          "tool": "query_data_source",
+          "args": {
+            "connectorId": "usgs-earthquake",
+            "path": "/query",
+            "params": {
+              "format": "geojson",
+              "starttime": "2025-07-07",
+              "endtime": "2025-07-14",
+              "orderby": "magnitude",
+              "limit": "10"
+            }
+          },
+          "rawResponse": "{\n  \"status\": 200,\n  \"data\": {\n    \"type\": \"FeatureCollection\",\n    \"metadata\": {\n      \"generated\": 1781236417000,\n      \"url\": \"https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2025-07-07&endtime=2025-07-14&orderby=magnitude&limit=10\",\n      \"title\": \"USGS Earthquakes\",\n      \"status\": 200,\n      \"api\": \"2.4.0\",\n      \"limit\": 10,\n      \"offset\": 1\n    },\n    \"features\": [\n      {\n        \"type\": \"Feature\",\n        \"properties\": {\n          \"mag\": 6.2,\n          \"place\": \"213 km WSW of Riverton, New Zealand\",\n          \"time\": 1751892824013,\n          \"updated\": 1757694191040,\n          \"tz\": null,\n          \"url\": \"https://earthquake.usgs.gov/earthquakes/eventpage/us7000qb4s\",\n          \"detail\": \"https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=us7000qb4s&format=geojson\",\n          \"felt\": 23,\n          \"cdi\": 5.3,\n          \"mmi\": 4.601,\n          \"alert\": \"green\",\n          \"status\": \"reviewed\",\n          \"tsunami\": 0,\n          \"sig\": 604,\n          \"net\": \"us\",\n          \"code\": \"7000qb4s\",\n          \"ids\": \",us7000qb4s,usauto7000qb4s,at00sz155i,pt25188000,\",\n          \"sources\": \",us,usauto,at,pt,\",\n          \"types\": \",dyfi,ground-failure,internal-moment-tensor,internal-origin,losspager,moment-tensor,origin,phase-data,shakemap,\",\n          \"nst\": 65,\n          \"dmin\": 1.296,\n          \"rms\": 0.8,\n          \"gap\": 64,\n          \"magType\": \"mww\",\n          \"type\": \"earthquake\",\n          \"title\": \"M 6.2 - 213 km WSW of Riverton, New Zealand\"\n        },\n        \"geometry\": {\n          \"type\": \"Point\",\n          \"coordinates\": [\n            165.4962,\n            -47.1735,\n            22\n          ]\n        },\n        \"id\": \"us7000qb4s\"\n      },\n      {\n        \"type\": \"Feature\",\n        \"properties\": {\n          \"mag\": 5.7,\n          \"place\": \"3 km SSW of Amatitlán, Guatemala\",\n          \"time\": 1752010891063,\n          \"updated\": 1780872103883,\n          \"tz\": null,\n          \"url\": \"https://earthquake.usgs.gov/earthquakes/eventpage/us7000qbfv\",\n          \"detail\": \"https:/…[truncated]",
+          "errored": false
+        }
+      ],
+      "roundsUsed": 1,
+      "finalAnswer": "Here are the **top 10 biggest earthquakes worldwide** from July 7–14, 2025, ranked by magnitude:\n\n| # | Magnitude | Location | Date (UTC) | Alert |\n|---|-----------|----------|------------|-------|\n| 1 | **M 6.2** | 213 km WSW of Riverton, New Zealand | Jul 7, 2025 | 🟢 Green |\n| 2 | **M 5.7** | 3 km SSW of Amatitlán, Guatemala | Jul 8, 2025 | 🟡 Yellow |\n| 3 | **M 5.3** | 44 km S of Port-Vila, Vanuatu | Jul 13, 2025 | — |\n| 4 | **M 5.3** | Kermadec Islands, New Zealand | Jul 12, 2025 | — |\n| 5 | **M 5.3** | Izu Islands, Japan region | Jul 9, 2025 | — |\n| 6 | **M 5.2** | 285 km SSE of Port Blair, India | Jul 13, 2025 | 🟢 Green |\n| 7 | **M 5.2** | 89 km WNW of Hihifo, Tonga | Jul 10, 2025 | — |\n| 8 | **M 5.2** | 17 km SSW of El Hoyo, Argentina | Jul 9, 2025 | — |\n| 9 | **M 5.2** | 105 km SSE of Lorengau, Papua New Guinea | Jul 8, 2025 | — |\n| 10 | **M 5.2** | 109 km SSE of Lorengau, Papua New Guinea | Jul 8, 2025 | — |\n\n### Key Highlights:\n- 🏆 **Largest quake**: A **magnitude 6.2** struck off the southern coast of **New Zealand** (near Riverton) on July 7. It was felt by 23 people and received a **green (low impact) alert**.\n- ⚠️ **Most impactful**: The **M 5.7 in Guatemala** (near Amatitlán, south of Guatemala City) received a **yellow alert** and was felt by 158 people, with notably high shaking intensity (CDI 7.4).\n- 🌏 The Pacific Rim dominated, with events spread across New Zealand, Vanuatu, Japan, Tonga, and Papua New Guinea — consistent with the seismically active \"Ring of Fire.\"\n- No **tsunami warnings** were issued for any of these events.",
+      "error": null,
+      "usage": {
+        "inputTokens": 28432,
+        "outputTokens": 831
+      }
+    },
+    "grade": {
+      "correctSource": true,
+      "firstQueryValid": true,
+      "attemptsToUsefulData": 1,
+      "meetsCriteria": true,
+      "pass": true,
+      "failureCategory": null,
+      "notes": "The agent queried the correct USGS earthquake source with format=geojson, a starttime/endtime spanning the last week, and orderby=magnitude. The response returned valid GeoJSON FeatureCollection data. The final answer presents 10 earthquakes ordered by magnitude (largest first), each with magnitude, place/location description, and event time (UTC), fully satisfying the success criteria."
+    }
+  },
+  {
+    "case": {
+      "id": "usgs-earthquake-02",
+      "sourceId": "usgs-earthquake",
+      "intent": "How big was the earthquake that triggered the 2011 Japan tsunami, and where exactly did it strike?",
+      "successCriteria": "Identifies the March 11, 2011 Great Tohoku earthquake from the USGS catalog: magnitude 9.1 (Mw), origin time around 05:46 UTC on 2011-03-11, epicenter off the Pacific coast of northeastern Honshu, Japan, at a shallow depth (~29-32 km). Requires a date-windowed catalog query (e.g. starttime 2011-03-11, endtime 2011-03-12, high minmagnitude) over Japan, returned as GeoJSON, not a recalled fact.",
+      "difficulty": "hard"
+    },
+    "transcript": {
+      "caseId": "usgs-earthquake-02",
+      "intent": "How big was the earthquake that triggered the 2011 Japan tsunami, and where exactly did it strike?",
+      "sourceId": "usgs-earthquake",
+      "assistantTurns": [
+        {
+          "round": 2,
+          "text": "Here are the details straight from the USGS Earthquake Catalog:\n\n---\n\n### 🌊 2011 Great Tōhoku Earthquake (Japan Tsunami)\n\n| Detail | Value |\n|---|---|\n| **Magnitude** | **M 9.1** (moment magnitude, Mww) |\n| **Official Name** | 2011 Great Tōhoku Earthquake |\n| **Date & Time** | March 11, 2011 at 05:46:24 UTC |\n| **Epicenter** | **38.297°N, 142.373°E** |\n| **Depth** | ~29 km |\n| **Location** | Off the Pacific coast of the Tōhoku region, approximately **70 km east of the Oshika Peninsula**, in the ocean east of Honshu, Japan |\n\n---\n\n**Key facts:**\n- At **M 9.1**, it is the **most powerful earthquake ever recorded in Japan** and the **4th most powerful in the world** since modern seismology began.\n- The epicenter was **undersea** (a subduction zone where the Pacific Plate dives beneath the North American Plate), which is what caused the massive tsunami.\n- The earthquake was felt by **1,456 people** who submitted reports, and the shaking reached **Modified Mercalli Intensity ~8 (Severe)** at peak.\n- The resulting tsunami caused catastrophic damage to Japan's coastline, including the Fukushima Daiichi nuclear disaster."
+        }
+      ],
+      "toolCalls": [
+        {
+          "round": 1,
+          "tool": "query_data_source",
+          "args": {
+            "connectorId": "usgs-earthquake",
+            "path": "/query",
+            "params": {
+              "format": "geojson",
+              "starttime": "2011-03-11",
+              "endtime": "2011-03-12",
+              "minmagnitude": "8.5",
+              "orderby": "magnitude"
+            }
+          },
+          "rawResponse": "{\n  \"status\": 200,\n  \"data\": {\n    \"type\": \"FeatureCollection\",\n    \"metadata\": {\n      \"generated\": 1781236439000,\n      \"url\": \"https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2011-03-11&endtime=2011-03-12&minmagnitude=8.5&orderby=magnitude\",\n      \"title\": \"USGS Earthquakes\",\n      \"status\": 200,\n      \"api\": \"2.4.0\",\n      \"count\": 1\n    },\n    \"features\": [\n      {\n        \"type\": \"Feature\",\n        \"properties\": {\n          \"mag\": 9.1,\n          \"place\": \"2011 Great Tohoku Earthquake, Japan\",\n          \"time\": 1299822384120,\n          \"updated\": 1776102134045,\n          \"tz\": null,\n          \"url\": \"https://earthquake.usgs.gov/earthquakes/eventpage/official20110311054624120_30\",\n          \"detail\": \"https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=official20110311054624120_30&format=geojson\",\n          \"felt\": 1456,\n          \"cdi\": 9.1,\n          \"mmi\": 8.18,\n          \"alert\": null,\n          \"status\": \"reviewed\",\n          \"tsunami\": 0,\n          \"sig\": 2184,\n          \"net\": \"official\",\n          \"code\": \"20110311054624120_30\",\n          \"ids\": \",usc0001xgp,official20110311054624120_30,usp000hvnu,choy20110311054623,duputel201103110546a,atlas20110311054624,iscgem16461282,\",\n          \"sources\": \",us,official,us,choy,duputel,atlas,iscgem,\",\n          \"types\": \",dyfi,finite-fault,focal-mechanism,general-header,general-link,general-text,ground-failure,impact-text,moment-tensor,origin,phase-data,poster,scitech-link,scitech-text,shakemap,trump-impact-text,trump-origin,trump-phase-data,trump-shakemap,\",\n          \"nst\": 541,\n          \"dmin\": null,\n          \"rms\": 1.16,\n          \"gap\": 9.5,\n          \"magType\": \"mww\",\n          \"type\": \"earthquake\",\n          \"title\": \"M 9.1 - 2011 Great Tohoku Earthquake, Japan\"\n        },\n        \"geometry\": {\n          \"type\": \"Point\",\n          \"coordinates\": [\n            142.373,\n            38.297,\n            29\n          ]\n        },\n        \"id\": \"official20110311054624120_30\"\n      }\n    ]\n  },\n  \"contentType\": \"application/json; …[truncated]",
+          "errored": false
+        }
+      ],
+      "roundsUsed": 1,
+      "finalAnswer": "Here are the details straight from the USGS Earthquake Catalog:\n\n---\n\n### 🌊 2011 Great Tōhoku Earthquake (Japan Tsunami)\n\n| Detail | Value |\n|---|---|\n| **Magnitude** | **M 9.1** (moment magnitude, Mww) |\n| **Official Name** | 2011 Great Tōhoku Earthquake |\n| **Date & Time** | March 11, 2011 at 05:46:24 UTC |\n| **Epicenter** | **38.297°N, 142.373°E** |\n| **Depth** | ~29 km |\n| **Location** | Off the Pacific coast of the Tōhoku region, approximately **70 km east of the Oshika Peninsula**, in the ocean east of Honshu, Japan |\n\n---\n\n**Key facts:**\n- At **M 9.1**, it is the **most powerful earthquake ever recorded in Japan** and the **4th most powerful in the world** since modern seismology began.\n- The epicenter was **undersea** (a subduction zone where the Pacific Plate dives beneath the North American Plate), which is what caused the massive tsunami.\n- The earthquake was felt by **1,456 people** who submitted reports, and the shaking reached **Modified Mercalli Intensity ~8 (Severe)** at peak.\n- The resulting tsunami caused catastrophic damage to Japan's coastline, including the Fukushima Daiichi nuclear disaster.",
+      "error": null,
+      "usage": {
+        "inputTokens": 24514,
+        "outputTokens": 501
+      }
+    },
+    "grade": {
+      "correctSource": true,
+      "firstQueryValid": true,
+      "attemptsToUsefulData": 1,
+      "meetsCriteria": true,
+      "pass": true,
+      "failureCategory": null,
+      "notes": "The agent queried the correct source (usgs-earthquake) with a valid date-windowed GeoJSON request using minmagnitude=8.5 over Japan. The response returned the M 9.1 Great Tohoku Earthquake with origin time ~05:46 UTC on 2011-03-11, epicenter at 38.297°N, 142.373°E, depth 29 km — all matching the success criteria. The final answer accurately reports all required details from the USGS catalog data."
+    }
+  }
+]
