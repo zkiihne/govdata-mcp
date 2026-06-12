@@ -18,7 +18,8 @@
     "catalog": "tsx scripts/build-catalog.ts",
     "smoke": "tsx scripts/smoke.ts",
     "inspect": "npx @modelcontextprotocol/inspector tsx src/cli.ts",
-    "eval": "tsx evals/run.ts"
+    "eval": "tsx evals/run.ts",
+    "eval:collect": "tsx evals/collect.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
