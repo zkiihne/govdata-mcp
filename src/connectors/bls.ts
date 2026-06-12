@@ -6,6 +6,7 @@ import type {
 } from "./types.js";
 import type { AuthSpec } from "../catalog/schema.js";
 import { injectAuth } from "./inject.js";
+import { applyParams } from "./params.js";
 
 const ID = "bls-public-data";
 const UPSTREAM = "https://api.bls.gov/publicAPI/v2";
@@ -59,11 +60,7 @@ export const blsConnector: Connector = {
   async execute(rawQuery: RawQuery): Promise<ExecuteResult> {
     const method = rawQuery.method ?? "GET";
     const url = new URL(rawQuery.path.replace(/^\//, ""), `${UPSTREAM}/`);
-    if (rawQuery.params) {
-      for (const [k, v] of Object.entries(rawQuery.params)) {
-        url.searchParams.set(k, v);
-      }
-    }
+    applyParams(url, rawQuery.params);
 
     const headers: Record<string, string> = { Accept: "application/json" };
     // BLS auth places the key in the JSON body, so a body object must exist.

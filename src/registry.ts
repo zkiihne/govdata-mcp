@@ -85,8 +85,14 @@ export function registerTools(server: Server): void {
             },
             params: {
               type: "object",
-              description: "Optional querystring params, forwarded verbatim.",
-              additionalProperties: { type: "string" },
+              description:
+                "Optional querystring params, forwarded verbatim. A value may be a string, or an array of strings to repeat a key (e.g. 'fields[]': ['title','publication_date']).",
+              additionalProperties: {
+                anyOf: [
+                  { type: "string" },
+                  { type: "array", items: { type: "string" } },
+                ],
+              },
             },
             method: {
               type: "string",
@@ -129,7 +135,7 @@ export function registerTools(server: Server): void {
       }
       const rawQuery: RawQuery = {
         path,
-        params: a["params"] as Record<string, string> | undefined,
+        params: a["params"] as Record<string, string | string[]> | undefined,
         method: a["method"] as string | undefined,
         body: a["body"],
       };

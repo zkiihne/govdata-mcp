@@ -47,8 +47,12 @@ export interface ExecuteResult {
 export interface RawQuery {
   /** Path appended to the connector's upstreamBaseUrl, e.g. "/points/39.7,-104.9". */
   path: string;
-  /** Optional querystring params, passed through unchanged. */
-  params?: Record<string, string>;
+  /**
+   * Optional querystring params, passed through unchanged. A value may be a
+   * single string or an array of strings; arrays serialize as repeated keys
+   * (e.g. `fields[]=title&fields[]=publication_date`).
+   */
+  params?: Record<string, string | string[]>;
   /** HTTP method, defaults to GET. */
   method?: string;
   /** Optional request body for non-GET methods, forwarded verbatim. */

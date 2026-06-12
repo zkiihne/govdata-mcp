@@ -6,6 +6,7 @@ import type {
 } from "./types.js";
 import type { AuthSpec } from "../catalog/schema.js";
 import { injectAuth } from "./inject.js";
+import { applyParams } from "./params.js";
 
 const ID = "openfda";
 const UPSTREAM = "https://api.fda.gov";
@@ -62,11 +63,7 @@ export const openfdaConnector: Connector = {
   async execute(rawQuery: RawQuery): Promise<ExecuteResult> {
     const method = rawQuery.method ?? "GET";
     const url = new URL(rawQuery.path.replace(/^\//, ""), `${UPSTREAM}/`);
-    if (rawQuery.params) {
-      for (const [k, v] of Object.entries(rawQuery.params)) {
-        url.searchParams.set(k, v);
-      }
-    }
+    applyParams(url, rawQuery.params);
 
     const headers: Record<string, string> = { Accept: "application/json" };
     injectAuth(AUTH, { url, headers });
