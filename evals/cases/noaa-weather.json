@@ -1,0 +1,16 @@
+[
+  {
+    "id": "noaa-weather-01",
+    "sourceId": "noaa-weather",
+    "intent": "What's the weather forecast for Washington, D.C. over the next few days?",
+    "successCriteria": "Returns an official US National Weather Service forecast for the Washington, D.C. area: a sequence of named forecast periods (e.g. 'Today', 'Tonight', 'Tuesday') each with a temperature in Fahrenheit and a short text description (e.g. 'Sunny', 'Chance of rain'). Must reflect the two-step api.weather.gov flow (resolve the lat/lon ~38.90,-77.04 to a grid, then the forecast), not a generic guess.",
+    "difficulty": "basic"
+  },
+  {
+    "id": "noaa-weather-02",
+    "sourceId": "noaa-weather",
+    "intent": "Are there any active weather warnings or watches in Florida right now?",
+    "successCriteria": "Returns the set of currently active NWS alerts (warnings/watches/advisories) for Florida, filtered by state area code FL. Answer should either list active alert events with their headlines/event types (e.g. 'Hurricane Warning', 'Heat Advisory', 'Rip Current Statement') or correctly state that there are none active. Must come from the api.weather.gov active-alerts endpoint filtered to FL, not a generic forecast.",
+    "difficulty": "hard"
+  }
+]

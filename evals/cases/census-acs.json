@@ -1,0 +1,16 @@
+[
+  {
+    "id": "census-acs-01",
+    "sourceId": "census-acs",
+    "intent": "What is the total population of the state of California according to the latest American Community Survey estimates?",
+    "successCriteria": "Answer comes from the Census ACS 5-year detailed tables (variable B01001_001E total population, for=state:06 California). It must return a California population figure in a plausible range (roughly 38–40 million), correctly identified as California (NAME) and attributed to the U.S. Census Bureau ACS. The agent must use the array-of-arrays response correctly (header row plus data row).",
+    "difficulty": "basic"
+  },
+  {
+    "id": "census-acs-02",
+    "sourceId": "census-acs",
+    "intent": "What's the median household income in Brooklyn, New York compared to the rest of New York City? I'm trying to understand income differences between the boroughs.",
+    "successCriteria": "Answer uses Census ACS 5-year (variable B19013_001E median household income) at the county level, correctly mapping NYC boroughs to county FIPS (Brooklyn = Kings County, state:36 county:047; and ideally the other four: Bronx=005, New York/Manhattan=061, Queens=081, Richmond/Staten Island=085), requiring the in=state:36 qualifier for sub-state geography. It must report Brooklyn's median household income as a plausible dollar figure (roughly $60k–$85k) and compare it against at least one other borough (Manhattan notably higher). Hard because the user names boroughs, not counties, so the agent must translate borough → county FIPS and use the for=/in= hierarchy.",
+    "difficulty": "hard"
+  }
+]

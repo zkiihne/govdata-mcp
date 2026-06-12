@@ -1,0 +1,16 @@
+[
+  {
+    "id": "congress-gov-01",
+    "sourceId": "congress-gov",
+    "intent": "What was House bill number 1 in the 118th Congress, and what was it called?",
+    "successCriteria": "Answer comes from the Congress.gov API (GET /bill/118/hr/1 with format=json). It must identify H.R. 1 of the 118th Congress as the 'Lower Energy Costs Act', attributed to Congress.gov / Library of Congress. The agent must use lowercase bill type 'hr' and request JSON format.",
+    "difficulty": "basic"
+  },
+  {
+    "id": "congress-gov-02",
+    "sourceId": "congress-gov",
+    "intent": "Which bills in Congress were updated most recently? I want the latest legislative activity, just the newest handful.",
+    "successCriteria": "Answer comes from the Congress.gov API bill list endpoint (GET /bill with sort=updateDate+desc and a small limit), format=json. It must return a small set of distinct recent bills, each with at least a bill number/type, a congress, and a recent update date, attributed to Congress.gov / Library of Congress. Hard because there is no single 'latest bills' resource — the agent must hit the list endpoint and apply sort by update date descending plus a limit (offset/limit paging, max 250), rather than fetching a known bill by id.",
+    "difficulty": "hard"
+  }
+]

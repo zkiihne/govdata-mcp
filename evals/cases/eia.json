@@ -1,0 +1,16 @@
+[
+  {
+    "id": "eia-01",
+    "sourceId": "eia",
+    "intent": "What has the average retail price of electricity been across all U.S. sectors over the last year or so?",
+    "successCriteria": "Answer comes from the EIA API electricity retail-sales route (GET /electricity/retail-sales/data with frequency=monthly, data[]=price). It must report at least one recent monthly average retail electricity price with units of cents per kilowatt-hour, in a plausible range (roughly 10–18 cents/kWh for U.S. all-sectors), attributed to the U.S. Energy Information Administration. Ideally the agent first reads the route metadata to learn the valid data column ('price').",
+    "difficulty": "basic"
+  },
+  {
+    "id": "eia-02",
+    "sourceId": "eia",
+    "intent": "How does the residential price of electricity in California compare to Texas in recent months?",
+    "successCriteria": "Answer comes from the EIA API electricity retail-sales route (GET /electricity/retail-sales/data with frequency=monthly, data[]=price, faceting on the sector for residential and on stateid for CA and TX, e.g. facets[sectorid][]=RES and facets[stateid][]=CA / TX). It must report recent residential retail electricity prices in cents per kWh for both California and Texas (California notably higher than Texas), attributed to EIA. Hard because it requires discovering the correct facet ids (sectorid, stateid) and values from the route metadata and applying two bracketed array facet filters at once.",
+    "difficulty": "hard"
+  }
+]

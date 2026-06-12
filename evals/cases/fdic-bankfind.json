@@ -1,0 +1,16 @@
+[
+  {
+    "id": "fdic-bankfind-01",
+    "sourceId": "fdic-bankfind",
+    "intent": "How many FDIC-insured banks are currently active and headquartered in Texas?",
+    "successCriteria": "Answer gives a count of currently active FDIC-insured institutions with their main office in Texas, derived from the FDIC institutions data filtered to active status and state Texas (STALP:TX AND ACTIVE:1). The count should be a plausible figure in the hundreds (roughly 350-450 as of 2025-2026). Correct approach uses the institutions endpoint with a state + active filter and reads the total count from the result metadata rather than the default 10-record page.",
+    "difficulty": "basic"
+  },
+  {
+    "id": "fdic-bankfind-02",
+    "sourceId": "fdic-bankfind",
+    "intent": "Which bank failed most recently in the United States, and roughly how big was it when it went under?",
+    "successCriteria": "Answer identifies the single most recent FDIC bank failure by failure date, naming the institution and its city/state, and gives an approximate size (total assets or deposits at failure). Correct approach queries the failures dataset sorted by failure date descending with limit 1. Grader should accept the most recent failure on record at query time; the institution name, a real failure date, and an asset/deposit figure must all be present and internally consistent.",
+    "difficulty": "hard"
+  }
+]

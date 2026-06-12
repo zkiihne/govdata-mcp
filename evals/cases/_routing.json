@@ -1,0 +1,37 @@
+[
+  {
+    "id": "routing-defense-contracts-tx",
+    "sourceId": "usaspending",
+    "intent": "How much did the federal government spend on defense-related contracts awarded to companies in Texas in the last full fiscal year?",
+    "successCriteria": "Routes to federal award/spending data (usaspending), NOT treasury cash/debt data. Returns a dollar total (billions plausible) for defense or DoD contract awards in Texas. Correct source selection is the primary test: treasury-fiscal tracks aggregate cash flows and debt, not award-level contract spending by state, so picking it is wrong.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "routing-air-quality-denver",
+    "sourceId": "epa-airnow",
+    "intent": "What's the air quality like in Denver right now?",
+    "successCriteria": "Routes to the air-quality source (epa-airnow), NOT a weather forecast source. Returns a current AQI reading and/or category (e.g. Good/Moderate) and a pollutant (PM2.5 or Ozone) for the Denver area. Picking noaa-weather (temperature/precip forecast) is the wrong-source failure this case tests.",
+    "difficulty": "basic"
+  },
+  {
+    "id": "routing-presidential-proclamations",
+    "sourceId": "federal-register",
+    "intent": "What presidential documents or proclamations has the White House published in the Federal Register recently?",
+    "successCriteria": "Routes to the Federal Register source. Returns one or more recent presidential documents/proclamations with a title and publication date. Tests selecting the official daily-journal source over comment/docket sources (regulations-gov is premium and docket-focused, not the publication-of-record).",
+    "difficulty": "basic"
+  },
+  {
+    "id": "routing-median-income-city",
+    "sourceId": "census-acs",
+    "intent": "What is the median household income for people living in Miami, Florida?",
+    "successCriteria": "Routes to the Census/ACS source for place-level demographics, NOT a macro time-series source. Returns a median household income dollar figure (roughly $40k-$70k range) for Miami. Tests choosing city/place demographic data (census-acs) over national economic series (fred/bea), which do not provide city-level median household income.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "routing-alzheimers-trials",
+    "sourceId": "clinical-trials",
+    "intent": "Are there any ongoing studies testing new treatments for Alzheimer's disease?",
+    "successCriteria": "Routes to the clinical trials registry (clinical-trials), NOT FDA adverse-event/drug-label data (openfda). Returns one or more studies with a title and a status indicating they are ongoing/recruiting. Tests distinguishing the trial registry from FDA drug databases.",
+    "difficulty": "basic"
+  }
+]

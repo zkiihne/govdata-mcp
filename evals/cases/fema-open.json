@@ -1,0 +1,16 @@
+[
+  {
+    "id": "fema-open-01",
+    "sourceId": "fema-open",
+    "intent": "What are the five most recent federally declared disasters in Florida?",
+    "successCriteria": "Answer lists the five most recent FEMA disaster declarations for Florida, newest first, each with an incident type and a declaration date. Correct approach queries the disaster declarations summaries filtered to state Florida ('FL'), ordered by declaration date descending, limited to five. Dates should be recent and plausible, and each entry should name an incident type (e.g. Hurricane, Severe Storm, Flood).",
+    "difficulty": "basic"
+  },
+  {
+    "id": "fema-open-02",
+    "sourceId": "fema-open",
+    "intent": "Across the entire history of the National Flood Insurance Program, how many flood insurance claims have been filed in Harris County, Texas?",
+    "successCriteria": "Answer gives a total count of NFIP redacted flood-insurance claims for Harris County, Texas (county FIPS 48201), drawn from the FEMA NFIP claims dataset. Correct approach filters the NFIP claims dataset by the Harris County code ('48201') and reads the full total count via the inline-count metadata rather than counting returned rows (the real total is in the hundreds of thousands). The number must be a single large count, not a page of individual claim records.",
+    "difficulty": "hard"
+  }
+]

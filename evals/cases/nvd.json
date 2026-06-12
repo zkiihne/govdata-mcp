@@ -1,0 +1,16 @@
+[
+  {
+    "id": "nvd-01",
+    "sourceId": "nvd",
+    "intent": "Can you pull up the details on the Log4Shell vulnerability for me?",
+    "successCriteria": "Correctly identifies Log4Shell as CVE-2021-44228 and returns its NVD record: a CVSS base score of 10.0 with severity CRITICAL, an Apache Log4j (Log4j2 / JNDI) description, and remote code execution. Must come from the NIST NVD CVE record for CVE-2021-44228, not generic prose.",
+    "difficulty": "basic"
+  },
+  {
+    "id": "nvd-02",
+    "sourceId": "nvd",
+    "intent": "Which critical-severity OpenSSL vulnerabilities were published in 2022?",
+    "successCriteria": "Returns NVD CVE records matching the keyword 'openssl' filtered to CRITICAL severity and published during 2022. Because NVD caps date filters at a 120-day span, a correct answer must window the year into multiple sub-queries (e.g. quarter-by-quarter pubStartDate/pubEndDate) rather than one 365-day request. Result should list one or more CVE IDs (e.g. the CVE-2022-3602 / CVE-2022-3786 'punycode' OpenSSL buffer overflows) with their CVSS severity, all from the NIST NVD.",
+    "difficulty": "hard"
+  }
+]

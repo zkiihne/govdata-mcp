@@ -1,0 +1,16 @@
+[
+  {
+    "id": "federal-register-01",
+    "sourceId": "federal-register",
+    "intent": "Have there been any recent final rules published about offshore wind energy? Show me a few with their titles and publication dates.",
+    "successCriteria": "Answer returns recent Federal Register final rules (document type RULE) matching an offshore-wind full-text term, each with a title and a publication date, ordered newest-first. At least one real, plausible document is listed with a valid publication date (YYYY-MM-DD) and a title clearly related to offshore wind. Correct approach uses the documents search with a term filter, a RULE type filter, and newest ordering.",
+    "difficulty": "basic"
+  },
+  {
+    "id": "federal-register-02",
+    "sourceId": "federal-register",
+    "intent": "I'm researching what the Environmental Protection Agency proposed but had not finalized during the first quarter of 2024. Can you pull those proposals?",
+    "successCriteria": "Answer returns Federal Register proposed rules (document type PRORULE) from the Environmental Protection Agency published between 2024-01-01 and 2024-03-31, with titles and publication dates inside that window. Correct approach filters by the EPA agency slug (environmental-protection-agency), the PRORULE type, and a publication_date gte/lte range covering Q1 2024. At least one document must be listed with a publication date that falls within the quarter; results must be proposed rules, not final rules or notices.",
+    "difficulty": "hard"
+  }
+]

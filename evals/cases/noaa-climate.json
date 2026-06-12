@@ -1,0 +1,16 @@
+[
+  {
+    "id": "noaa-climate-01",
+    "sourceId": "noaa-climate",
+    "intent": "How much rain fell in New York City's Central Park during January 2025? I want the historical record, not a forecast.",
+    "successCriteria": "Answer reports historical daily precipitation observations for the Central Park weather station for January 2025, drawn from NOAA's historical climate archive (Climate Data Online). Correct approach queries the daily-summaries dataset (GHCND) for the Central Park station (GHCND:USW00094728) over startdate 2025-01-01 to enddate 2025-01-31, reading the PRCP element. Answer should give precipitation values (with units, e.g. mm or inches/tenths) and clearly reflect January 2025 daily records, not a forecast or current conditions.",
+    "difficulty": "basic"
+  },
+  {
+    "id": "noaa-climate-02",
+    "sourceId": "noaa-climate",
+    "intent": "I'm comparing winters. What were the average monthly temperatures in Chicago for each month of 2023?",
+    "successCriteria": "Answer returns historical monthly temperature summaries for a Chicago station for the twelve months of 2023, from NOAA's historical climate archive. Correct approach uses a monthly dataset (GSOM, Global Summary of the Month) rather than the daily GHCND set, identifies a Chicago station (e.g. O'Hare / Midway via the stations lookup), and queries startdate 2023-01-01 to enddate 2023-12-31 reading a monthly average-temperature element (e.g. TAVG). Answer should present per-month temperature values with units for 2023. Using GSOM (monthly) instead of paging daily GHCND records, and choosing a correct Chicago station id, is the non-obvious part.",
+    "difficulty": "hard"
+  }
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "id": "treasury-fiscal-01",
+    "sourceId": "treasury-fiscal",
+    "intent": "How much is the US national debt right now?",
+    "successCriteria": "Returns the most recent total US public debt outstanding figure ('debt to the penny') with its as-of record date. The value should be in the tens of trillions of dollars (plausibly ~$34-40 trillion for a 2024-2026 record date). Must come from Treasury Fiscal Data's debt-to-the-penny dataset sorted to the latest record_date, not an estimate.",
+    "difficulty": "basic"
+  },
+  {
+    "id": "treasury-fiscal-02",
+    "sourceId": "treasury-fiscal",
+    "intent": "What exchange rate does the US Treasury use to convert Japanese yen to dollars, and how has it changed over the past year?",
+    "successCriteria": "Returns Treasury reporting rates of exchange for Japan-Yen across roughly the last year of quarterly records, each with a record_date and exchange_rate (yen per US dollar, plausibly ~100-160). Must be filtered to the Japan/Yen currency in Treasury's rates_of_exchange dataset and sorted by date to show the trend, not a live market FX quote.",
+    "difficulty": "hard"
+  }
+]

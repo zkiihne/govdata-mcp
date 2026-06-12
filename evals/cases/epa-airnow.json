@@ -1,0 +1,16 @@
+[
+  {
+    "id": "epa-airnow-01",
+    "sourceId": "epa-airnow",
+    "intent": "What's the air quality right now in Beverly Hills, 90210? Is it safe to go for a run outside?",
+    "successCriteria": "Answer reports current observed air quality for ZIP 90210 from AirNow current-conditions data: at least one reporting parameter (Ozone, PM2.5, or PM10) with a numeric AQI value (0-500 range) and its category label (e.g. Good, Moderate, Unhealthy for Sensitive Groups). A correct response uses the current observations-by-ZIP path with the ZIP and a distance/radius, and gives a plausible run-safety read tied to the AQI category. Note: an empty result (no nearby monitor) is a valid API outcome, not the expected one for this populated ZIP.",
+    "difficulty": "basic"
+  },
+  {
+    "id": "epa-airnow-02",
+    "sourceId": "epa-airnow",
+    "intent": "I'm flying into Denver tomorrow and want to know the expected air quality there for the day I land, not just right now. What's the forecast?",
+    "successCriteria": "Answer returns a forecast (not current conditions) for the Denver area for a specific future date, keyed by a Denver ZIP or by Denver's latitude/longitude (~39.74, -104.99). It must distinguish forecast from current observations and include a forecast AQI value and/or category for at least one parameter (e.g. Ozone or PM2.5) for the target date. Correctly requires using the forecast endpoint with a date parameter, not the current-observation endpoint.",
+    "difficulty": "hard"
+  }
+]

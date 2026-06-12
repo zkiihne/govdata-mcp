@@ -1,0 +1,16 @@
+[
+  {
+    "id": "usgs-earthquake-01",
+    "sourceId": "usgs-earthquake",
+    "intent": "What were the biggest earthquakes in the world over the past week?",
+    "successCriteria": "Returns recent significant earthquakes worldwide from the past ~7 days, each with a magnitude, a place/location description, and an event time (UTC), ordered by magnitude with the largest first. Must come from the USGS earthquake catalog with a starttime/endtime spanning the last week and a magnitude filter, returned as GeoJSON (not QuakeML XML), not a generic news recap.",
+    "difficulty": "basic"
+  },
+  {
+    "id": "usgs-earthquake-02",
+    "sourceId": "usgs-earthquake",
+    "intent": "How big was the earthquake that triggered the 2011 Japan tsunami, and where exactly did it strike?",
+    "successCriteria": "Identifies the March 11, 2011 Great Tohoku earthquake from the USGS catalog: magnitude 9.1 (Mw), origin time around 05:46 UTC on 2011-03-11, epicenter off the Pacific coast of northeastern Honshu, Japan, at a shallow depth (~29-32 km). Requires a date-windowed catalog query (e.g. starttime 2011-03-11, endtime 2011-03-12, high minmagnitude) over Japan, returned as GeoJSON, not a recalled fact.",
+    "difficulty": "hard"
+  }
+]

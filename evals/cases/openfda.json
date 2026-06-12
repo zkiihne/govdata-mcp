@@ -1,0 +1,16 @@
+[
+  {
+    "id": "openfda-01",
+    "sourceId": "openfda",
+    "intent": "What are the most commonly reported side effects for people taking aspirin?",
+    "successCriteria": "Returns the most frequently reported adverse reactions associated with aspirin from the FDA's FAERS adverse-event reports, as a ranked list of reaction terms with counts (e.g. nausea, drug ineffective, dyspnoea). Must come from openFDA's drug adverse-event data using an aggregated count over reaction terms for the medicinal product aspirin, not a generic medical description of aspirin side effects.",
+    "difficulty": "basic"
+  },
+  {
+    "id": "openfda-02",
+    "sourceId": "openfda",
+    "intent": "How many drug recalls did the FDA classify as the most serious, life-threatening level during 2023?",
+    "successCriteria": "Returns a count (or enumerable list) of FDA drug recall enforcement reports with classification 'Class I' (the most serious, reasonable-probability-of-serious-harm tier) for calendar year 2023, derived from openFDA drug enforcement data filtered by classification:'Class I' and a 2023 report_date range [20230101 TO 20231231]. A plausible count is in the dozens-to-low-thousands range; answer must reflect the Class I filter, not all recalls.",
+    "difficulty": "hard"
+  }
+]

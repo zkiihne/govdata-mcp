@@ -1,0 +1,16 @@
+[
+  {
+    "id": "fred-01",
+    "sourceId": "fred",
+    "intent": "What is the current U.S. unemployment rate, and how has it moved over the past year?",
+    "successCriteria": "Answer reports the U.S. unemployment rate as a percentage (a plausible recent value, roughly 3.5-5%) and describes its trend over the last twelve months using a short run of monthly observations with dates and values. Correct approach pulls the national unemployment rate time series (FRED series UNRATE) observations as JSON and reads the most recent values. Values must be expressed as a percent and dated.",
+    "difficulty": "basic"
+  },
+  {
+    "id": "fred-02",
+    "sourceId": "fred",
+    "intent": "By how much have U.S. consumer prices risen over the past 12 months? Give me the year-over-year inflation rate as a percentage, not just the index level.",
+    "successCriteria": "Answer gives a year-over-year inflation rate as a percentage (a plausible recent figure, roughly 2-4%) computed from the Consumer Price Index. Correct approach pulls CPI observations (FRED series CPIAUCSL, all urban consumers) and computes the 12-month percent change between the latest month and the same month a year earlier, OR uses FRED's built-in year-over-year percent-change unit transform. The answer must be a percent change derived from CPI, not a raw index value, and must reflect a roughly 12-month span.",
+    "difficulty": "hard"
+  }
+]

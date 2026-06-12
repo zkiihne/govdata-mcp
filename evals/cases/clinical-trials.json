@@ -1,0 +1,16 @@
+[
+  {
+    "id": "clinical-trials-01",
+    "sourceId": "clinical-trials",
+    "intent": "Are there any clinical trials currently recruiting patients for type 2 diabetes? Give me a few study titles.",
+    "successCriteria": "Answer comes from ClinicalTrials.gov (GET /studies with query.cond for diabetes and filter.overallStatus=RECRUITING). It must return at least one real study with an NCT identifier (format NCTxxxxxxxx) and a brief title, all with recruiting status, attributed to ClinicalTrials.gov / NIH. The agent should set pageSize explicitly rather than relying on the default.",
+    "difficulty": "basic"
+  },
+  {
+    "id": "clinical-trials-02",
+    "sourceId": "clinical-trials",
+    "intent": "I heard about a pilot study on how standing affects blood sugar in prediabetic adults, run out of the University of Minnesota. Who sponsored it and what condition did it study?",
+    "successCriteria": "Answer identifies the study NCT01884792, titled 'Acute Effects of Standing on Glycemia in Prediabetic Adults: A Pilot Study', with condition Prediabetes and lead sponsor University of Minnesota, sourced from ClinicalTrials.gov. The agent must locate the specific record — either by free-text/condition+sponsor search on /studies and then fetching the full record, or by retrieving /studies/{nctId} — and read fields nested under protocolSection modules. Hard because it requires a targeted search to find the right study and then pulling the correct nested fields (sponsor, condition).",
+    "difficulty": "hard"
+  }
+]

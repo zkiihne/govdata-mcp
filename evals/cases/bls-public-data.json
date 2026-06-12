@@ -1,0 +1,16 @@
+[
+  {
+    "id": "bls-public-data-01",
+    "sourceId": "bls-public-data",
+    "intent": "What has the U.S. national unemployment rate been over the past couple of years?",
+    "successCriteria": "Answer comes from BLS (Labor Force Statistics / CPS, series LNS14000000, the seasonally adjusted national unemployment rate). It must report at least one recent monthly unemployment rate as a percentage in a plausible range (roughly 3%–6%), expressed as a percent and attributed to the Bureau of Labor Statistics. The agent must POST to the BLS timeseries endpoint with a year range as strings.",
+    "difficulty": "basic"
+  },
+  {
+    "id": "bls-public-data-02",
+    "sourceId": "bls-public-data",
+    "intent": "How much has the cost of living in the U.S. risen over the past year? Give me an inflation figure based on consumer prices.",
+    "successCriteria": "Answer derives a year-over-year inflation rate from the BLS Consumer Price Index for All Urban Consumers, All Items (series CUUR0000SA0, not seasonally adjusted, or CUSR0000SA0 seasonally adjusted). It must (a) pull at least two CPI index values 12 months apart and (b) compute a percentage change, reporting an inflation rate as a plausible percent (roughly 1%–6% in normal recent years), attributed to BLS CPI. The hard part is recognizing CPI as the right series, fetching two points a year apart, and computing the percent change rather than reporting a raw index level.",
+    "difficulty": "hard"
+  }
+]

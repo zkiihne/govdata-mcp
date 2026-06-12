@@ -1,0 +1,16 @@
+[
+  {
+    "id": "bea-01",
+    "sourceId": "bea",
+    "intent": "What was the annual real GDP growth rate for the U.S. economy in recent years? I want the official figures from the U.S. economic accounts.",
+    "successCriteria": "Answer comes from BEA's NIPA data (real GDP, table T10101 percent-change-from-preceding-period, or T10106 real GDP levels). It must report at least one annual real GDP growth figure that is a plausible percentage (roughly between -4% and +6% for normal years), correctly attributed to the U.S. Bureau of Economic Analysis. Bonus if the agent first walks the GetDataSetList / GetParameterValues metadata to find the NIPA dataset and table.",
+    "difficulty": "basic"
+  },
+  {
+    "id": "bea-02",
+    "sourceId": "bea",
+    "intent": "How does total personal income in Texas compare to California for the most recent year available?",
+    "successCriteria": "Answer uses BEA's Regional dataset (datasetname=Regional, a state-level personal income line such as SAINC1 / line code for total personal income, GeoFips for Texas=48000 and California=06000). It must return total personal income dollar figures for both states (California's total personal income is the larger, on the order of low-single-digit trillions of dollars; Texas is somewhat smaller), attributed to BEA. The agent should have discovered Regional dataset params via GetParameterValues rather than guessing. Reaching this requires choosing the Regional dataset (not NIPA), the correct GeoFips codes, and a recent year — a non-obvious multi-parameter lookup.",
+    "difficulty": "hard"
+  }
+]

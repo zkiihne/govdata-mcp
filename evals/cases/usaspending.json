@@ -1,0 +1,16 @@
+[
+  {
+    "id": "usaspending-01",
+    "sourceId": "usaspending",
+    "intent": "Which companies received the largest federal contracts in fiscal year 2024?",
+    "successCriteria": "Returns a ranked list of the largest federal contract awards for fiscal year 2024 (Oct 1 2023 - Sep 30 2024), each with a recipient name and award amount, sorted descending by amount. Top recipients should be large defense/aerospace or pharma contractors (e.g. Lockheed Martin, Boeing, etc.) with award amounts in the hundreds of millions to billions. Must come from USAspending's award search filtered to contract award type codes and the FY2024 time period.",
+    "difficulty": "basic"
+  },
+  {
+    "id": "usaspending-02",
+    "sourceId": "usaspending",
+    "intent": "How much did the Department of Veterans Affairs spend on grants awarded to recipients in California in fiscal year 2023?",
+    "successCriteria": "Returns grant awards for fiscal year 2023 (Oct 1 2022 - Sep 30 2023) where the awarding agency is the Department of Veterans Affairs and the recipient/place-of-performance location is California, with award amounts. Correctly requires a multi-faceted POST filter combining an agency filter (awarding agency = VA), grant award type codes (not contracts), a California location filter, and the FY2023 time period — likely after resolving the VA agency reference. Total or per-award dollar amounts must be reported, scoped to VA + CA + grants, not all federal spending.",
+    "difficulty": "hard"
+  }
+]
