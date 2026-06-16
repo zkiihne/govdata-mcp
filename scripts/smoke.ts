@@ -2,12 +2,12 @@
  * stdio client smoke test + direct connector/injector assertions.
  *
  * MCP-routed (spawned server): tools/list, discovery, live NOAA-weather query,
- * live USAspending POST, live Census GET, premium 402 (sec-edgar via router),
- * and a 503 missing-credential path (fred without key).
+ * live USAspending POST, live Census GET, a 501 not-implemented path (planned
+ * source via router), and a 503 missing-BYOK-key path (fred without key).
  *
- * Direct (in-process imports): sec-edgar connector live (bypassing the 402
- * gate), and injector request-shape assertions for every key-required connector
- * (key present -> lands in the right place; key absent -> MissingCredentialError).
+ * Direct (in-process imports): sec-edgar connector live, and injector
+ * request-shape assertions for every key-required connector (key present ->
+ * lands in the right place; key absent -> MissingCredentialError).
  *
  *   npx tsx scripts/smoke.ts
  */
@@ -44,30 +44,37 @@ await client.connect(transport);
 
 // ---- tools/list + discovery ----
 const tools = await client.listTools();
-check("tools/list has discovery + query", tools.tools.length === 2,
+check("tools/list has discovery + auth_status + query", tools.tools.length === 3,
   tools.tools.map((t) => t.name).join(","));
 
 const disc = JSON.parse(text((await client.callTool({ name: "discover_data_sources", arguments: {} })) as never));
 check("discovery returns 22 sources", disc.count === 22, `count=${disc.count}`);
-const statuses = Object.fromEntries(disc.sources.map((s: any) => [s.id, `${s.tier}/${s.status}`]));
+const statuses = Object.fromEntries(disc.sources.map((s: any) => [s.id, s.status]));
 console.log("  statuses:", JSON.stringify(statuses));
-check("usaspending live", statuses["usaspending"] === "free/live");
-check("census-acs live", statuses["census-acs"] === "free/live");
-check("sec-edgar premium/live", statuses["sec-edgar"] === "premium/live");
-check("bls-public-data live", statuses["bls-public-data"] === "free/live");
+check("usaspending live", statuses["usaspending"] === "live");
+check("census-acs live", statuses["census-acs"] === "live");
+check("sec-edgar live", statuses["sec-edgar"] === "live");
+check("bls-public-data live", statuses["bls-public-data"] === "live");
 // second-wave keyless six: live
-check("fema-open live", statuses["fema-open"] === "free/live");
-check("clinical-trials live", statuses["clinical-trials"] === "free/live");
-check("treasury-fiscal live", statuses["treasury-fiscal"] === "free/live");
-check("usgs-earthquake live", statuses["usgs-earthquake"] === "free/live");
-check("fdic-bankfind live", statuses["fdic-bankfind"] === "free/live");
-check("federal-register live", statuses["federal-register"] === "free/live");
-// second-wave connectors now live (keys configured)
-check("congress-gov live", statuses["congress-gov"] === "free/live");
-check("openfda live", statuses["openfda"] === "free/live");
-check("regulations-gov premium/live", statuses["regulations-gov"] === "premium/live");
-// still-planned premium (no connector / no key)
-check("usgs-water premium/planned", statuses["usgs-water"] === "premium/planned");
+check("fema-open live", statuses["fema-open"] === "live");
+check("clinical-trials live", statuses["clinical-trials"] === "live");
+check("treasury-fiscal live", statuses["treasury-fiscal"] === "live");
+check("usgs-earthquake live", statuses["usgs-earthquake"] === "live");
+check("fdic-bankfind live", statuses["fdic-bankfind"] === "live");
+check("federal-register live", statuses["federal-register"] === "live");
+// second-wave connectors now live (BYOK keys configured)
+check("congress-gov live", statuses["congress-gov"] === "live");
+check("openfda live", statuses["openfda"] === "live");
+check("regulations-gov live", statuses["regulations-gov"] === "live");
+// still-planned (no connector shipped)
+check("usgs-water planned", statuses["usgs-water"] === "planned");
+
+// ---- auth_status (BYOK) tool: keyed sources report their env vars ----
+const authStatus = JSON.parse(text((await client.callTool({ name: "auth_status", arguments: {} })) as never));
+check("auth_status lists keyed sources", Array.isArray(authStatus.sources) && authStatus.sources.length > 0,
+  `keyed=${authStatus.sources?.length}`);
+check("auth_status maps fred -> FRED_API_KEY",
+  authStatus.sources?.find((s: any) => s.id === "fred")?.envVar === "FRED_API_KEY");
 
 // ---- regression: NOAA weather live (two-step) ----
 const pts = await call("noaa-weather", { path: "/points/39.7456,-104.9903" });
@@ -139,11 +146,11 @@ const fedreg = await call("federal-register", {
 check("federal-register GET 200", fedreg.status === 200,
   `results=${Array.isArray(fedreg?.data?.results) ? fedreg.data.results.length : "?"}`);
 
-// ---- regression: premium 402 via router (sec-edgar) ----
-const sec402 = await call("sec-edgar", { path: "/submissions/CIK0000320193.json" });
-check("sec-edgar 402 via router", sec402.code === 402, `code=${sec402.code}`);
+// ---- regression: 501 not-implemented via router (planned source, no connector) ----
+const planned501 = await call("usgs-water", { path: "/anything" });
+check("usgs-water 501 via router", planned501.code === 501, `code=${planned501.code}`);
 
-// ---- 503 missing-credential via router (fred, no key) ----
+// ---- 503 missing-BYOK-key via router (fred, no key) ----
 const prevFred = process.env.FRED_API_KEY;
 delete process.env.FRED_API_KEY;
 const fred503 = await call("fred", { path: "/series/observations", params: { series_id: "CPIAUCSL", file_type: "json" } });
@@ -154,7 +161,7 @@ await client.close();
 
 // ================= direct, in-process =================
 
-// sec-edgar connector live, bypassing the 402 router gate.
+// sec-edgar connector live (keyless).
 const secDirect = await secEdgarConnector.execute({ path: "/submissions/CIK0000320193.json" });
 check("sec-edgar connector direct 200", secDirect.status === 200,
   `name="${(secDirect.data as any)?.name}"`);

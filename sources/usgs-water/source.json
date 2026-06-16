@@ -3,7 +3,6 @@
   "name": "USGS Water Data (NWIS → OGC migration)",
   "agency": "U.S. Geological Survey",
   "category": "water",
-  "tier": "premium",
   "status": "planned",
   "api": {
     "baseUrl": "https://api.waterdata.usgs.gov",
@@ -31,10 +30,6 @@
     "rateLimitBehavior": "error",
     "notes": "MIGRATION IN PROGRESS. Legacy NWIS (waterservices.usgs.gov) is keyless but being retired; the new api.waterdata.usgs.gov OGC API requires a key with per-key quotas. Endpoints below are provisional — vet before implementing."
   },
-  "pricing": {
-    "model": "metered",
-    "feePerCallCents": 1
-  },
   "llmDocs": {
     "summary": "US streamflow, gage height, and water-quality observations from USGS monitoring sites (NWIS, migrating to the new OGC-based Water Data API).",
     "queryGuide": "DO NOT rely on these endpoints yet — USGS is mid-migration from legacy NWIS (waterservices.usgs.gov/nwis/iv, keyless) to the new keyed OGC API at api.waterdata.usgs.gov. Confirm the target host, version, and collection paths against the live docs during the Vet phase before wiring a connector.",
@@ -50,7 +45,7 @@
     "gotchas": [
       "Endpoints are PROVISIONAL — USGS is migrating NWIS to a new keyed OGC API; legacy waterservices.usgs.gov may differ or be retired.",
       "Do not guess paths: vet the live docs and confirm which host (legacy vs api.waterdata.usgs.gov) to target before implementing.",
-      "Premium-gated pending the keyed-API quota model."
+      "Requires a bring-your-own API key (USGS_WATER_API_KEY); connector not yet shipped."
     ]
   },
   "compliance": {

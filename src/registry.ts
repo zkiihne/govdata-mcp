@@ -8,7 +8,14 @@ import {
   DISCOVERY_TOOL_DESCRIPTION,
   runDiscovery,
 } from "./tools/discovery.js";
+import {
+  AUTH_STATUS_TOOL_NAME,
+  AUTH_STATUS_TOOL_DESCRIPTION,
+  runAuthStatus,
+  byokNote,
+} from "./tools/auth-status.js";
 import { route, CONNECTORS } from "./router.js";
+import { getSource } from "./data/catalog.js";
 import type { RawQuery } from "./connectors/types.js";
 
 export const QUERY_TOOL_NAME = "query_data_source";
@@ -16,13 +23,15 @@ export const QUERY_TOOL_NAME = "query_data_source";
 /**
  * Per-connector LLM docs block appended to the query tool description, built
  * from every implemented connector so agents see each upstream's endpoint
- * patterns inline. Premium connectors are included (their docs are useful) but
- * querying them still returns 402 until billing lands.
+ * patterns inline. Keyed (bring-your-own-key) connectors get a one-line
+ * provisioning note from their source's auth block.
  */
 const CONNECTOR_DOCS = Object.values(CONNECTORS)
   .map((c) => {
     const d = c.describe();
-    return `--- ${d.name} (id: "${d.id}", tier: ${d.tier}) ---\n${d.description}`;
+    const spec = getSource(d.id);
+    const note = spec ? byokNote(spec) : "";
+    return `--- ${d.name} (id: "${d.id}") ---\n${d.description}${note}`;
   })
   .join("\n\n");
 
@@ -69,8 +78,17 @@ export function registerTools(server: Server): void {
         },
       },
       {
+        name: AUTH_STATUS_TOOL_NAME,
+        description: AUTH_STATUS_TOOL_DESCRIPTION,
+        inputSchema: {
+          type: "object",
+          properties: {},
+          additionalProperties: false,
+        },
+      },
+      {
         name: QUERY_TOOL_NAME,
-        description: `Query a government/public-data source by id (call ${DISCOVERY_TOOL_NAME} first to list ids). RAW PASSTHROUGH: your query is forwarded to the upstream API verbatim and the response is returned unmodified. Premium sources return a 402 until billing is enabled; planned sources return a 501 until their connector ships; a connector whose server-side credential is unset returns a 503.\n\n${CONNECTOR_DOCS}`,
+        description: `Query a government/public-data source by id (call ${DISCOVERY_TOOL_NAME} first to list ids). Everything is free. RAW PASSTHROUGH: your query is forwarded to the upstream API verbatim and the response is returned unmodified. Planned sources return a 501 until their connector ships; a bring-your-own-key source whose API key env var is unset returns a 503 (call ${AUTH_STATUS_TOOL_NAME} to see which keys to set).\n\n${CONNECTOR_DOCS}`,
         inputSchema: {
           type: "object",
           properties: {
@@ -117,6 +135,14 @@ export function registerTools(server: Server): void {
       return {
         content: [
           { type: "text", text: JSON.stringify(runDiscovery(), null, 2) },
+        ],
+      };
+    }
+
+    if (name === AUTH_STATUS_TOOL_NAME) {
+      return {
+        content: [
+          { type: "text", text: JSON.stringify(runAuthStatus(), null, 2) },
         ],
       };
     }

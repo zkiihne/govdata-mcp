@@ -9,7 +9,6 @@ import { z } from "zod";
  */
 
 export const STATUS = ["planned", "testing", "live", "degraded", "retired"] as const;
-export const TIER = ["free", "premium"] as const;
 export const AUTH_TYPE = ["none", "api-key", "oauth"] as const;
 export const AUTH_PLACEMENT = ["query", "header", "body"] as const;
 
@@ -41,11 +40,6 @@ const LimitsSchema = z.object({
   perRequestMaxSeries: z.number().nullable(),
   rateLimitBehavior: z.string(),
   notes: z.string(),
-});
-
-const PricingSchema = z.object({
-  model: z.string(),
-  feePerCallCents: z.number().nullable(),
 });
 
 const ExampleQuerySchema = z.object({
@@ -81,12 +75,10 @@ export const SourceSpecSchema = z
     name: z.string(),
     agency: z.string(),
     category: z.string(),
-    tier: z.enum(TIER),
     status: z.enum(STATUS),
     api: ApiSchema,
     auth: AuthSchema,
     limits: LimitsSchema,
-    pricing: PricingSchema,
     llmDocs: LlmDocsSchema,
     compliance: ComplianceSchema,
     meta: MetaSchema,

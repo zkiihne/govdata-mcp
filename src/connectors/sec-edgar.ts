@@ -10,7 +10,6 @@ import { applyParams } from "./params.js";
 
 const ID = "sec-edgar";
 const UPSTREAM = "https://data.sec.gov";
-const TIER = "premium" as const;
 
 /** Mirrors sources/sec-edgar/source.json → auth (type none; injector no-ops). */
 const AUTH: AuthSpec = {
@@ -57,13 +56,11 @@ COMMON ERRORS
 
 export const secEdgarConnector: Connector = {
   id: ID,
-  tier: TIER,
 
   describe(): ConnectorDescription {
     return {
       id: ID,
       name: "SEC EDGAR — Filings & XBRL Facts (U.S. SEC)",
-      tier: TIER,
       upstreamBaseUrl: UPSTREAM,
       description: DESCRIPTION,
     };

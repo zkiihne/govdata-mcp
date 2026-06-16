@@ -3,7 +3,6 @@
   "name": "BLS Public Data API",
   "agency": "Bureau of Labor Statistics",
   "category": "economy",
-  "tier": "free",
   "status": "live",
   "api": {
     "baseUrl": "https://api.bls.gov/publicAPI/v2",
@@ -30,10 +29,6 @@
     "perRequestMaxSeries": 50,
     "rateLimitBehavior": "hard-reject",
     "notes": "Quota is per key — multiplexing risk, monitor usage"
-  },
-  "pricing": {
-    "model": "free",
-    "feePerCallCents": null
   },
   "llmDocs": {
     "summary": "US labor statistics: unemployment, CPI, wages, employment by industry and region.",

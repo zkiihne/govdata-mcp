@@ -57,13 +57,11 @@ COMMON ERRORS
 
 export const noaaConnector: Connector = {
   id: ID,
-  tier: "free",
 
   describe(): ConnectorDescription {
     return {
       id: ID,
       name: "Weather & Forecasts (NOAA / National Weather Service)",
-      tier: "free",
       upstreamBaseUrl: UPSTREAM,
       description: DESCRIPTION,
     };

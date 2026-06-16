@@ -10,7 +10,6 @@ import { applyParams } from "./params.js";
 
 const ID = "congress-gov";
 const UPSTREAM = "https://api.congress.gov/v3";
-const TIER = "free" as const;
 
 /** Mirrors sources/congress-gov/source.json → auth (api-key, query "api_key"). */
 const AUTH: AuthSpec = {
@@ -46,13 +45,11 @@ COMMON ERRORS
 
 export const congressGovConnector: Connector = {
   id: ID,
-  tier: TIER,
 
   describe(): ConnectorDescription {
     return {
       id: ID,
       name: "US Legislation (Congress.gov)",
-      tier: TIER,
       upstreamBaseUrl: UPSTREAM,
       description: DESCRIPTION,
     };

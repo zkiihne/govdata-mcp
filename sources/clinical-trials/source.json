@@ -3,7 +3,6 @@
   "name": "ClinicalTrials.gov — study registry (v2)",
   "agency": "U.S. National Library of Medicine (NIH)",
   "category": "health",
-  "tier": "free",
   "status": "live",
   "api": {
     "baseUrl": "https://clinicaltrials.gov/api/v2",
@@ -36,10 +35,6 @@
     "perRequestMaxSeries": null,
     "rateLimitBehavior": "throttle",
     "notes": "No API key. Roughly 50 requests/minute per IP. Default pageSize is 10; set it explicitly. Max pageSize 1000."
-  },
-  "pricing": {
-    "model": "free",
-    "feePerCallCents": null
   },
   "llmDocs": {
     "summary": "Registry of clinical studies worldwide: conditions, interventions, eligibility, sponsors, status, locations, and results.",

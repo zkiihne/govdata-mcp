@@ -10,7 +10,6 @@ import { applyParams } from "./params.js";
 
 const ID = "epa-airnow";
 const UPSTREAM = "https://www.airnowapi.org";
-const TIER = "free" as const;
 
 /** Mirrors sources/epa-airnow/source.json → auth (api-key, query "API_KEY"). */
 const AUTH: AuthSpec = {
@@ -53,13 +52,11 @@ COMMON ERRORS
 
 export const epaAirnowConnector: Connector = {
   id: ID,
-  tier: TIER,
 
   describe(): ConnectorDescription {
     return {
       id: ID,
       name: "Air Quality (EPA AirNow)",
-      tier: TIER,
       upstreamBaseUrl: UPSTREAM,
       description: DESCRIPTION,
     };

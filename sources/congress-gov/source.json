@@ -3,7 +3,6 @@
   "name": "Congress.gov API",
   "agency": "Library of Congress",
   "category": "legislative",
-  "tier": "free",
   "status": "live",
   "api": {
     "baseUrl": "https://api.congress.gov/v3",
@@ -37,10 +36,6 @@
     "rateLimitBehavior": "error",
     "notes": "Free api.data.gov key required. ~5000 requests/hour per key, then HTTP 429. Default limit 20, max 250 per page."
   },
-  "pricing": {
-    "model": "free",
-    "feePerCallCents": null
-  },
   "llmDocs": {
     "summary": "US legislative data: bills, amendments, members, committees, the Congressional Record, nominations, and treaties from 1973 onward.",
     "queryGuide": "Append ?format=json and the api_key (injected by the gateway). Resource lists at /bill, /member, /committee, /nomination; detail at /bill/{congress}/{billType}/{billNumber}. Page with offset and limit (max 250). Filter bill lists by fromDateTime/toDateTime and sort.",
@@ -50,7 +45,9 @@
         "request": {
           "method": "GET",
           "path": "/bill/118/hr/1",
-          "params": { "format": "json" }
+          "params": {
+            "format": "json"
+          }
         }
       },
       {
@@ -58,7 +55,11 @@
         "request": {
           "method": "GET",
           "path": "/bill",
-          "params": { "format": "json", "sort": "updateDate+desc", "limit": "20" }
+          "params": {
+            "format": "json",
+            "sort": "updateDate+desc",
+            "limit": "20"
+          }
         }
       }
     ],

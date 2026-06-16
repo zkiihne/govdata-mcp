@@ -1,9 +1,8 @@
 {
   "id": "sec-edgar",
-  "name": "SEC EDGAR \u2014 company filings & XBRL facts",
+  "name": "SEC EDGAR — company filings & XBRL facts",
   "agency": "U.S. Securities and Exchange Commission",
   "category": "finance",
-  "tier": "premium",
   "status": "live",
   "api": {
     "baseUrl": "https://data.sec.gov",
@@ -43,10 +42,6 @@
     "rateLimitBehavior": "hard-reject",
     "notes": "No key, but a descriptive User-Agent (AppName contact@email) is mandatory. Max ~10 requests/sec per IP."
   },
-  "pricing": {
-    "model": "metered",
-    "feePerCallCents": 2
-  },
   "llmDocs": {
     "summary": "US public-company filings, financial statements, and XBRL-tagged facts from SEC EDGAR.",
     "queryGuide": "CIK must be zero-padded to 10 digits. Start from /submissions/CIK{cik}.json to list filings, or pull a single metric via companyconcept (taxonomy us-gaap, tag e.g. Revenues).",
@@ -69,13 +64,13 @@
     "gotchas": [
       "CIK must be zero-padded to 10 digits",
       "User-Agent header is mandatory",
-      "Premium tier \u2014 metered behind HTTP 402 until billing is enabled"
+      "Free and keyless — send a descriptive User-Agent header (SEC requires one)."
     ]
   },
   "compliance": {
     "license": "public-domain",
     "tosUrl": "https://www.sec.gov/os/webmaster-faq#developers",
-    "redistributionNotes": "US federal data, public domain. Premium tier reflects gateway metering, not upstream cost.",
+    "redistributionNotes": "US federal data, public domain.",
     "reviewedDate": "2026-06-11"
   },
   "meta": {

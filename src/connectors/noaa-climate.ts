@@ -10,7 +10,6 @@ import { applyParams } from "./params.js";
 
 const ID = "noaa-climate";
 const UPSTREAM = "https://www.ncei.noaa.gov/cdo-web/api/v2";
-const TIER = "free" as const;
 
 /** Mirrors sources/noaa-climate/source.json → auth (api-key, header "token"). */
 const AUTH: AuthSpec = {
@@ -51,13 +50,11 @@ COMMON ERRORS
 
 export const noaaClimateConnector: Connector = {
   id: ID,
-  tier: TIER,
 
   describe(): ConnectorDescription {
     return {
       id: ID,
       name: "Historical Climate (NOAA CDO v2 / NCEI)",
-      tier: TIER,
       upstreamBaseUrl: UPSTREAM,
       description: DESCRIPTION,
     };

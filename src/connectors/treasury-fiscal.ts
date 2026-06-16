@@ -10,7 +10,6 @@ import { applyParams } from "./params.js";
 
 const ID = "treasury-fiscal";
 const UPSTREAM = "https://api.fiscaldata.treasury.gov/services/api/fiscal_service";
-const TIER = "free" as const;
 
 /** Mirrors sources/treasury-fiscal/source.json → auth (none; injector no-ops). */
 const AUTH: AuthSpec = {
@@ -46,13 +45,11 @@ COMMON ERRORS
 
 export const treasuryFiscalConnector: Connector = {
   id: ID,
-  tier: TIER,
 
   describe(): ConnectorDescription {
     return {
       id: ID,
       name: "Treasury Fiscal Data — Debt & Rates (U.S. Treasury)",
-      tier: TIER,
       upstreamBaseUrl: UPSTREAM,
       description: DESCRIPTION,
     };

@@ -10,7 +10,6 @@ import { applyParams } from "./params.js";
 
 const ID = "regulations-gov";
 const UPSTREAM = "https://api.regulations.gov/v4";
-const TIER = "premium" as const;
 
 /** Mirrors sources/regulations-gov/source.json → auth (api-key, header "X-Api-Key"). */
 const AUTH: AuthSpec = {
@@ -21,7 +20,7 @@ const AUTH: AuthSpec = {
   signupUrl: "https://open.gsa.gov/api/regulationsgov/#getting-started",
 };
 
-const DESCRIPTION = `Raw passthrough to the Regulations.gov API v4 (api.regulations.gov/v4). US federal rulemaking: regulatory documents, dockets, and public comments. Premium (Tier 2) — the gateway returns 402 until metering is enabled. The X-Api-Key header is injected by the gateway.
+const DESCRIPTION = `Raw passthrough to the Regulations.gov API v4 (api.regulations.gov/v4). US federal rulemaking: regulatory documents, dockets, and public comments. Bring-your-own-key: set env REGULATIONS_API_KEY (free key from api.data.gov). The X-Api-Key header is injected from that env var; until it is set, queries return 503.
 
 ENDPOINT PATTERNS
 - GET /documents — search rules, proposed rules, notices, supporting materials.
@@ -39,19 +38,17 @@ EXAMPLE QUERIES
    method "GET", path "/comments", params {"filter[postedDate][ge]":"2024-01-01","page[size]":"10"}
 
 COMMON ERRORS
-- 402: premium gating — metering not yet enabled.
+- 503: REGULATIONS_API_KEY env var not set (bring-your-own-key).
 - 400 "page size must be 5 or greater": page[size] minimum is 5 (max 250).
 - 429: 1000 req/hr per key. Results cap at 5000/query — narrow with date/agency filters.`;
 
 export const regulationsGovConnector: Connector = {
   id: ID,
-  tier: TIER,
 
   describe(): ConnectorDescription {
     return {
       id: ID,
       name: "Federal Rulemaking (Regulations.gov)",
-      tier: TIER,
       upstreamBaseUrl: UPSTREAM,
       description: DESCRIPTION,
     };

@@ -12,18 +12,18 @@ Work the five phases in order. Each phase has a gate; do not skip ahead.
 
 ## Phase 1 — Vet
 
-Decide whether we should carry the source at all, and at what tier.
+Decide whether we should carry the source at all. Everything we ship is free;
+keyed sources are bring-your-own-key (the user sets the key as an env var).
 
 1. Read the upstream Terms of Service. Fill `compliance.license`,
-   `compliance.tosUrl`, `compliance.redistributionNotes`.
+   `compliance.tosUrl`, `compliance.redistributionNotes`. Confirm the ToS
+   permits the end user querying with their own key (BYOK) — we hold no key.
 2. Check the access model: does it need a key? per-IP or per-key quotas? Fill
    `limits` (`dailyQuota`, `perRequestMaxSeries`, `rateLimitBehavior`, `notes`).
-3. Tier decision, driven by `limits` + `pricing`:
-   - **free** — keyless or free-key, generous quota, redistributable → Tier 1.5.
-   - **premium** — metered cost, restrictive ToS, or we add value worth gating →
-     Tier 2 (returns HTTP 402 until billing is enabled). Set `pricing.model` and
-     `pricing.feePerCallCents`.
-4. **GATE:** the source may not advance to `status: live`/`degraded` until
+   If a key is required, fill `auth` (`type: api-key`, `credentialRef: env:VAR`,
+   `signupUrl`) so `auth_status` and the tool docs can tell the user where to
+   get a free key.
+3. **GATE:** the source may not advance to `status: live`/`degraded` until
    `compliance.reviewedDate` is set (the schema enforces this). Leave it `null`
    while planned; set it the day a human signs off on the ToS.
 

@@ -10,7 +10,6 @@ import { applyParams } from "./params.js";
 
 const ID = "fema-open";
 const UPSTREAM = "https://www.fema.gov/api/open";
-const TIER = "free" as const;
 
 /** Mirrors sources/fema-open/source.json → auth (none; injector no-ops). */
 const AUTH: AuthSpec = {
@@ -45,13 +44,11 @@ COMMON ERRORS
 
 export const femaOpenConnector: Connector = {
   id: ID,
-  tier: TIER,
 
   describe(): ConnectorDescription {
     return {
       id: ID,
       name: "OpenFEMA — Disasters & NFIP (FEMA)",
-      tier: TIER,
       upstreamBaseUrl: UPSTREAM,
       description: DESCRIPTION,
     };

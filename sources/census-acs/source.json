@@ -1,9 +1,8 @@
 {
   "id": "census-acs",
-  "name": "US Census Bureau \u2014 American Community Survey",
+  "name": "US Census Bureau — American Community Survey",
   "agency": "U.S. Census Bureau",
   "category": "demographics",
-  "tier": "free",
   "status": "live",
   "api": {
     "baseUrl": "https://api.census.gov/data",
@@ -30,10 +29,6 @@
     "perRequestMaxSeries": null,
     "rateLimitBehavior": "throttle",
     "notes": "Calls without a key are limited to ~500/day per IP; a free key raises the cap. Max 50 variables per get= request."
-  },
-  "pricing": {
-    "model": "free",
-    "feePerCallCents": null
   },
   "llmDocs": {
     "summary": "US population, income, housing, education and demographic estimates by geography (nation, state, county, tract, block group).",

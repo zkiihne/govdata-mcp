@@ -3,18 +3,42 @@
   "name": "NWS / NOAA Weather API",
   "agency": "National Weather Service (NOAA)",
   "category": "weather",
-  "tier": "free",
   "status": "live",
   "api": {
     "baseUrl": "https://api.weather.gov",
     "protocol": "rest-json",
     "docsUrl": "https://www.weather.gov/documentation/services-web-api",
     "endpoints": [
-      { "id": "points", "path": "/points/{lat},{lon}", "method": "GET", "description": "Resolve a lat/lon to grid, forecast office, and forecast URLs" },
-      { "id": "forecast", "path": "/gridpoints/{office}/{gridX},{gridY}/forecast", "method": "GET", "description": "12-hour-period forecast for a grid cell" },
-      { "id": "hourly", "path": "/gridpoints/{office}/{gridX},{gridY}/forecast/hourly", "method": "GET", "description": "Hourly forecast for a grid cell" },
-      { "id": "alerts-active", "path": "/alerts/active", "method": "GET", "description": "Active watches/warnings/advisories, filterable by area/point/zone" },
-      { "id": "stations-observations", "path": "/stations/{stationId}/observations/latest", "method": "GET", "description": "Latest observation from a station" }
+      {
+        "id": "points",
+        "path": "/points/{lat},{lon}",
+        "method": "GET",
+        "description": "Resolve a lat/lon to grid, forecast office, and forecast URLs"
+      },
+      {
+        "id": "forecast",
+        "path": "/gridpoints/{office}/{gridX},{gridY}/forecast",
+        "method": "GET",
+        "description": "12-hour-period forecast for a grid cell"
+      },
+      {
+        "id": "hourly",
+        "path": "/gridpoints/{office}/{gridX},{gridY}/forecast/hourly",
+        "method": "GET",
+        "description": "Hourly forecast for a grid cell"
+      },
+      {
+        "id": "alerts-active",
+        "path": "/alerts/active",
+        "method": "GET",
+        "description": "Active watches/warnings/advisories, filterable by area/point/zone"
+      },
+      {
+        "id": "stations-observations",
+        "path": "/stations/{stationId}/observations/latest",
+        "method": "GET",
+        "description": "Latest observation from a station"
+      }
     ]
   },
   "auth": {
@@ -30,13 +54,27 @@
     "rateLimitBehavior": "throttle",
     "notes": "No published hard quota. Requires a descriptive User-Agent header (contact email) or requests are rejected. Responses cached; respect Cache-Control/Expires."
   },
-  "pricing": { "model": "free", "feePerCallCents": null },
   "llmDocs": {
     "summary": "US weather forecasts, hourly forecasts, active alerts, and station observations. No API key; two-step flow (geocode point -> follow returned forecast URLs).",
     "queryGuide": "Always start with GET /points/{lat},{lon}; the response 'properties' contains gridId, gridX, gridY, and ready-made forecast/forecastHourly URLs. Do not construct gridpoint URLs by hand. US locations only.",
     "exampleQueries": [
-      { "intent": "Forecast for Washington DC (step 1: resolve point)", "request": { "method": "GET", "path": "/points/38.8977,-77.0365" } },
-      { "intent": "Active alerts for a state", "request": { "method": "GET", "path": "/alerts/active", "params": { "area": "CA" } } }
+      {
+        "intent": "Forecast for Washington DC (step 1: resolve point)",
+        "request": {
+          "method": "GET",
+          "path": "/points/38.8977,-77.0365"
+        }
+      },
+      {
+        "intent": "Active alerts for a state",
+        "request": {
+          "method": "GET",
+          "path": "/alerts/active",
+          "params": {
+            "area": "CA"
+          }
+        }
+      }
     ],
     "gotchas": [
       "User-Agent header is mandatory; include a contact email or you get 403 (the connector sets one automatically).",

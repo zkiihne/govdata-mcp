@@ -10,7 +10,6 @@ import { applyParams } from "./params.js";
 
 const ID = "openfda";
 const UPSTREAM = "https://api.fda.gov";
-const TIER = "free" as const;
 
 /** Mirrors sources/openfda/source.json → auth (api-key, query "api_key"). */
 const AUTH: AuthSpec = {
@@ -48,13 +47,11 @@ COMMON ERRORS
 
 export const openfdaConnector: Connector = {
   id: ID,
-  tier: TIER,
 
   describe(): ConnectorDescription {
     return {
       id: ID,
       name: "FDA Drugs/Devices/Food (openFDA)",
-      tier: TIER,
       upstreamBaseUrl: UPSTREAM,
       description: DESCRIPTION,
     };

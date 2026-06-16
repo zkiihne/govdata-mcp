@@ -10,7 +10,6 @@ import { applyParams } from "./params.js";
 
 const ID = "usgs-earthquake";
 const UPSTREAM = "https://earthquake.usgs.gov/fdsnws/event/1";
-const TIER = "free" as const;
 
 /** Mirrors sources/usgs-earthquake/source.json → auth (none; injector no-ops). */
 const AUTH: AuthSpec = {
@@ -46,13 +45,11 @@ COMMON ERRORS
 
 export const usgsEarthquakeConnector: Connector = {
   id: ID,
-  tier: TIER,
 
   describe(): ConnectorDescription {
     return {
       id: ID,
       name: "USGS Earthquake Catalog (FDSN event)",
-      tier: TIER,
       upstreamBaseUrl: UPSTREAM,
       description: DESCRIPTION,
     };

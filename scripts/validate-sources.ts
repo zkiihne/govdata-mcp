@@ -9,7 +9,8 @@ import { loadSources } from "../src/catalog/loader.js";
 const { specs, errors } = loadSources();
 
 for (const s of specs) {
-  console.log(`  ok  ${s.id.padEnd(20)} ${s.tier}/${s.status}`);
+  const key = s.auth.type === "none" ? "keyless" : "byok";
+  console.log(`  ok  ${s.id.padEnd(20)} ${s.status.padEnd(8)} ${key}`);
 }
 
 if (errors.length > 0) {

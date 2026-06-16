@@ -10,7 +10,6 @@ import { applyParams } from "./params.js";
 
 const ID = "bls-public-data";
 const UPSTREAM = "https://api.bls.gov/publicAPI/v2";
-const TIER = "free" as const;
 
 /** Mirrors sources/bls-public-data/source.json → auth (api-key, body "registrationkey"). */
 const AUTH: AuthSpec = {
@@ -54,13 +53,11 @@ COMMON ERRORS
 
 export const blsConnector: Connector = {
   id: ID,
-  tier: TIER,
 
   describe(): ConnectorDescription {
     return {
       id: ID,
       name: "Labor Statistics (BLS Public Data v2)",
-      tier: TIER,
       upstreamBaseUrl: UPSTREAM,
       description: DESCRIPTION,
     };

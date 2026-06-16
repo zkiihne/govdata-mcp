@@ -10,7 +10,6 @@ import { applyParams } from "./params.js";
 
 const ID = "fdic-bankfind";
 const UPSTREAM = "https://api.fdic.gov/banks";
-const TIER = "free" as const;
 
 /** Mirrors sources/fdic-bankfind/source.json → auth (none; injector no-ops). */
 const AUTH: AuthSpec = {
@@ -46,13 +45,11 @@ COMMON ERRORS
 
 export const fdicBankfindConnector: Connector = {
   id: ID,
-  tier: TIER,
 
   describe(): ConnectorDescription {
     return {
       id: ID,
       name: "FDIC BankFind Suite (FDIC)",
-      tier: TIER,
       upstreamBaseUrl: UPSTREAM,
       description: DESCRIPTION,
     };

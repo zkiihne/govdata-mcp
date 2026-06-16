@@ -9,7 +9,6 @@ export const SOURCES: readonly SourceSpec[] = [
     "name": "BEA — Bureau of Economic Analysis API",
     "agency": "U.S. Bureau of Economic Analysis",
     "category": "economy",
-    "tier": "free",
     "status": "live",
     "api": {
       "baseUrl": "https://apps.bea.gov/api",
@@ -36,10 +35,6 @@ export const SOURCES: readonly SourceSpec[] = [
       "perRequestMaxSeries": null,
       "rateLimitBehavior": "error",
       "notes": "Free UserID key required. Throttle: max 100 requests, 100MB, and 30 errors per minute per IP/key — exceeding it blocks for 1 hour."
-    },
-    "pricing": {
-      "model": "free",
-      "feePerCallCents": null
     },
     "llmDocs": {
       "summary": "US economic accounts: GDP (NIPA), regional income/GDP, input-output, international trade and investment, and fixed assets.",
@@ -96,7 +91,6 @@ export const SOURCES: readonly SourceSpec[] = [
     "name": "BLS Public Data API",
     "agency": "Bureau of Labor Statistics",
     "category": "economy",
-    "tier": "free",
     "status": "live",
     "api": {
       "baseUrl": "https://api.bls.gov/publicAPI/v2",
@@ -123,10 +117,6 @@ export const SOURCES: readonly SourceSpec[] = [
       "perRequestMaxSeries": 50,
       "rateLimitBehavior": "hard-reject",
       "notes": "Quota is per key — multiplexing risk, monitor usage"
-    },
-    "pricing": {
-      "model": "free",
-      "feePerCallCents": null
     },
     "llmDocs": {
       "summary": "US labor statistics: unemployment, CPI, wages, employment by industry and region.",
@@ -199,7 +189,6 @@ export const SOURCES: readonly SourceSpec[] = [
     "name": "US Census Bureau — American Community Survey",
     "agency": "U.S. Census Bureau",
     "category": "demographics",
-    "tier": "free",
     "status": "live",
     "api": {
       "baseUrl": "https://api.census.gov/data",
@@ -226,10 +215,6 @@ export const SOURCES: readonly SourceSpec[] = [
       "perRequestMaxSeries": null,
       "rateLimitBehavior": "throttle",
       "notes": "Calls without a key are limited to ~500/day per IP; a free key raises the cap. Max 50 variables per get= request."
-    },
-    "pricing": {
-      "model": "free",
-      "feePerCallCents": null
     },
     "llmDocs": {
       "summary": "US population, income, housing, education and demographic estimates by geography (nation, state, county, tract, block group).",
@@ -282,7 +267,6 @@ export const SOURCES: readonly SourceSpec[] = [
     "name": "ClinicalTrials.gov — study registry (v2)",
     "agency": "U.S. National Library of Medicine (NIH)",
     "category": "health",
-    "tier": "free",
     "status": "live",
     "api": {
       "baseUrl": "https://clinicaltrials.gov/api/v2",
@@ -315,10 +299,6 @@ export const SOURCES: readonly SourceSpec[] = [
       "perRequestMaxSeries": null,
       "rateLimitBehavior": "throttle",
       "notes": "No API key. Roughly 50 requests/minute per IP. Default pageSize is 10; set it explicitly. Max pageSize 1000."
-    },
-    "pricing": {
-      "model": "free",
-      "feePerCallCents": null
     },
     "llmDocs": {
       "summary": "Registry of clinical studies worldwide: conditions, interventions, eligibility, sponsors, status, locations, and results.",
@@ -369,7 +349,6 @@ export const SOURCES: readonly SourceSpec[] = [
     "name": "Congress.gov API",
     "agency": "Library of Congress",
     "category": "legislative",
-    "tier": "free",
     "status": "live",
     "api": {
       "baseUrl": "https://api.congress.gov/v3",
@@ -402,10 +381,6 @@ export const SOURCES: readonly SourceSpec[] = [
       "perRequestMaxSeries": null,
       "rateLimitBehavior": "error",
       "notes": "Free api.data.gov key required. ~5000 requests/hour per key, then HTTP 429. Default limit 20, max 250 per page."
-    },
-    "pricing": {
-      "model": "free",
-      "feePerCallCents": null
     },
     "llmDocs": {
       "summary": "US legislative data: bills, amendments, members, committees, the Congressional Record, nominations, and treaties from 1973 onward.",
@@ -458,7 +433,6 @@ export const SOURCES: readonly SourceSpec[] = [
     "name": "EIA Energy Data API (v2)",
     "agency": "U.S. Energy Information Administration",
     "category": "energy",
-    "tier": "free",
     "status": "live",
     "api": {
       "baseUrl": "https://api.eia.gov/v2",
@@ -491,10 +465,6 @@ export const SOURCES: readonly SourceSpec[] = [
       "perRequestMaxSeries": null,
       "rateLimitBehavior": "error",
       "notes": "Free key required (api_key query param). Up to 5000 rows per request; page with offset/length."
-    },
-    "pricing": {
-      "model": "free",
-      "feePerCallCents": null
     },
     "llmDocs": {
       "summary": "US energy statistics: electricity prices and generation, petroleum, natural gas, coal, renewables, CO2 emissions, and international energy.",
@@ -545,7 +515,6 @@ export const SOURCES: readonly SourceSpec[] = [
     "name": "EPA AirNow API",
     "agency": "Environmental Protection Agency",
     "category": "environment",
-    "tier": "free",
     "status": "live",
     "api": {
       "baseUrl": "https://www.airnowapi.org",
@@ -590,10 +559,6 @@ export const SOURCES: readonly SourceSpec[] = [
       "perRequestMaxSeries": null,
       "rateLimitBehavior": "hard-reject",
       "notes": "Default rate limit ~500 requests/hour per key (confirm in account dashboard). Verify exact hourly cap before relying on it."
-    },
-    "pricing": {
-      "model": "free",
-      "feePerCallCents": null
     },
     "llmDocs": {
       "summary": "Real-time and forecast US air quality (AQI) for ozone, PM2.5, PM10 by ZIP, lat/lon, or bounding box.",
@@ -648,7 +613,6 @@ export const SOURCES: readonly SourceSpec[] = [
     "name": "FDIC BankFind Suite",
     "agency": "Federal Deposit Insurance Corporation",
     "category": "finance",
-    "tier": "free",
     "status": "live",
     "api": {
       "baseUrl": "https://api.fdic.gov/banks",
@@ -687,10 +651,6 @@ export const SOURCES: readonly SourceSpec[] = [
       "perRequestMaxSeries": null,
       "rateLimitBehavior": "throttle",
       "notes": "No API key. Default limit is 10; max limit per request is 10000. Paginate with offset. No published hard quota."
-    },
-    "pricing": {
-      "model": "free",
-      "feePerCallCents": null
     },
     "llmDocs": {
       "summary": "FDIC-insured bank directory, quarterly financial metrics, and historical failures, searchable by name, location, and identifier.",
@@ -747,7 +707,6 @@ export const SOURCES: readonly SourceSpec[] = [
     "name": "Federal Register API",
     "agency": "Office of the Federal Register / GPO",
     "category": "regulations",
-    "tier": "free",
     "status": "live",
     "api": {
       "baseUrl": "https://www.federalregister.gov/api/v1",
@@ -780,10 +739,6 @@ export const SOURCES: readonly SourceSpec[] = [
       "perRequestMaxSeries": null,
       "rateLimitBehavior": "throttle",
       "notes": "No API key. per_page max 1000; results capped at 2000 documents per search (page beyond that is rejected). No published hard quota."
-    },
-    "pricing": {
-      "model": "free",
-      "feePerCallCents": null
     },
     "llmDocs": {
       "summary": "The daily journal of the US federal government: final and proposed rules, agency notices, and presidential documents, searchable by term, agency, type, and date.",
@@ -841,7 +796,6 @@ export const SOURCES: readonly SourceSpec[] = [
     "name": "OpenFEMA — disasters, NFIP & assistance",
     "agency": "Federal Emergency Management Agency",
     "category": "emergency-management",
-    "tier": "free",
     "status": "live",
     "api": {
       "baseUrl": "https://www.fema.gov/api/open",
@@ -880,10 +834,6 @@ export const SOURCES: readonly SourceSpec[] = [
       "perRequestMaxSeries": null,
       "rateLimitBehavior": "throttle",
       "notes": "No API key. $top caps at 10000 records per request; default page size is 1000. Paginate with $skip. No published hard quota."
-    },
-    "pricing": {
-      "model": "free",
-      "feePerCallCents": null
     },
     "llmDocs": {
       "summary": "FEMA disaster declarations, National Flood Insurance Program claims, and individual/public assistance, queryable by state, incident type, and date.",
@@ -938,7 +888,6 @@ export const SOURCES: readonly SourceSpec[] = [
     "name": "FRED — Federal Reserve Economic Data",
     "agency": "Federal Reserve Bank of St. Louis",
     "category": "economy",
-    "tier": "free",
     "status": "live",
     "api": {
       "baseUrl": "https://api.stlouisfed.org/fred",
@@ -971,10 +920,6 @@ export const SOURCES: readonly SourceSpec[] = [
       "perRequestMaxSeries": null,
       "rateLimitBehavior": "hard-reject",
       "notes": "120 requests/minute per key. Default response is XML — request file_type=json explicitly."
-    },
-    "pricing": {
-      "model": "free",
-      "feePerCallCents": null
     },
     "llmDocs": {
       "summary": "US and international macroeconomic time series: GDP, inflation, interest rates, employment, money supply.",
@@ -1026,7 +971,6 @@ export const SOURCES: readonly SourceSpec[] = [
     "name": "NOAA Climate Data Online (CDO)",
     "agency": "NOAA National Centers for Environmental Information",
     "category": "climate",
-    "tier": "free",
     "status": "live",
     "api": {
       "baseUrl": "https://www.ncei.noaa.gov/cdo-web/api/v2",
@@ -1065,10 +1009,6 @@ export const SOURCES: readonly SourceSpec[] = [
       "perRequestMaxSeries": 1000,
       "rateLimitBehavior": "hard-reject",
       "notes": "5 requests/second and 10,000 requests/day per token. Distinct from the keyless real-time api.weather.gov (noaa-weather)."
-    },
-    "pricing": {
-      "model": "free",
-      "feePerCallCents": null
     },
     "llmDocs": {
       "summary": "Historical/archival US climate records: daily and monthly temperature, precipitation, and station normals.",
@@ -1118,7 +1058,6 @@ export const SOURCES: readonly SourceSpec[] = [
     "name": "NWS / NOAA Weather API",
     "agency": "National Weather Service (NOAA)",
     "category": "weather",
-    "tier": "free",
     "status": "live",
     "api": {
       "baseUrl": "https://api.weather.gov",
@@ -1170,10 +1109,6 @@ export const SOURCES: readonly SourceSpec[] = [
       "rateLimitBehavior": "throttle",
       "notes": "No published hard quota. Requires a descriptive User-Agent header (contact email) or requests are rejected. Responses cached; respect Cache-Control/Expires."
     },
-    "pricing": {
-      "model": "free",
-      "feePerCallCents": null
-    },
     "llmDocs": {
       "summary": "US weather forecasts, hourly forecasts, active alerts, and station observations. No API key; two-step flow (geocode point -> follow returned forecast URLs).",
       "queryGuide": "Always start with GET /points/{lat},{lon}; the response 'properties' contains gridId, gridX, gridY, and ready-made forecast/forecastHourly URLs. Do not construct gridpoint URLs by hand. US locations only.",
@@ -1220,7 +1155,6 @@ export const SOURCES: readonly SourceSpec[] = [
     "name": "NVD — National Vulnerability Database (CVE)",
     "agency": "NIST (National Institute of Standards and Technology)",
     "category": "cybersecurity",
-    "tier": "free",
     "status": "live",
     "api": {
       "baseUrl": "https://services.nvd.nist.gov/rest/json",
@@ -1253,10 +1187,6 @@ export const SOURCES: readonly SourceSpec[] = [
       "perRequestMaxSeries": null,
       "rateLimitBehavior": "throttle",
       "notes": "Works keyless at 5 requests per 30s rolling window; a free key raises it to 50 per 30s. resultsPerPage max 2000. Inject the key only when set (optional)."
-    },
-    "pricing": {
-      "model": "free",
-      "feePerCallCents": null
     },
     "llmDocs": {
       "summary": "NIST National Vulnerability Database: CVE records with CVSS scores, affected products (CPE), references, and change history.",
@@ -1309,7 +1239,6 @@ export const SOURCES: readonly SourceSpec[] = [
     "name": "openFDA API",
     "agency": "U.S. Food and Drug Administration",
     "category": "health",
-    "tier": "free",
     "status": "live",
     "api": {
       "baseUrl": "https://api.fda.gov",
@@ -1348,10 +1277,6 @@ export const SOURCES: readonly SourceSpec[] = [
       "perRequestMaxSeries": null,
       "rateLimitBehavior": "throttle",
       "notes": "Works keyless at lower limits (240 req/min, 1000/day per IP); a free api_key raises it (240 req/min, 120000/day). Inject the key only when set (mirror census-acs)."
-    },
-    "pricing": {
-      "model": "free",
-      "feePerCallCents": null
     },
     "llmDocs": {
       "summary": "FDA data on drugs, devices, and foods: adverse events, recalls/enforcement, product labels, and the NDC directory.",
@@ -1404,7 +1329,6 @@ export const SOURCES: readonly SourceSpec[] = [
     "name": "Regulations.gov API (v4)",
     "agency": "U.S. General Services Administration / eRulemaking",
     "category": "regulations",
-    "tier": "premium",
     "status": "live",
     "api": {
       "baseUrl": "https://api.regulations.gov/v4",
@@ -1444,10 +1368,6 @@ export const SOURCES: readonly SourceSpec[] = [
       "rateLimitBehavior": "error",
       "notes": "api.data.gov key required in X-Api-Key. Hard limit 1000 requests/hour per key, then HTTP 429. page[size] max 250; results capped at 5000 per query (20 pages)."
     },
-    "pricing": {
-      "model": "metered",
-      "feePerCallCents": 1
-    },
     "llmDocs": {
       "summary": "US federal rulemaking: regulatory documents, dockets, and public comments from Regulations.gov.",
       "queryGuide": "GET /documents, /dockets, or /comments with filter[*] params (e.g. filter[searchTerm], filter[agencyId], filter[postedDate][ge]), sort, page[size] (max 250), page[number]. The X-Api-Key header is injected by the gateway. Detail records are fetched by id at /documents/{id}, etc.",
@@ -1478,7 +1398,7 @@ export const SOURCES: readonly SourceSpec[] = [
       ],
       "gotchas": [
         "Filters and paging are bracketed: filter[searchTerm], page[size], page[number].",
-        "1000 req/hr hard cap per key, then 429 — premium-gated for shared-key metering.",
+        "1000 req/hr hard cap per key, then 429.",
         "Results capped at 5000 per query (page[size] max 250 x 20 pages); use date/agency filters to narrow.",
         "Requires an api.data.gov key (REGULATIONS_API_KEY)."
       ]
@@ -1500,7 +1420,6 @@ export const SOURCES: readonly SourceSpec[] = [
     "name": "SAM.gov — Entity & Exclusions API",
     "agency": "U.S. General Services Administration",
     "category": "procurement",
-    "tier": "premium",
     "status": "planned",
     "api": {
       "baseUrl": "https://api.sam.gov",
@@ -1532,11 +1451,7 @@ export const SOURCES: readonly SourceSpec[] = [
       "dailyQuota": null,
       "perRequestMaxSeries": null,
       "rateLimitBehavior": "error",
-      "notes": "Personal/system api_key required, tied to a SAM.gov account with role-based daily caps (often ~10 req/day for unauthenticated-tier keys, more for federal/system accounts). Tight per-key quotas — premium-gated."
-    },
-    "pricing": {
-      "model": "metered",
-      "feePerCallCents": 1
+      "notes": "Personal/system api_key required, tied to a SAM.gov account with role-based daily caps (often ~10 req/day for unauthenticated-tier keys, more for federal/system accounts). Tight per-key quotas."
     },
     "llmDocs": {
       "summary": "Federal entity registrations (UEI/CAGE, business details) and the government-wide exclusions (debarment) list from SAM.gov.",
@@ -1567,7 +1482,7 @@ export const SOURCES: readonly SourceSpec[] = [
       ],
       "gotchas": [
         "api_key is tied to a SAM.gov account; quotas and which fields return depend on the account's role (public vs FOUO/sensitive).",
-        "Daily caps are low for public keys (~10/day) — premium-gated for metering.",
+        "Daily caps are low for public keys (~10/day); bring your own key (SAM_API_KEY).",
         "Paging is page (0-based) and size.",
         "Endpoint versions differ per resource (entities v3, exclusions v4) — confirm against the docs before implementing."
       ]
@@ -1589,7 +1504,6 @@ export const SOURCES: readonly SourceSpec[] = [
     "name": "SEC EDGAR — company filings & XBRL facts",
     "agency": "U.S. Securities and Exchange Commission",
     "category": "finance",
-    "tier": "premium",
     "status": "live",
     "api": {
       "baseUrl": "https://data.sec.gov",
@@ -1629,10 +1543,6 @@ export const SOURCES: readonly SourceSpec[] = [
       "rateLimitBehavior": "hard-reject",
       "notes": "No key, but a descriptive User-Agent (AppName contact@email) is mandatory. Max ~10 requests/sec per IP."
     },
-    "pricing": {
-      "model": "metered",
-      "feePerCallCents": 2
-    },
     "llmDocs": {
       "summary": "US public-company filings, financial statements, and XBRL-tagged facts from SEC EDGAR.",
       "queryGuide": "CIK must be zero-padded to 10 digits. Start from /submissions/CIK{cik}.json to list filings, or pull a single metric via companyconcept (taxonomy us-gaap, tag e.g. Revenues).",
@@ -1655,13 +1565,13 @@ export const SOURCES: readonly SourceSpec[] = [
       "gotchas": [
         "CIK must be zero-padded to 10 digits",
         "User-Agent header is mandatory",
-        "Premium tier — metered behind HTTP 402 until billing is enabled"
+        "Free and keyless — send a descriptive User-Agent header (SEC requires one)."
       ]
     },
     "compliance": {
       "license": "public-domain",
       "tosUrl": "https://www.sec.gov/os/webmaster-faq#developers",
-      "redistributionNotes": "US federal data, public domain. Premium tier reflects gateway metering, not upstream cost.",
+      "redistributionNotes": "US federal data, public domain.",
       "reviewedDate": "2026-06-11"
     },
     "meta": {
@@ -1675,7 +1585,6 @@ export const SOURCES: readonly SourceSpec[] = [
     "name": "Treasury Fiscal Data — debt, spending & rates",
     "agency": "U.S. Department of the Treasury (Bureau of the Fiscal Service)",
     "category": "finance",
-    "tier": "free",
     "status": "live",
     "api": {
       "baseUrl": "https://api.fiscaldata.treasury.gov/services/api/fiscal_service",
@@ -1714,10 +1623,6 @@ export const SOURCES: readonly SourceSpec[] = [
       "perRequestMaxSeries": null,
       "rateLimitBehavior": "throttle",
       "notes": "No API key. Default page[size] is 100; max page[size] is 10000. No published hard quota."
-    },
-    "pricing": {
-      "model": "free",
-      "feePerCallCents": null
     },
     "llmDocs": {
       "summary": "Federal financial data: national debt, daily Treasury statement, average interest rates, exchange rates, and spending/revenue, by dataset.",
@@ -1771,7 +1676,6 @@ export const SOURCES: readonly SourceSpec[] = [
     "name": "USAspending — federal spending API",
     "agency": "U.S. Department of the Treasury",
     "category": "spending",
-    "tier": "free",
     "status": "live",
     "api": {
       "baseUrl": "https://api.usaspending.gov/api/v2",
@@ -1804,10 +1708,6 @@ export const SOURCES: readonly SourceSpec[] = [
       "perRequestMaxSeries": null,
       "rateLimitBehavior": "throttle",
       "notes": "No API key required. No published hard quota; be courteous with pagination (POST filters with page/limit)."
-    },
-    "pricing": {
-      "model": "free",
-      "feePerCallCents": null
     },
     "llmDocs": {
       "summary": "US federal government spending: contracts, grants, loans, and agency budgets, searchable by recipient, agency, location, and time.",
@@ -1873,7 +1773,6 @@ export const SOURCES: readonly SourceSpec[] = [
     "name": "USGS Earthquake Catalog (FDSN event)",
     "agency": "U.S. Geological Survey",
     "category": "geology",
-    "tier": "free",
     "status": "live",
     "api": {
       "baseUrl": "https://earthquake.usgs.gov/fdsnws/event/1",
@@ -1906,10 +1805,6 @@ export const SOURCES: readonly SourceSpec[] = [
       "perRequestMaxSeries": null,
       "rateLimitBehavior": "error",
       "notes": "No API key. A single query returns at most 20000 events; larger queries are rejected with HTTP 400 — narrow the time window or raise minmagnitude. Use /count to size a query first."
-    },
-    "pricing": {
-      "model": "free",
-      "feePerCallCents": null
     },
     "llmDocs": {
       "summary": "Global real-time and historical earthquake catalog: magnitude, location, depth, and time for seismic events.",
@@ -1969,7 +1864,6 @@ export const SOURCES: readonly SourceSpec[] = [
     "name": "USGS Water Data (NWIS → OGC migration)",
     "agency": "U.S. Geological Survey",
     "category": "water",
-    "tier": "premium",
     "status": "planned",
     "api": {
       "baseUrl": "https://api.waterdata.usgs.gov",
@@ -1997,10 +1891,6 @@ export const SOURCES: readonly SourceSpec[] = [
       "rateLimitBehavior": "error",
       "notes": "MIGRATION IN PROGRESS. Legacy NWIS (waterservices.usgs.gov) is keyless but being retired; the new api.waterdata.usgs.gov OGC API requires a key with per-key quotas. Endpoints below are provisional — vet before implementing."
     },
-    "pricing": {
-      "model": "metered",
-      "feePerCallCents": 1
-    },
     "llmDocs": {
       "summary": "US streamflow, gage height, and water-quality observations from USGS monitoring sites (NWIS, migrating to the new OGC-based Water Data API).",
       "queryGuide": "DO NOT rely on these endpoints yet — USGS is mid-migration from legacy NWIS (waterservices.usgs.gov/nwis/iv, keyless) to the new keyed OGC API at api.waterdata.usgs.gov. Confirm the target host, version, and collection paths against the live docs during the Vet phase before wiring a connector.",
@@ -2016,7 +1906,7 @@ export const SOURCES: readonly SourceSpec[] = [
       "gotchas": [
         "Endpoints are PROVISIONAL — USGS is migrating NWIS to a new keyed OGC API; legacy waterservices.usgs.gov may differ or be retired.",
         "Do not guess paths: vet the live docs and confirm which host (legacy vs api.waterdata.usgs.gov) to target before implementing.",
-        "Premium-gated pending the keyed-API quota model."
+        "Requires a bring-your-own API key (USGS_WATER_API_KEY); connector not yet shipped."
       ]
     },
     "compliance": {

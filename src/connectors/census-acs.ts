@@ -10,7 +10,6 @@ import { applyParams } from "./params.js";
 
 const ID = "census-acs";
 const UPSTREAM = "https://api.census.gov/data";
-const TIER = "free" as const;
 
 /** Mirrors sources/census-acs/source.json → auth (api-key, query "key"). */
 const AUTH: AuthSpec = {
@@ -46,13 +45,11 @@ COMMON ERRORS
 
 export const censusAcsConnector: Connector = {
   id: ID,
-  tier: TIER,
 
   describe(): ConnectorDescription {
     return {
       id: ID,
       name: "Demographics — ACS 5-Year (U.S. Census Bureau)",
-      tier: TIER,
       upstreamBaseUrl: UPSTREAM,
       description: DESCRIPTION,
     };

@@ -21,7 +21,6 @@ import type {
   ConnectorDescription,
   ExecuteResult,
   RawQuery,
-  Tier,
 } from "./types.js";
 import type { AuthSpec } from "../catalog/schema.js";
 import { injectAuth } from "./inject.js";
@@ -33,8 +32,6 @@ const ID = "template";
 // TODO: upstream API base URL (= api.baseUrl in source.json).
 const UPSTREAM = "https://api.example.gov";
 
-// TODO: "free" for Tier 1.5 unmetered, "premium" for Tier 2 (HTTP-402 gated).
-const TIER: Tier = "free";
 
 // TODO: paste the `auth` block from source.json verbatim. The injector resolves
 // credentialRef (env:VAR) and places it per placement/paramName. `none` no-ops.
@@ -65,13 +62,11 @@ COMMON ERRORS
 
 export const templateConnector: Connector = {
   id: ID,
-  tier: TIER,
 
   describe(): ConnectorDescription {
     return {
       id: ID,
       name: "TODO Human/LLM-facing name",
-      tier: TIER,
       upstreamBaseUrl: UPSTREAM,
       description: DESCRIPTION,
     };

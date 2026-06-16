@@ -10,7 +10,6 @@ import { applyParams } from "./params.js";
 
 const ID = "clinical-trials";
 const UPSTREAM = "https://clinicaltrials.gov/api/v2";
-const TIER = "free" as const;
 
 /** Mirrors sources/clinical-trials/source.json → auth (none; injector no-ops). */
 const AUTH: AuthSpec = {
@@ -45,13 +44,11 @@ COMMON ERRORS
 
 export const clinicalTrialsConnector: Connector = {
   id: ID,
-  tier: TIER,
 
   describe(): ConnectorDescription {
     return {
       id: ID,
       name: "ClinicalTrials.gov — Study Registry (NIH)",
-      tier: TIER,
       upstreamBaseUrl: UPSTREAM,
       description: DESCRIPTION,
     };

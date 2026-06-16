@@ -22,8 +22,10 @@ The gateway is deployed as a remote MCP server over Streamable HTTP:
 https://govdata-mcp.vercel.app/api/mcp
 ```
 
-No auth, no API key — discovery and the free NOAA connector work immediately;
-premium connectors return a `402` until billing is enabled.
+Everything is free. Discovery and every keyless connector work immediately;
+keyed connectors are bring-your-own-key — set the API key env var and they go
+live (until then they return a `503` with a link to get a free key). Call the
+`auth_status` tool to see which keys are set and which are missing.
 
 ### Add it to Claude Desktop
 
@@ -58,24 +60,29 @@ Cursor supports remote Streamable HTTP servers directly. In `.cursor/mcp.json`:
 
 Any MCP client that supports Streamable HTTP can connect to the URL directly.
 
-## The three tiers
+## Everything is free · bring-your-own-key
 
-| Tier | What | Status |
+There is no payment model. Two kinds of sources:
+
+| Access | What | Setup |
 | --- | --- | --- |
-| **Tier 1 — Discovery** | Free `discover_data_sources` tool: a directory of every category, its tier, upstream base URL, schema notes, and an example native query. | ✅ live |
-| **Tier 1.5 — Free connectors** | Unmetered raw-passthrough connectors: NOAA (live), Census, BLS. No payment. | NOAA live; others catalogued |
-| **Tier 2 — Premium connectors** | HTTP-402-gated connectors: SEC EDGAR, property records. Server-held credentials, metered. | stubbed 402 |
+| **Keyless** | Raw-passthrough connectors over APIs that need no key (NOAA, USAspending, SEC EDGAR, FEMA, …). | None — query immediately. |
+| **BYOK (bring-your-own-key)** | Connectors over gov APIs that require a free API key (BLS, FRED, Census, Congress.gov, …). | Set the API key env var (e.g. `FRED_API_KEY`). The key is read from your environment; the gateway ships none. Until set, queries return `503`. |
+
+Every required key is free and listed by the `auth_status` tool, with the exact
+env var and a signup link.
 
 ## Design principles
 
 1. **Raw passthrough** — connectors forward queries to the upstream API verbatim and return the unmodified response. No field renaming or reshaping.
-2. **LLM-optimized docs** — each tool description teaches an agent the endpoint patterns, parameter formats, examples, and common errors. See [`docs/llm-doc-style-guide.md`](docs/llm-doc-style-guide.md).
-3. **Server-held credentials** — master API keys live on the server (`.env`), never exposed to the calling agent.
+2. **LLM-optimized docs** — each tool description teaches an agent the endpoint patterns, parameter formats, examples, and common errors. See [`docs/llm-doc-style-guide.md`](docs/llm-doc-style-guide.md). This extends to provisioning: keyed sources document the env var and signup URL inline.
+3. **Bring-your-own-key** — the gateway holds no master keys. Keyed sources read a free API key from the environment per their `auth` block, so the user owns the quota and the ToS.
 
 ## Tools
 
 1. `discover_data_sources` — free; returns the catalog (`src/data/catalog.ts`).
-2. `query_data_source` — takes `{ connectorId, path, params?, method?, body? }`, routes by tier. Premium → 402 stub; unknown id → 404; free + implemented → upstream passthrough.
+2. `auth_status` — free; reports which keyed sources need a BYOK key, which env var to set, whether it's set, and where to get one.
+3. `query_data_source` — takes `{ connectorId, path, params?, method?, body? }`, routes by status. Unknown id → 404; planned (no connector) → 501; missing BYOK key → 503; implemented → upstream passthrough.
 
 ## Run locally
 
@@ -122,8 +129,9 @@ query — prints the raw results.
 ```
 src/
   index.ts              MCP server entry; tool registration + dispatch
-  router.ts             routes connectorId → connector by tier (402/404/501 stubs)
-  tools/discovery.ts    Tier 1 free discovery tool
+  router.ts             routes connectorId → connector by status (404/501/503)
+  tools/discovery.ts    free discovery tool
+  tools/auth-status.ts  free BYOK key-status tool
   data/catalog.ts       hardcoded source directory (edit here to add a category)
   connectors/
     types.ts            Connector interface + RawQuery/ExecuteResult
@@ -135,7 +143,7 @@ docs/
   llm-doc-style-guide.md   how to write agent-readable tool descriptions
 scripts/
   smoke.ts              minimal stdio client smoke test
-.env.example            master credential placeholders (server-held)
+.env.example            BYOK API key placeholders (set your own)
 ```
 
 ## Adding a connector
@@ -147,5 +155,6 @@ scripts/
 
 ## Configuration
 
-Copy `.env.example` to `.env`. Tier 1.5 keys (Census, BLS) and Tier 2 secrets are
-read server-side; agents never see them.
+Copy `.env.example` to `.env` and set keys for whichever keyed sources you want
+to use (all free — see `auth_status` for signup links). Keyless sources need
+nothing. The gateway reads keys from the environment and ships none of its own.

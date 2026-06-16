@@ -3,7 +3,6 @@
   "name": "SAM.gov — Entity & Exclusions API",
   "agency": "U.S. General Services Administration",
   "category": "procurement",
-  "tier": "premium",
   "status": "planned",
   "api": {
     "baseUrl": "https://api.sam.gov",
@@ -35,11 +34,7 @@
     "dailyQuota": null,
     "perRequestMaxSeries": null,
     "rateLimitBehavior": "error",
-    "notes": "Personal/system api_key required, tied to a SAM.gov account with role-based daily caps (often ~10 req/day for unauthenticated-tier keys, more for federal/system accounts). Tight per-key quotas — premium-gated."
-  },
-  "pricing": {
-    "model": "metered",
-    "feePerCallCents": 1
+    "notes": "Personal/system api_key required, tied to a SAM.gov account with role-based daily caps (often ~10 req/day for unauthenticated-tier keys, more for federal/system accounts). Tight per-key quotas."
   },
   "llmDocs": {
     "summary": "Federal entity registrations (UEI/CAGE, business details) and the government-wide exclusions (debarment) list from SAM.gov.",
@@ -50,7 +45,9 @@
         "request": {
           "method": "GET",
           "path": "/entity-information/v3/entities",
-          "params": { "ueiSAM": "ABC123DEF456" }
+          "params": {
+            "ueiSAM": "ABC123DEF456"
+          }
         }
       },
       {
@@ -58,13 +55,17 @@
         "request": {
           "method": "GET",
           "path": "/entity-information/v3/entities",
-          "params": { "legalBusinessName": "Acme", "registrationStatus": "A", "size": "10" }
+          "params": {
+            "legalBusinessName": "Acme",
+            "registrationStatus": "A",
+            "size": "10"
+          }
         }
       }
     ],
     "gotchas": [
       "api_key is tied to a SAM.gov account; quotas and which fields return depend on the account's role (public vs FOUO/sensitive).",
-      "Daily caps are low for public keys (~10/day) — premium-gated for metering.",
+      "Daily caps are low for public keys (~10/day); bring your own key (SAM_API_KEY).",
       "Paging is page (0-based) and size.",
       "Endpoint versions differ per resource (entities v3, exclusions v4) — confirm against the docs before implementing."
     ]

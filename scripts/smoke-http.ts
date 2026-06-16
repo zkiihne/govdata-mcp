@@ -92,13 +92,13 @@ async function main() {
     ),
   );
 
-  console.log("\n5) query_data_source sec-filings (premium 402 stub)");
+  console.log("\n5) query_data_source usgs-water (planned → 501 stub)");
   console.log(
     JSON.stringify(
       await call(
         rpc(5, "tools/call", {
           name: "query_data_source",
-          arguments: { connectorId: "sec-filings", path: "/" },
+          arguments: { connectorId: "usgs-water", path: "/" },
         }),
       ),
       null,

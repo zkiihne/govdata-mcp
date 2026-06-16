@@ -10,7 +10,6 @@ import { applyParams } from "./params.js";
 
 const ID = "nvd";
 const UPSTREAM = "https://services.nvd.nist.gov/rest/json";
-const TIER = "free" as const;
 
 /** Mirrors sources/nvd/source.json → auth (api-key, header "apiKey"). */
 const AUTH: AuthSpec = {
@@ -61,13 +60,11 @@ COMMON ERRORS
 
 export const nvdConnector: Connector = {
   id: ID,
-  tier: TIER,
 
   describe(): ConnectorDescription {
     return {
       id: ID,
       name: "Vulnerabilities (NVD / CVE)",
-      tier: TIER,
       upstreamBaseUrl: UPSTREAM,
       description: DESCRIPTION,
     };

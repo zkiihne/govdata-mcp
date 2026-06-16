@@ -10,7 +10,6 @@ import { applyParams } from "./params.js";
 
 const ID = "fred";
 const UPSTREAM = "https://api.stlouisfed.org/fred";
-const TIER = "free" as const;
 
 /** Mirrors sources/fred/source.json → auth (api-key, query "api_key"). */
 const AUTH: AuthSpec = {
@@ -48,13 +47,11 @@ COMMON ERRORS
 
 export const fredConnector: Connector = {
   id: ID,
-  tier: TIER,
 
   describe(): ConnectorDescription {
     return {
       id: ID,
       name: "Economic Data (FRED / St. Louis Fed)",
-      tier: TIER,
       upstreamBaseUrl: UPSTREAM,
       description: DESCRIPTION,
     };

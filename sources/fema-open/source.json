@@ -3,7 +3,6 @@
   "name": "OpenFEMA — disasters, NFIP & assistance",
   "agency": "Federal Emergency Management Agency",
   "category": "emergency-management",
-  "tier": "free",
   "status": "live",
   "api": {
     "baseUrl": "https://www.fema.gov/api/open",
@@ -42,10 +41,6 @@
     "perRequestMaxSeries": null,
     "rateLimitBehavior": "throttle",
     "notes": "No API key. $top caps at 10000 records per request; default page size is 1000. Paginate with $skip. No published hard quota."
-  },
-  "pricing": {
-    "model": "free",
-    "feePerCallCents": null
   },
   "llmDocs": {
     "summary": "FEMA disaster declarations, National Flood Insurance Program claims, and individual/public assistance, queryable by state, incident type, and date.",

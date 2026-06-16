@@ -3,7 +3,6 @@
   "name": "Federal Register API",
   "agency": "Office of the Federal Register / GPO",
   "category": "regulations",
-  "tier": "free",
   "status": "live",
   "api": {
     "baseUrl": "https://www.federalregister.gov/api/v1",
@@ -36,10 +35,6 @@
     "perRequestMaxSeries": null,
     "rateLimitBehavior": "throttle",
     "notes": "No API key. per_page max 1000; results capped at 2000 documents per search (page beyond that is rejected). No published hard quota."
-  },
-  "pricing": {
-    "model": "free",
-    "feePerCallCents": null
   },
   "llmDocs": {
     "summary": "The daily journal of the US federal government: final and proposed rules, agency notices, and presidential documents, searchable by term, agency, type, and date.",

@@ -3,7 +3,6 @@
   "name": "FDIC BankFind Suite",
   "agency": "Federal Deposit Insurance Corporation",
   "category": "finance",
-  "tier": "free",
   "status": "live",
   "api": {
     "baseUrl": "https://api.fdic.gov/banks",
@@ -42,10 +41,6 @@
     "perRequestMaxSeries": null,
     "rateLimitBehavior": "throttle",
     "notes": "No API key. Default limit is 10; max limit per request is 10000. Paginate with offset. No published hard quota."
-  },
-  "pricing": {
-    "model": "free",
-    "feePerCallCents": null
   },
   "llmDocs": {
     "summary": "FDIC-insured bank directory, quarterly financial metrics, and historical failures, searchable by name, location, and identifier.",

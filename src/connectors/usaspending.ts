@@ -10,7 +10,6 @@ import { applyParams } from "./params.js";
 
 const ID = "usaspending";
 const UPSTREAM = "https://api.usaspending.gov/api/v2";
-const TIER = "free" as const;
 
 /** Mirrors sources/usaspending/source.json → auth (type none; injector no-ops). */
 const AUTH: AuthSpec = {
@@ -67,13 +66,11 @@ COMMON ERRORS
 
 export const usaspendingConnector: Connector = {
   id: ID,
-  tier: TIER,
 
   describe(): ConnectorDescription {
     return {
       id: ID,
       name: "Federal Spending (USAspending / U.S. Treasury)",
-      tier: TIER,
       upstreamBaseUrl: UPSTREAM,
       description: DESCRIPTION,
     };

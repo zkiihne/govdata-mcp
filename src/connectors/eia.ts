@@ -10,7 +10,6 @@ import { applyParams } from "./params.js";
 
 const ID = "eia";
 const UPSTREAM = "https://api.eia.gov/v2";
-const TIER = "free" as const;
 
 /** Mirrors sources/eia/source.json → auth (api-key, query "api_key"). */
 const AUTH: AuthSpec = {
@@ -46,13 +45,11 @@ COMMON ERRORS
 
 export const eiaConnector: Connector = {
   id: ID,
-  tier: TIER,
 
   describe(): ConnectorDescription {
     return {
       id: ID,
       name: "Energy Data (EIA)",
-      tier: TIER,
       upstreamBaseUrl: UPSTREAM,
       description: DESCRIPTION,
     };

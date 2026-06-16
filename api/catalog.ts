@@ -24,13 +24,20 @@ const CORS = {
 
 // Project the full validated spec down to the public, site-facing fields only.
 // Internal fields (auth credentialRef, limits, compliance, meta) stay private.
+// The public `auth` projection surfaces only what a BYOK user needs: whether a
+// key is required, which env var to set, and where to get one (free) — never
+// the key value itself.
 function toPublic(s: (typeof SOURCES)[number]) {
+  const requiresKey = s.auth.type !== "none";
+  const envVar =
+    requiresKey && s.auth.credentialRef?.startsWith("env:")
+      ? s.auth.credentialRef.slice("env:".length)
+      : null;
   return {
     id: s.id,
     name: s.name,
     agency: s.agency,
     category: s.category,
-    tier: s.tier,
     status: s.status,
     api: {
       baseUrl: s.api.baseUrl,
@@ -40,7 +47,12 @@ function toPublic(s: (typeof SOURCES)[number]) {
       summary: s.llmDocs.summary,
       exampleQueries: s.llmDocs.exampleQueries,
     },
-    pricing: s.pricing,
+    auth: {
+      requiresKey,
+      envVar,
+      free: true,
+      signupUrl: s.auth.signupUrl,
+    },
   };
 }
 

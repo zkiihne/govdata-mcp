@@ -4,10 +4,8 @@
  * A connector is a thin, raw-passthrough adapter over a single upstream
  * government/public-data API. It does NOT normalize responses — whatever the
  * upstream returns is forwarded verbatim. The value GovData adds is discovery,
- * LLM-optimized docs, credential injection, and (for premium tiers) metering.
+ * LLM-optimized docs, and credential injection (bring-your-own-key via env).
  */
-
-export type Tier = "free" | "premium";
 
 /** What a connector reports about itself for routing + tool descriptions. */
 export interface ConnectorDescription {
@@ -15,7 +13,6 @@ export interface ConnectorDescription {
   id: string;
   /** Human/LLM-facing name. */
   name: string;
-  tier: Tier;
   /** Base URL of the upstream API this connector proxies. */
   upstreamBaseUrl: string;
   /**
@@ -61,7 +58,6 @@ export interface RawQuery {
 
 export interface Connector {
   readonly id: string;
-  readonly tier: Tier;
   /** Static self-description for discovery + tool docs. */
   describe(): ConnectorDescription;
   /** Forward the raw query to the upstream API and return the raw response. */

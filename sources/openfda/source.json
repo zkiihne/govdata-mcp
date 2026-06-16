@@ -3,7 +3,6 @@
   "name": "openFDA API",
   "agency": "U.S. Food and Drug Administration",
   "category": "health",
-  "tier": "free",
   "status": "live",
   "api": {
     "baseUrl": "https://api.fda.gov",
@@ -42,10 +41,6 @@
     "perRequestMaxSeries": null,
     "rateLimitBehavior": "throttle",
     "notes": "Works keyless at lower limits (240 req/min, 1000/day per IP); a free api_key raises it (240 req/min, 120000/day). Inject the key only when set (mirror census-acs)."
-  },
-  "pricing": {
-    "model": "free",
-    "feePerCallCents": null
   },
   "llmDocs": {
     "summary": "FDA data on drugs, devices, and foods: adverse events, recalls/enforcement, product labels, and the NDC directory.",

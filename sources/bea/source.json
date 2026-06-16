@@ -3,7 +3,6 @@
   "name": "BEA — Bureau of Economic Analysis API",
   "agency": "U.S. Bureau of Economic Analysis",
   "category": "economy",
-  "tier": "free",
   "status": "live",
   "api": {
     "baseUrl": "https://apps.bea.gov/api",
@@ -31,10 +30,6 @@
     "rateLimitBehavior": "error",
     "notes": "Free UserID key required. Throttle: max 100 requests, 100MB, and 30 errors per minute per IP/key — exceeding it blocks for 1 hour."
   },
-  "pricing": {
-    "model": "free",
-    "feePerCallCents": null
-  },
   "llmDocs": {
     "summary": "US economic accounts: GDP (NIPA), regional income/GDP, input-output, international trade and investment, and fixed assets.",
     "queryGuide": "One endpoint, /data; the operation is chosen by method=. Discover structure first: method=GetDataSetList, then GetParameterList&datasetname=, then GetParameterValues&datasetname=&ParameterName=. Then method=GetData&datasetname=<ds>&<params>&ResultFormat=JSON. UserID is injected by the gateway.",
@@ -44,7 +39,10 @@
         "request": {
           "method": "GET",
           "path": "/data",
-          "params": { "method": "GetDataSetList", "ResultFormat": "JSON" }
+          "params": {
+            "method": "GetDataSetList",
+            "ResultFormat": "JSON"
+          }
         }
       },
       {

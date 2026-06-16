@@ -3,7 +3,6 @@
   "name": "EPA AirNow API",
   "agency": "Environmental Protection Agency",
   "category": "environment",
-  "tier": "free",
   "status": "live",
   "api": {
     "baseUrl": "https://www.airnowapi.org",
@@ -48,10 +47,6 @@
     "perRequestMaxSeries": null,
     "rateLimitBehavior": "hard-reject",
     "notes": "Default rate limit ~500 requests/hour per key (confirm in account dashboard). Verify exact hourly cap before relying on it."
-  },
-  "pricing": {
-    "model": "free",
-    "feePerCallCents": null
   },
   "llmDocs": {
     "summary": "Real-time and forecast US air quality (AQI) for ozone, PM2.5, PM10 by ZIP, lat/lon, or bounding box.",

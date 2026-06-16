@@ -10,7 +10,6 @@ import { applyParams } from "./params.js";
 
 const ID = "federal-register";
 const UPSTREAM = "https://www.federalregister.gov/api/v1";
-const TIER = "free" as const;
 
 /** Mirrors sources/federal-register/source.json → auth (none; injector no-ops). */
 const AUTH: AuthSpec = {
@@ -56,13 +55,11 @@ COMMON ERRORS
 
 export const federalRegisterConnector: Connector = {
   id: ID,
-  tier: TIER,
 
   describe(): ConnectorDescription {
     return {
       id: ID,
       name: "Federal Register API (Office of the Federal Register)",
-      tier: TIER,
       upstreamBaseUrl: UPSTREAM,
       description: DESCRIPTION,
     };

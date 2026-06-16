@@ -3,7 +3,6 @@
   "name": "Regulations.gov API (v4)",
   "agency": "U.S. General Services Administration / eRulemaking",
   "category": "regulations",
-  "tier": "premium",
   "status": "live",
   "api": {
     "baseUrl": "https://api.regulations.gov/v4",
@@ -43,10 +42,6 @@
     "rateLimitBehavior": "error",
     "notes": "api.data.gov key required in X-Api-Key. Hard limit 1000 requests/hour per key, then HTTP 429. page[size] max 250; results capped at 5000 per query (20 pages)."
   },
-  "pricing": {
-    "model": "metered",
-    "feePerCallCents": 1
-  },
   "llmDocs": {
     "summary": "US federal rulemaking: regulatory documents, dockets, and public comments from Regulations.gov.",
     "queryGuide": "GET /documents, /dockets, or /comments with filter[*] params (e.g. filter[searchTerm], filter[agencyId], filter[postedDate][ge]), sort, page[size] (max 250), page[number]. The X-Api-Key header is injected by the gateway. Detail records are fetched by id at /documents/{id}, etc.",
@@ -77,7 +72,7 @@
     ],
     "gotchas": [
       "Filters and paging are bracketed: filter[searchTerm], page[size], page[number].",
-      "1000 req/hr hard cap per key, then 429 — premium-gated for shared-key metering.",
+      "1000 req/hr hard cap per key, then 429.",
       "Results capped at 5000 per query (page[size] max 250 x 20 pages); use date/agency filters to narrow.",
       "Requires an api.data.gov key (REGULATIONS_API_KEY)."
     ]

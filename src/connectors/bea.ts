@@ -10,7 +10,6 @@ import { applyParams } from "./params.js";
 
 const ID = "bea";
 const UPSTREAM = "https://apps.bea.gov/api";
-const TIER = "free" as const;
 
 /** Mirrors sources/bea/source.json → auth (api-key, query "UserID"). */
 const AUTH: AuthSpec = {
@@ -47,13 +46,11 @@ COMMON ERRORS
 
 export const beaConnector: Connector = {
   id: ID,
-  tier: TIER,
 
   describe(): ConnectorDescription {
     return {
       id: ID,
       name: "Economic Accounts (BEA)",
-      tier: TIER,
       upstreamBaseUrl: UPSTREAM,
       description: DESCRIPTION,
     };

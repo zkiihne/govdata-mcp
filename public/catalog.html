@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Catalog — GovData MCP</title>
-<meta name="description" content="Every data source available through the GovData MCP gateway: agency, category, tier, status, upstream API, and an example native query." />
+<meta name="description" content="Every data source available through the GovData MCP gateway: agency, category, access (keyless or bring-your-own-key), status, upstream API, and an example native query." />
 <style>
   :root{
     --bg:#0a0c10; --panel:#11151c; --panel2:#161b24; --line:#222a36;
@@ -52,8 +52,8 @@
   .agency{color:var(--dim);font-size:12.5px;margin:3px 0 0;font-family:var(--mono)}
   .badges{display:flex;gap:6px;flex-wrap:wrap;flex:none}
   .badge{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;padding:3px 8px;border-radius:6px;border:1px solid var(--line);white-space:nowrap}
-  .b-free{color:var(--accent);border-color:rgba(94,230,168,.35);background:rgba(94,230,168,.07)}
-  .b-premium{color:var(--warn);border-color:rgba(255,180,84,.35);background:rgba(255,180,84,.07)}
+  .b-keyless{color:var(--accent);border-color:rgba(94,230,168,.35);background:rgba(94,230,168,.07)}
+  .b-byok{color:var(--warn);border-color:rgba(255,180,84,.35);background:rgba(255,180,84,.07)}
   .b-live{color:var(--accent)}
   .b-planned{color:var(--muted)}
   .b-testing{color:var(--accent2)}
@@ -115,10 +115,10 @@
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
       <input id="q" type="text" placeholder="Search name, agency, category…" autocomplete="off" />
     </label>
-    <div class="seg" id="tierSeg">
-      <button data-tier="all" class="on">All tiers</button>
-      <button data-tier="free">Free</button>
-      <button data-tier="premium">Premium</button>
+    <div class="seg" id="keySeg">
+      <button data-key="all" class="on">All access</button>
+      <button data-key="keyless">Keyless</button>
+      <button data-key="byok">BYOK</button>
     </div>
     <div class="seg" id="statusSeg">
       <button data-status="all" class="on">All status</button>
@@ -153,7 +153,7 @@ const SOON = ["cdc-open-data","congress-gov","data-gov","dol","eia","fcc",
   "treasury-fiscal-data","usgs-earthquake","usgs-water"];
 
 const esc = s => String(s==null?"":s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const state = { tier:"all", status:"all", q:"" };
+const state = { key:"all", status:"all", q:"" };
 let SOURCES = [];
 
 function badgeStatus(s){
@@ -173,9 +173,12 @@ function exampleHtml(qs){
 }
 
 function card(s){
-  const tierCls = s.tier==="premium"?"b-premium":"b-free";
+  const byok = !!(s.auth && s.auth.requiresKey);
+  const keyCls = byok?"b-byok":"b-keyless";
+  const keyLabel = byok?"byok":"keyless";
   const docs = s.api && s.api.docsUrl ? `<div class="row"><span>docs</span><a href="${esc(s.api.docsUrl)}" target="_blank" rel="noopener">${esc(s.api.docsUrl)}</a></div>` : "";
   const base = s.api && s.api.baseUrl ? `<div class="row"><span>api&nbsp;</span><code>${esc(s.api.baseUrl)}</code></div>` : "";
+  const key = byok ? `<div class="row"><span>key&nbsp;</span><code>${esc(s.auth.envVar||"")}</code>${s.auth.signupUrl?` · <a href="${esc(s.auth.signupUrl)}" target="_blank" rel="noopener">get a free key ↗</a>`:""}</div>` : "";
   return `<div class="card">
     <div class="top">
       <div>
@@ -183,13 +186,13 @@ function card(s){
         <p class="agency">${esc(s.agency)}</p>
       </div>
       <div class="badges">
-        <span class="badge ${tierCls}">${esc(s.tier)}</span>
+        <span class="badge ${keyCls}">${keyLabel}</span>
         ${badgeStatus(s.status)}
       </div>
     </div>
     <p class="summary">${esc(s.llmDocs && s.llmDocs.summary)}</p>
     <span class="cat">› ${esc(s.category)}</span>
-    <div class="urls">${base}${docs}</div>
+    <div class="urls">${base}${docs}${key}</div>
     ${exampleHtml(s.llmDocs && s.llmDocs.exampleQueries)}
   </div>`;
 }
@@ -197,7 +200,11 @@ function card(s){
 function render(){
   const q = state.q.trim().toLowerCase();
   const list = SOURCES.filter(s=>{
-    if(state.tier!=="all" && s.tier!==state.tier) return false;
+    if(state.key!=="all"){
+      const byok = !!(s.auth && s.auth.requiresKey);
+      if(state.key==="byok" && !byok) return false;
+      if(state.key==="keyless" && byok) return false;
+    }
     if(state.status!=="all" && s.status!==state.status) return false;
     if(q){
       const hay = [s.name,s.agency,s.category,s.id,s.llmDocs&&s.llmDocs.summary].join(" ").toLowerCase();
@@ -220,7 +227,7 @@ function wireSeg(id,key){
     render();
   });
 }
-wireSeg('tierSeg','tier');
+wireSeg('keySeg','key');
 wireSeg('statusSeg','status');
 document.getElementById('q').addEventListener('input',e=>{state.q=e.target.value;render();});
 

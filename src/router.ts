@@ -49,17 +49,9 @@ const CONNECTORS: Record<string, Connector> = {
   [regulationsGovConnector.id]: regulationsGovConnector,
 };
 
-/** 402-style error object returned for premium connectors until metering lands. */
-export interface PaymentRequiredError {
-  code: 402;
-  message: string;
-  connectorId: string;
-  balance_url: string;
-}
-
 /**
  * Error returned when the connector id is unknown (404), listed but not yet
- * implemented (501), or implemented but missing its server-side credential (503).
+ * implemented (501), or implemented but missing its BYOK credential (503).
  */
 export interface RouteError {
   code: 404 | 501 | 503;
@@ -67,11 +59,7 @@ export interface RouteError {
   connectorId: string;
 }
 
-export type RouteResult = ExecuteResult | PaymentRequiredError | RouteError;
-
-export function isPaymentRequired(r: RouteResult): r is PaymentRequiredError {
-  return (r as PaymentRequiredError).code === 402;
-}
+export type RouteResult = ExecuteResult | RouteError;
 
 export function isRouteError(r: RouteResult): r is RouteError {
   const code = (r as RouteError).code;
@@ -79,12 +67,12 @@ export function isRouteError(r: RouteResult): r is RouteError {
 }
 
 /**
- * Route a raw query to its connector.
- * - Unknown id            → 404 RouteError.
- * - Premium tier          → stubbed 402 PaymentRequiredError (no metering yet).
- * - Free, not implemented → 501 RouteError (catalog entry exists, no connector).
- * - Free, implemented     → upstream raw passthrough via connector.execute().
- * - Missing credential    → 503 RouteError (connector wired, env var unset).
+ * Route a raw query to its connector. Everything is free; keyed connectors are
+ * bring-your-own-key (the key is read from env per the source's auth block).
+ * - Unknown id          → 404 RouteError.
+ * - Not implemented     → 501 RouteError (catalog entry exists, no connector).
+ * - Implemented         → upstream raw passthrough via connector.execute().
+ * - Missing BYOK key    → 503 RouteError (connector wired, env var unset).
  */
 export async function route(
   connectorId: string,
@@ -96,15 +84,6 @@ export async function route(
       code: 404,
       message: `Unknown connector id "${connectorId}". Call the discovery tool to list available data sources.`,
       connectorId,
-    };
-  }
-
-  if (entry.tier === "premium") {
-    return {
-      code: 402,
-      message: `Connector "${connectorId}" is a premium (Tier 2) data source and requires payment. Metering is not yet enabled.`,
-      connectorId,
-      balance_url: "TBD",
     };
   }
 
@@ -123,7 +102,7 @@ export async function route(
     if (err instanceof MissingCredentialError) {
       return {
         code: 503,
-        message: `Connector "${connectorId}" requires a credential that is not configured on the gateway (${err.credentialRef}). Set the environment variable and retry.`,
+        message: `Connector "${connectorId}" requires an API key that is not set (${err.credentialRef}). This is a bring-your-own-key source: set the environment variable and retry. Call the auth_status tool to see where to get the key.`,
         connectorId,
       };
     }
