@@ -1,0 +1,91 @@
+{
+  "case": {
+    "id": "routing-presidential-proclamations",
+    "sourceId": "federal-register",
+    "intent": "What presidential documents or proclamations has the White House published in the Federal Register recently?",
+    "successCriteria": "Routes to the Federal Register source. Returns one or more recent presidential documents/proclamations with a title and publication date. Tests selecting the official daily-journal source over comment/docket sources (regulations-gov is premium and docket-focused, not the publication-of-record).",
+    "difficulty": "basic"
+  },
+  "transcript": {
+    "caseId": "routing-presidential-proclamations",
+    "intent": "What presidential documents or proclamations has the White House published in the Federal Register recently?",
+    "sourceId": "federal-register",
+    "assistantTurns": [
+      {
+        "round": 1,
+        "text": "Let me discover the available data sources and query the Federal Register simultaneously."
+      },
+      {
+        "round": 2,
+        "text": "Here are the **15 most recent Presidential Documents** published in the Federal Register by the Executive Office of the President, ordered newest first:\n\n---\n\n### 📜 Recent White House Presidential Documents in the Federal Register\n\n| # | Date | Subtype | Title |\n|---|------|---------|-------|\n| 1 | **Jun 10, 2026** | Proclamation | [Granting Pardon to Stephen E. Buyer](https://www.federalregister.gov/documents/2026/06/10/2026-11741/granting-pardon-to-stephen-e-buyer) |\n| 2 | **Jun 10, 2026** | Executive Order | [Strengthening Customs Enforcement](https://www.federalregister.gov/documents/2026/06/10/2026-11595/strengthening-customs-enforcement) |\n| 3 | **Jun 10, 2026** | Executive Order | [Implementing Schedule Policy/Career in the Excepted Service](https://www.federalregister.gov/documents/2026/06/10/2026-11594/implementing-schedule-policycareer-in-the-excepted-service) |\n| 4 | **Jun 5, 2026** | Executive Order | [Promoting Advanced Artificial Intelligence Innovation and Security](https://www.federalregister.gov/documents/2026/06/05/2026-11415/promoting-advanced-artificial-intelligence-innovation-and-security) |\n| 5 | **Jun 4, 2026** | Proclamation | [Further Adjusting the Tariff Regimes for Imports of Aluminum, Steel, and Copper Into the United States](https://www.federalregister.gov/documents/2026/06/04/2026-11314/further-adjusting-the-tariff-regimes-for-imports-of-aluminum-steel-and-copper-into-the-united-states) |\n| 6 | **Jun 3, 2026** | Executive Order | [Removing Unnecessary and Counterproductive Restrictions on Access to Federal Lands](https://www.federalregister.gov/documents/2026/06/03/2026-11181/removing-unnecessary-and-counterproductive-restrictions-on-access-to-federal-lands) |\n| 7 | **Jun 3, 2026** | Executive Order | [Realigning United States Core Childhood Vaccine Recommendations With Best Practices From Peer, Developed Countries](https://www.federalregister.gov/documents/2026/06/03/2026-11180/realigning-united-states-core-childhood-vaccine-recommendations-with-best-practices-from-peer) |\n| 8 | **May 28, 2026** | Proclamation | [Memorial Day, 2026](https://www.federalregister.gov/documents/2026/05/28/2026-10733/memorial-day-2026) |\n| 9 | **May 27, 2026** | Determination | [Emergency Presidential Determination on Refugee Admissions for Fiscal Year 2026](https://www.federalregister.gov/documents/2026/05/27/2026-10598/emergency-presidential-determination-on-refugee-admissions-for-fiscal-year-2026) |\n| 10 | **May 26, 2026** | Notice | [Continuation of the National Emergency With Respect to Belarus](https://www.federalregister.gov/documents/2026/05/26/2026-10481/continuation-of-the-national-emergency-with-respect-to-belarus) |\n| 11 | **May 22, 2026** | Executive Order | [Restoring Integrity to America's Financial System](https://www.federalregister.gov/documents/2026/05/22/2026-10400/restoring-integrity-to-americas-financial-system) |\n| 12 | **May 22, 2026** | Executive Order | [Integrating Financial Technology Innovation Into Regulatory Frameworks](https://www.federalregister.gov/documents/2026/05/22/2026-10399/integrating-financial-technology-innovation-into-regulatory-frameworks) |\n| 13 | **May 22, 2026** | Proclamation | [To Implement Certain Provisions in the Consolidated Appropriations Act, 2026, and for Other Purposes](https://www.federalregister.gov/documents/2026/05/22/2026-10398/to-implement-certain-provisions-in-the-consolidated-appropriations-act-2026-and-for-other-purposes) |\n| 14 | **May 14, 2026** | Proclamation | [Peace Officers Memorial Day and Police Week, 2026](https://www.federalregister.gov/documents/2026/05/14/2026-09779/peace-officers-memorial-day-and-police-week-2026) |\n| 15 | **May 13, 2026** | Notice | [Continuation of the National Emergency With Respect to Securing the Information and Communications Technology and Services Supply Chain](https://www.federalregister.gov/documents/2026/05/13/2026-09671/continuation-of-the-national-emergency-with-respect-to-securing-the-information-and-communications) |\n\n---\n\n### Key Highlights by Subtype:\n- **Executive Orders (6):** Cover customs enforcement, civil service classification (Schedule F), AI innovation/security, federal lands access, childhood vaccines, financial system integrity, and fintech regulation.\n- **Proclamations (5):** Include a presidential pardon (Stephen E. Buyer), aluminum/steel/copper tariff adjustments, Memorial Day, Consolidated Appropriations Act implementation, and Police Week.\n- **Notices (2):** National emergency continuations for Belarus and telecom supply chain security.\n- **Determination (1):** Emergency presidential determination on refugee admissions for FY2026.\n\nThere are **8,485 total** presidential documents in the Federal Register database. Each title links directly to the full document on FederalRegister.gov."
+      }
+    ],
+    "toolCalls": [
+      {
+        "round": 1,
+        "tool": "discover_data_sources",
+        "args": {},
+        "rawResponse": "{\n  \"count\": 22,\n  \"sources\": [\n    {\n      \"id\": \"bea\",\n      \"name\": \"BEA — Bureau of Economic Analysis API\",\n      \"agency\": \"U.S. Bureau of Economic Analysis\",\n      \"category\": \"economy\",\n      \"tier\": \"free\",\n      \"status\": \"live\",\n      \"api\": {\n        \"baseUrl\": \"https://apps.bea.gov/api\",\n        \"protocol\": \"rest-json\",\n        \"docsUrl\": \"https://apps.bea.gov/api/_pdf/bea_web_service_api_user_guide.pdf\",\n        \"endpoints\": [\n          {\n            \"id\": \"data\",\n            \"path\": \"/data\",\n            \"method\": \"GET\",\n            \"description\": \"Single endpoint; the method= param selects the operation (GetData, GetDataSetList, GetParameterList, GetParameterValues).\"\n          }\n        ]\n      },\n      \"auth\": {\n        \"type\": \"api-key\",\n        \"placement\": \"query\",\n        \"paramName\": \"UserID\",\n        \"credentialRef\": \"env:BEA_API_KEY\",\n        \"signupUrl\": \"https://apps.bea.gov/API/signup/\"\n      },\n      \"limits\": {\n        \"dailyQuota\": null,\n        \"perRequestMaxSeries\": null,\n        \"rateLimitBehavior\": \"error\",\n        \"notes\": \"Free UserID key required. Throttle: max 100 requests, 100MB, and 30 errors per minute per IP/key — exceeding it blocks for 1 hour.\"\n      },\n      \"pricing\": {\n        \"model\": \"free\",\n        \"feePerCallCents\": null\n      },\n      \"llmDocs\": {\n        \"summary\": \"US economic accounts: GDP (NIPA), regional income/GDP, input-output, international trade and investment, and fixed assets.\",\n        \"queryGuide\": \"One endpoint, /data; the operation is chosen by method=. Discover structure first: method=GetDataSetList, then GetParameterList&datasetname=, then GetParameterValues&datasetname=&ParameterName=. Then method=GetData&datasetname=<ds>&<params>&ResultFormat=JSON. UserID is injected by the gateway.\",\n        \"exampleQueries\": [\n          {\n            \"intent\": \"List available datasets\",\n            \"request\": {\n              \"method\": \"GET\",\n              \"path\": \"/data\",\n              \"params\": {\n                \"method\": \"GetDataSetList\",\n                \"R…[truncated]",
+        "errored": false
+      },
+      {
+        "round": 1,
+        "tool": "query_data_source",
+        "args": {
+          "connectorId": "federal-register",
+          "path": "/documents.json",
+          "params": {
+            "conditions[type][]": "PRESDOCU",
+            "conditions[agencies][]": "executive-office-of-the-president",
+            "fields[]": [
+              "title",
+              "type",
+              "subtype",
+              "publication_date",
+              "html_url",
+              "abstract"
+            ],
+            "per_page": "15",
+            "order": "newest"
+          }
+        },
+        "rawResponse": "{\n  \"status\": 200,\n  \"data\": {\n    \"description\": \"Documents from Executive Office of the President and of type Presidential Document\",\n    \"count\": 8485,\n    \"total_pages\": 50,\n    \"next_page_url\": \"https://www.federalregister.gov/api/v1/documents?conditions%5Bagencies%5D%5B%5D=executive-office-of-the-president&conditions%5Btype%5D%5B%5D=PRESDOCU&fields%5B%5D=title&fields%5B%5D=type&fields%5B%5D=subtype&fields%5B%5D=publication_date&fields%5B%5D=html_url&fields%5B%5D=abstract&format=json&order=newest&page=2&per_page=15&search_after_cursor=WzE3Nzg2MzA0MDAwMDAsIjIwMjYtMDk2NzEiXQ\",\n    \"results\": [\n      {\n        \"title\": \"Granting Pardon to Stephen E. Buyer\",\n        \"type\": \"Presidential Document\",\n        \"subtype\": \"Proclamation\",\n        \"publication_date\": \"2026-06-10\",\n        \"html_url\": \"https://www.federalregister.gov/documents/2026/06/10/2026-11741/granting-pardon-to-stephen-e-buyer\",\n        \"abstract\": null\n      },\n      {\n        \"title\": \"Strengthening Customs Enforcement\",\n        \"type\": \"Presidential Document\",\n        \"subtype\": \"Executive Order\",\n        \"publication_date\": \"2026-06-10\",\n        \"html_url\": \"https://www.federalregister.gov/documents/2026/06/10/2026-11595/strengthening-customs-enforcement\",\n        \"abstract\": null\n      },\n      {\n        \"title\": \"Implementing Schedule Policy/Career in the Excepted Service\",\n        \"type\": \"Presidential Document\",\n        \"subtype\": \"Executive Order\",\n        \"publication_date\": \"2026-06-10\",\n        \"html_url\": \"https://www.federalregister.gov/documents/2026/06/10/2026-11594/implementing-schedule-policycareer-in-the-excepted-service\",\n        \"abstract\": null\n      },\n      {\n        \"title\": \"Promoting Advanced Artificial Intelligence Innovation and Security\",\n        \"type\": \"Presidential Document\",\n        \"subtype\": \"Executive Order\",\n        \"publication_date\": \"2026-06-05\",\n        \"html_url\": \"https://www.federalregister.gov/documents/2026/06/05/2026-11415/promoting-advanced-artificial-intelligence-innovation-and-security\",\n        \"…[truncated]",
+        "errored": false
+      }
+    ],
+    "roundsUsed": 1,
+    "finalAnswer": "Here are the **15 most recent Presidential Documents** published in the Federal Register by the Executive Office of the President, ordered newest first:\n\n---\n\n### 📜 Recent White House Presidential Documents in the Federal Register\n\n| # | Date | Subtype | Title |\n|---|------|---------|-------|\n| 1 | **Jun 10, 2026** | Proclamation | [Granting Pardon to Stephen E. Buyer](https://www.federalregister.gov/documents/2026/06/10/2026-11741/granting-pardon-to-stephen-e-buyer) |\n| 2 | **Jun 10, 2026** | Executive Order | [Strengthening Customs Enforcement](https://www.federalregister.gov/documents/2026/06/10/2026-11595/strengthening-customs-enforcement) |\n| 3 | **Jun 10, 2026** | Executive Order | [Implementing Schedule Policy/Career in the Excepted Service](https://www.federalregister.gov/documents/2026/06/10/2026-11594/implementing-schedule-policycareer-in-the-excepted-service) |\n| 4 | **Jun 5, 2026** | Executive Order | [Promoting Advanced Artificial Intelligence Innovation and Security](https://www.federalregister.gov/documents/2026/06/05/2026-11415/promoting-advanced-artificial-intelligence-innovation-and-security) |\n| 5 | **Jun 4, 2026** | Proclamation | [Further Adjusting the Tariff Regimes for Imports of Aluminum, Steel, and Copper Into the United States](https://www.federalregister.gov/documents/2026/06/04/2026-11314/further-adjusting-the-tariff-regimes-for-imports-of-aluminum-steel-and-copper-into-the-united-states) |\n| 6 | **Jun 3, 2026** | Executive Order | [Removing Unnecessary and Counterproductive Restrictions on Access to Federal Lands](https://www.federalregister.gov/documents/2026/06/03/2026-11181/removing-unnecessary-and-counterproductive-restrictions-on-access-to-federal-lands) |\n| 7 | **Jun 3, 2026** | Executive Order | [Realigning United States Core Childhood Vaccine Recommendations With Best Practices From Peer, Developed Countries](https://www.federalregister.gov/documents/2026/06/03/2026-11180/realigning-united-states-core-childhood-vaccine-recommendations-with-best-practices-from-peer) |\n| 8 | **May 28, 2026** | Proclamation | [Memorial Day, 2026](https://www.federalregister.gov/documents/2026/05/28/2026-10733/memorial-day-2026) |\n| 9 | **May 27, 2026** | Determination | [Emergency Presidential Determination on Refugee Admissions for Fiscal Year 2026](https://www.federalregister.gov/documents/2026/05/27/2026-10598/emergency-presidential-determination-on-refugee-admissions-for-fiscal-year-2026) |\n| 10 | **May 26, 2026** | Notice | [Continuation of the National Emergency With Respect to Belarus](https://www.federalregister.gov/documents/2026/05/26/2026-10481/continuation-of-the-national-emergency-with-respect-to-belarus) |\n| 11 | **May 22, 2026** | Executive Order | [Restoring Integrity to America's Financial System](https://www.federalregister.gov/documents/2026/05/22/2026-10400/restoring-integrity-to-americas-financial-system) |\n| 12 | **May 22, 2026** | Executive Order | [Integrating Financial Technology Innovation Into Regulatory Frameworks](https://www.federalregister.gov/documents/2026/05/22/2026-10399/integrating-financial-technology-innovation-into-regulatory-frameworks) |\n| 13 | **May 22, 2026** | Proclamation | [To Implement Certain Provisions in the Consolidated Appropriations Act, 2026, and for Other Purposes](https://www.federalregister.gov/documents/2026/05/22/2026-10398/to-implement-certain-provisions-in-the-consolidated-appropriations-act-2026-and-for-other-purposes) |\n| 14 | **May 14, 2026** | Proclamation | [Peace Officers Memorial Day and Police Week, 2026](https://www.federalregister.gov/documents/2026/05/14/2026-09779/peace-officers-memorial-day-and-police-week-2026) |\n| 15 | **May 13, 2026** | Notice | [Continuation of the National Emergency With Respect to Securing the Information and Communications Technology and Services Supply Chain](https://www.federalregister.gov/documents/2026/05/13/2026-09671/continuation-of-the-national-emergency-with-respect-to-securing-the-information-and-communications) |\n\n---\n\n### Key Highlights by Subtype:\n- **Executive Orders (6):** Cover customs enforcement, civil service classification (Schedule F), AI innovation/security, federal lands access, childhood vaccines, financial system integrity, and fintech regulation.\n- **Proclamations (5):** Include a presidential pardon (Stephen E. Buyer), aluminum/steel/copper tariff adjustments, Memorial Day, Consolidated Appropriations Act implementation, and Police Week.\n- **Notices (2):** National emergency continuations for Belarus and telecom supply chain security.\n- **Determination (1):** Emergency presidential determination on refugee admissions for FY2026.\n\nThere are **8,485 total** presidential documents in the Federal Register database. Each title links directly to the full document on FederalRegister.gov.",
+    "error": null,
+    "usage": {
+      "inputTokens": 52378,
+      "outputTokens": 1677
+    }
+  },
+  "grade": {
+    "correctSource": true,
+    "firstQueryValid": true,
+    "attemptsToUsefulData": 1,
+    "meetsCriteria": true,
+    "pass": true,
+    "failureCategory": null,
+    "notes": "The agent correctly routed to the federal-register source and retrieved 15 recent presidential documents/proclamations with titles and publication dates in a single round. The final answer is well-structured and fully satisfies the success criteria.",
+    "usage": {
+      "inputTokens": 4572,
+      "outputTokens": 215
+    }
+  },
+  "usage": {
+    "agent": {
+      "inputTokens": 52378,
+      "outputTokens": 1677
+    },
+    "grader": {
+      "inputTokens": 4572,
+      "outputTokens": 215
+    },
+    "total": {
+      "inputTokens": 56950,
+      "outputTokens": 1892
+    }
+  }
+}

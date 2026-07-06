@@ -1,0 +1,73 @@
+{
+  "case": {
+    "id": "nvd-01",
+    "sourceId": "nvd",
+    "intent": "Can you pull up the details on the Log4Shell vulnerability for me?",
+    "successCriteria": "Correctly identifies Log4Shell as CVE-2021-44228 and returns its NVD record: a CVSS base score of 10.0 with severity CRITICAL, an Apache Log4j (Log4j2 / JNDI) description, and remote code execution. Must come from the NIST NVD CVE record for CVE-2021-44228, not generic prose.",
+    "difficulty": "basic"
+  },
+  "transcript": {
+    "caseId": "nvd-01",
+    "intent": "Can you pull up the details on the Log4Shell vulnerability for me?",
+    "sourceId": "nvd",
+    "assistantTurns": [
+      {
+        "round": 1,
+        "text": "Sure! Let me query the NVD (National Vulnerability Database) for the Log4Shell CVE directly."
+      },
+      {
+        "round": 2,
+        "text": "Here is a comprehensive summary of the **Log4Shell** vulnerability from the NIST National Vulnerability Database:\n\n---\n\n## 🔴 CVE-2021-44228 — Log4Shell\n\n### 📌 Overview\n- **CVE ID:** CVE-2021-44228\n- **Name (CISA):** Apache Log4j2 Remote Code Execution Vulnerability\n- **Published:** December 10, 2021\n- **Last Modified:** February 20, 2026\n- **Status:** Analyzed\n\n---\n\n### 🛑 Severity\n| Metric | Value |\n|--------|-------|\n| **CVSS v3.1 Score** | **10.0 / CRITICAL** (maximum possible) |\n| **Attack Vector** | Network |\n| **Attack Complexity** | Low |\n| **Privileges Required** | None |\n| **User Interaction** | None |\n| **Scope** | Changed |\n| **Confidentiality Impact** | High |\n| **Integrity Impact** | High |\n| **Availability Impact** | High |\n| **CVSS v2 Score** | 9.3 / HIGH |\n\n---\n\n### 📋 Description\nApache Log4j2 versions **2.0-beta9 through 2.15.0** (excluding security releases 2.12.2, 2.12.3, and 2.3.1) contain a critical flaw in their **JNDI (Java Naming and Directory Interface)** features used in configuration, log messages, and parameters. The vulnerability does **not** protect against attacker-controlled LDAP and other JNDI-related endpoints.\n\nAn attacker who can **control log messages or log message parameters** can execute **arbitrary remote code** loaded from LDAP servers when message lookup substitution is enabled — requiring zero authentication and zero user interaction.\n\n> ⚠️ Note: This only affects **log4j-core** and does NOT affect log4net, log4cxx, or other Apache Logging Services projects.\n\n---\n\n### 🔧 Weaknesses (CWE)\n- **CWE-20** – Improper Input Validation\n- **CWE-400** – Uncontrolled Resource Consumption\n- **CWE-502** – Deserialization of Untrusted Data\n- **CWE-917** – Improper Neutralization of Special Elements used in an Expression Language Statement\n\n---\n\n### ✅ Fix / Remediation\n| Version | Fix |\n|---------|-----|\n| **2.15.0** | Behavior disabled by default |\n| **2.16.0+** | Functionality completely removed |\n| **2.12.2, 2.12.3** | Security backports (Java 7 line) |\n| **2.3.1** | Security backport (Java 6 line) |\n\n---\n\n### ⚡ CISA Known Exploited Vulnerability (KEV)\n- **Added to KEV:** December 10, 2021 (same day as disclosure — actively exploited immediately)\n- **Action Due:** December 24, 2021\n- **Required Action:** Apply updates OR remove affected assets from agency networks. Temporary mitigations were only acceptable until updates became available.\n\n---\n\n### 🏢 Notable Affected Vendors\nThe vulnerability had an extraordinarily wide blast radius, affecting products from dozens of major vendors including:\n- **Apache** (Log4j core, versions 2.0-beta9 through pre-fix releases)\n- **Cisco** (dozens of products: Webex, Unity Connection, Firepower, DNA Center, SD-WAN vManage, and many more)\n- **Siemens** (numerous industrial and enterprise products)\n- **Intel** (several tools and platforms)\n- **NetApp** (Active IQ Unified Manager, Cloud Insights, etc.)\n- **Debian / Fedora Linux** distributions\n- **SonicWall, Apple (Xcode), Bentley Systems, Snow Software**, and many others\n\n---\n\n### 🔗 Key Resources\n- [Apache Log4j Security Page](https://logging.apache.org/log4j/2.x/security.html)\n- [CISA Log4j Affected Software Database](https://github.com/cisagov/log4j-affected-db)\n- [CERT/CC Vulnerability Note VU#930724](https://www.kb.cert.org/vuls/id/930724)\n- [Cisco Security Advisory](https://tools.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-apache-log4j-qRuKNEbd)\n\n---\n\nLog4Shell is widely considered one of the most severe and broadly impactful vulnerabilities ever discovered, given its **perfect CVSS 10.0 score**, trivial exploitability, and the ubiquity of Log4j across enterprise Java applications worldwide."
+      }
+    ],
+    "toolCalls": [
+      {
+        "round": 1,
+        "tool": "query_data_source",
+        "args": {
+          "connectorId": "nvd",
+          "path": "/cves/2.0",
+          "params": {
+            "cveId": "CVE-2021-44228"
+          }
+        },
+        "rawResponse": "{\n  \"status\": 200,\n  \"data\": {\n    \"resultsPerPage\": 1,\n    \"startIndex\": 0,\n    \"totalResults\": 1,\n    \"format\": \"NVD_CVE\",\n    \"version\": \"2.0\",\n    \"timestamp\": \"2026-06-12T13:34:27.993\",\n    \"vulnerabilities\": [\n      {\n        \"cve\": {\n          \"id\": \"CVE-2021-44228\",\n          \"sourceIdentifier\": \"security@apache.org\",\n          \"published\": \"2021-12-10T10:15:09.143\",\n          \"lastModified\": \"2026-02-20T16:15:59.363\",\n          \"vulnStatus\": \"Analyzed\",\n          \"cveTags\": [],\n          \"descriptions\": [\n            {\n              \"lang\": \"en\",\n              \"value\": \"Apache Log4j2 2.0-beta9 through 2.15.0 (excluding security releases 2.12.2, 2.12.3, and 2.3.1) JNDI features used in configuration, log messages, and parameters do not protect against attacker controlled LDAP and other JNDI related endpoints. An attacker who can control log messages or log message parameters can execute arbitrary code loaded from LDAP servers when message lookup substitution is enabled. From log4j 2.15.0, this behavior has been disabled by default. From version 2.16.0 (along with 2.12.2, 2.12.3, and 2.3.1), this functionality has been completely removed. Note that this vulnerability is specific to log4j-core and does not affect log4net, log4cxx, or other Apache Logging Services projects.\"\n            },\n            {\n              \"lang\": \"es\",\n              \"value\": \"Las características JNDI de Apache Log4j2 2.0-beta9 hasta 2.15.0 (excluyendo las versiones de seguridad 2.12.2, 2.12.3 y 2.3.1) utilizadas en la configuración, los mensajes de registro y los parámetros no protegen contra LDAP controlado por un atacante y otros puntos finales relacionados con JNDI. Un atacante que pueda controlar los mensajes de registro o los parámetros de los mensajes de registro puede ejecutar código arbitrario cargado desde servidores LDAP cuando la sustitución de la búsqueda de mensajes está habilitada. A partir de la versión 2.15.0 de log4j, este comportamiento ha sido deshabilitado por defecto. A partir de la versión 2.16.0 (junto con …[truncated]",
+        "errored": false
+      }
+    ],
+    "roundsUsed": 1,
+    "finalAnswer": "Here is a comprehensive summary of the **Log4Shell** vulnerability from the NIST National Vulnerability Database:\n\n---\n\n## 🔴 CVE-2021-44228 — Log4Shell\n\n### 📌 Overview\n- **CVE ID:** CVE-2021-44228\n- **Name (CISA):** Apache Log4j2 Remote Code Execution Vulnerability\n- **Published:** December 10, 2021\n- **Last Modified:** February 20, 2026\n- **Status:** Analyzed\n\n---\n\n### 🛑 Severity\n| Metric | Value |\n|--------|-------|\n| **CVSS v3.1 Score** | **10.0 / CRITICAL** (maximum possible) |\n| **Attack Vector** | Network |\n| **Attack Complexity** | Low |\n| **Privileges Required** | None |\n| **User Interaction** | None |\n| **Scope** | Changed |\n| **Confidentiality Impact** | High |\n| **Integrity Impact** | High |\n| **Availability Impact** | High |\n| **CVSS v2 Score** | 9.3 / HIGH |\n\n---\n\n### 📋 Description\nApache Log4j2 versions **2.0-beta9 through 2.15.0** (excluding security releases 2.12.2, 2.12.3, and 2.3.1) contain a critical flaw in their **JNDI (Java Naming and Directory Interface)** features used in configuration, log messages, and parameters. The vulnerability does **not** protect against attacker-controlled LDAP and other JNDI-related endpoints.\n\nAn attacker who can **control log messages or log message parameters** can execute **arbitrary remote code** loaded from LDAP servers when message lookup substitution is enabled — requiring zero authentication and zero user interaction.\n\n> ⚠️ Note: This only affects **log4j-core** and does NOT affect log4net, log4cxx, or other Apache Logging Services projects.\n\n---\n\n### 🔧 Weaknesses (CWE)\n- **CWE-20** – Improper Input Validation\n- **CWE-400** – Uncontrolled Resource Consumption\n- **CWE-502** – Deserialization of Untrusted Data\n- **CWE-917** – Improper Neutralization of Special Elements used in an Expression Language Statement\n\n---\n\n### ✅ Fix / Remediation\n| Version | Fix |\n|---------|-----|\n| **2.15.0** | Behavior disabled by default |\n| **2.16.0+** | Functionality completely removed |\n| **2.12.2, 2.12.3** | Security backports (Java 7 line) |\n| **2.3.1** | Security backport (Java 6 line) |\n\n---\n\n### ⚡ CISA Known Exploited Vulnerability (KEV)\n- **Added to KEV:** December 10, 2021 (same day as disclosure — actively exploited immediately)\n- **Action Due:** December 24, 2021\n- **Required Action:** Apply updates OR remove affected assets from agency networks. Temporary mitigations were only acceptable until updates became available.\n\n---\n\n### 🏢 Notable Affected Vendors\nThe vulnerability had an extraordinarily wide blast radius, affecting products from dozens of major vendors including:\n- **Apache** (Log4j core, versions 2.0-beta9 through pre-fix releases)\n- **Cisco** (dozens of products: Webex, Unity Connection, Firepower, DNA Center, SD-WAN vManage, and many more)\n- **Siemens** (numerous industrial and enterprise products)\n- **Intel** (several tools and platforms)\n- **NetApp** (Active IQ Unified Manager, Cloud Insights, etc.)\n- **Debian / Fedora Linux** distributions\n- **SonicWall, Apple (Xcode), Bentley Systems, Snow Software**, and many others\n\n---\n\n### 🔗 Key Resources\n- [Apache Log4j Security Page](https://logging.apache.org/log4j/2.x/security.html)\n- [CISA Log4j Affected Software Database](https://github.com/cisagov/log4j-affected-db)\n- [CERT/CC Vulnerability Note VU#930724](https://www.kb.cert.org/vuls/id/930724)\n- [Cisco Security Advisory](https://tools.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-apache-log4j-qRuKNEbd)\n\n---\n\nLog4Shell is widely considered one of the most severe and broadly impactful vulnerabilities ever discovered, given its **perfect CVSS 10.0 score**, trivial exploitability, and the ubiquity of Log4j across enterprise Java applications worldwide.",
+    "error": null,
+    "usage": {
+      "inputTokens": 79989,
+      "outputTokens": 1303
+    }
+  },
+  "grade": {
+    "correctSource": true,
+    "firstQueryValid": true,
+    "attemptsToUsefulData": 1,
+    "meetsCriteria": true,
+    "pass": true,
+    "failureCategory": null,
+    "notes": "The agent correctly queried the NVD source (connectorId: \"nvd\") for CVE-2021-44228 in round 1 and received a valid response. The final answer accurately identifies Log4Shell as CVE-2021-44228 with a CVSS score of 10.0/CRITICAL, describes the Apache Log4j2 JNDI vulnerability enabling remote code execution, and clearly attributes the data to the NIST NVD record.",
+    "usage": {
+      "inputTokens": 3403,
+      "outputTokens": 274
+    }
+  },
+  "usage": {
+    "agent": {
+      "inputTokens": 79989,
+      "outputTokens": 1303
+    },
+    "grader": {
+      "inputTokens": 3403,
+      "outputTokens": 274
+    },
+    "total": {
+      "inputTokens": 83392,
+      "outputTokens": 1577
+    }
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "case": {
+    "id": "bls-public-data-02",
+    "sourceId": "bls-public-data",
+    "intent": "How much has the cost of living in the U.S. risen over the past year? Give me an inflation figure based on consumer prices.",
+    "successCriteria": "Answer derives a year-over-year inflation rate from the Consumer Price Index, obtained from EITHER acceptable CPI source: (i) BLS Public Data — CPI for All Urban Consumers, All Items, series CUUR0000SA0 (NSA) or CUSR0000SA0 (SA); or (ii) FRED — series CPIAUCSL (CPI-U All Items, SA) or CPIAUCNS (NSA). FRED republishes the BLS CPI series, so either source is legitimate here. Regardless of source, the answer must (a) pull at least two CPI index values 12 months apart and (b) compute a percentage change, reporting an inflation rate as a plausible percent (roughly 1%-6% in normal recent years), attributed to the Consumer Price Index. The hard part is recognizing CPI as the right series, fetching two points a year apart, and computing the percent change rather than reporting a raw index level. Do NOT require the BLS source specifically — a correct CPI-derived figure from FRED passes equally.",
+    "difficulty": "hard",
+    "notes": "Source overlap: CPI is published by BLS (CUUR0000SA0) but also republished by FRED (CPIAUCSL). Both are correct homes for a consumer-price inflation figure, so success accepts either. The original criteria over-pinned to BLS and failed a correct FRED-derived answer."
+  },
+  "transcript": {
+    "caseId": "bls-public-data-02",
+    "intent": "How much has the cost of living in the U.S. risen over the past year? Give me an inflation figure based on consumer prices.",
+    "sourceId": "bls-public-data",
+    "assistantTurns": [
+      {
+        "round": 2,
+        "text": "Here's the latest U.S. inflation figure based on official Bureau of Labor Statistics (BLS) data:\n\n---\n\n## 📊 U.S. Consumer Price Inflation (CPI-U)\n\n**Source:** BLS CPI-U — All Items, All Urban Consumers, Not Seasonally Adjusted (Series CUUR0000SA0)\n\n| Month | CPI Index Value |\n|---|---|\n| **November 2025** | 324.122 |\n| **November 2024** | 315.493 |\n\n**Year-over-Year Inflation (Nov 2024 → Nov 2025):**\n> **(324.122 − 315.493) / 315.493 × 100 = **+2.74%****\n\n---\n\n### Key Takeaways\n- **The cost of living rose approximately 2.7% over the past year**, as measured by the Consumer Price Index for All Urban Consumers (CPI-U).\n- This is based on the **most recent complete monthly comparison available** (November 2024 vs. November 2025). Note: October 2025 data is unavailable due to a lapse in government appropriations.\n- This rate is **well below the peak inflation of ~9% seen in mid-2022**, and sits modestly above the Federal Reserve's 2% annual target.\n\n> **Methodology:** The CPI-U tracks the prices paid by urban consumers for a representative basket of goods and services, including food, housing, apparel, transportation, medical care, and more. It is the most widely cited measure of consumer price inflation in the U.S."
+      }
+    ],
+    "toolCalls": [
+      {
+        "round": 1,
+        "tool": "query_data_source",
+        "args": {
+          "connectorId": "bls-public-data",
+          "path": "/timeseries/data/",
+          "method": "POST",
+          "body": {
+            "seriesid": [
+              "CUUR0000SA0"
+            ],
+            "startyear": "2023",
+            "endyear": "2025"
+          }
+        },
+        "rawResponse": "{\n  \"status\": 200,\n  \"data\": {\n    \"status\": \"REQUEST_SUCCEEDED\",\n    \"responseTime\": 76,\n    \"message\": [],\n    \"Results\": {\n      \"series\": [\n        {\n          \"seriesID\": \"CUUR0000SA0\",\n          \"data\": [\n            {\n              \"year\": \"2025\",\n              \"period\": \"M12\",\n              \"periodName\": \"December\",\n              \"value\": \"324.054\",\n              \"footnotes\": [\n                {}\n              ]\n            },\n            {\n              \"year\": \"2025\",\n              \"period\": \"M11\",\n              \"periodName\": \"November\",\n              \"value\": \"324.122\",\n              \"footnotes\": [\n                {}\n              ]\n            },\n            {\n              \"year\": \"2025\",\n              \"period\": \"M10\",\n              \"periodName\": \"October\",\n              \"value\": \"-\",\n              \"footnotes\": [\n                {\n                  \"code\": \"X\",\n                  \"text\": \"Data unavailable due to the 2025 lapse in appropriations\"\n                }\n              ]\n            },\n            {\n              \"year\": \"2025\",\n              \"period\": \"M09\",\n              \"periodName\": \"September\",\n              \"value\": \"324.800\",\n              \"footnotes\": [\n                {}\n              ]\n            },\n            {\n              \"year\": \"2025\",\n              \"period\": \"M08\",\n              \"periodName\": \"August\",\n              \"value\": \"323.976\",\n              \"footnotes\": [\n                {}\n              ]\n            },\n            {\n              \"year\": \"2025\",\n              \"period\": \"M07\",\n              \"periodName\": \"July\",\n              \"value\": \"323.048\",\n              \"footnotes\": [\n                {}\n              ]\n            },\n            {\n              \"year\": \"2025\",\n              \"period\": \"M06\",\n              \"periodName\": \"June\",\n              \"value\": \"322.561\",\n              \"footnotes\": [\n                {}\n              ]\n            },\n            {\n              \"year\": \"2025\",\n              \"period\": \"M05\",\n              \"periodName\": \"May\",\n              …[truncated]",
+        "errored": false
+      }
+    ],
+    "roundsUsed": 1,
+    "finalAnswer": "Here's the latest U.S. inflation figure based on official Bureau of Labor Statistics (BLS) data:\n\n---\n\n## 📊 U.S. Consumer Price Inflation (CPI-U)\n\n**Source:** BLS CPI-U — All Items, All Urban Consumers, Not Seasonally Adjusted (Series CUUR0000SA0)\n\n| Month | CPI Index Value |\n|---|---|\n| **November 2025** | 324.122 |\n| **November 2024** | 315.493 |\n\n**Year-over-Year Inflation (Nov 2024 → Nov 2025):**\n> **(324.122 − 315.493) / 315.493 × 100 = **+2.74%****\n\n---\n\n### Key Takeaways\n- **The cost of living rose approximately 2.7% over the past year**, as measured by the Consumer Price Index for All Urban Consumers (CPI-U).\n- This is based on the **most recent complete monthly comparison available** (November 2024 vs. November 2025). Note: October 2025 data is unavailable due to a lapse in government appropriations.\n- This rate is **well below the peak inflation of ~9% seen in mid-2022**, and sits modestly above the Federal Reserve's 2% annual target.\n\n> **Methodology:** The CPI-U tracks the prices paid by urban consumers for a representative basket of goods and services, including food, housing, apparel, transportation, medical care, and more. It is the most widely cited measure of consumer price inflation in the U.S.",
+    "error": null,
+    "usage": {
+      "inputTokens": 29157,
+      "outputTokens": 520
+    }
+  },
+  "grade": {
+    "correctSource": true,
+    "firstQueryValid": true,
+    "attemptsToUsefulData": 1,
+    "meetsCriteria": true,
+    "pass": true,
+    "failureCategory": null,
+    "notes": "The agent queried the correct BLS source with series CUUR0000SA0, retrieved CPI values for November 2024 (315.493) and November 2025 (324.122) — two data points 12 months apart — and correctly computed a year-over-year inflation rate of ~2.74%, which is a plausible and well-attributed CPI-based inflation figure.",
+    "usage": {
+      "inputTokens": 2733,
+      "outputTokens": 257
+    }
+  },
+  "usage": {
+    "agent": {
+      "inputTokens": 29157,
+      "outputTokens": 520
+    },
+    "grader": {
+      "inputTokens": 2733,
+      "outputTokens": 257
+    },
+    "total": {
+      "inputTokens": 31890,
+      "outputTokens": 777
+    }
+  }
+}

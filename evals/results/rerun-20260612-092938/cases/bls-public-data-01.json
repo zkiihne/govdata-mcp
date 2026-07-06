@@ -1,0 +1,74 @@
+{
+  "case": {
+    "id": "bls-public-data-01",
+    "sourceId": "bls-public-data",
+    "intent": "What has the U.S. national unemployment rate been over the past couple of years?",
+    "successCriteria": "Answer comes from BLS (Labor Force Statistics / CPS, series LNS14000000, the seasonally adjusted national unemployment rate). It must report at least one recent monthly unemployment rate as a percentage in a plausible range (roughly 3%–6%), expressed as a percent and attributed to the Bureau of Labor Statistics. The agent must POST to the BLS timeseries endpoint with a year range as strings.",
+    "difficulty": "basic"
+  },
+  "transcript": {
+    "caseId": "bls-public-data-01",
+    "intent": "What has the U.S. national unemployment rate been over the past couple of years?",
+    "sourceId": "bls-public-data",
+    "assistantTurns": [
+      {
+        "round": 2,
+        "text": "Here is the U.S. national unemployment rate (seasonally adjusted) from the Bureau of Labor Statistics over the past ~3 years:\n\n---\n\n### 📊 U.S. National Unemployment Rate (2023–2025)\n*Source: BLS Series LNS14000000*\n\n#### **2023** — A historically low year\n| Month | Rate |\n|-------|------|\n| January | 3.5% |\n| February | 3.6% |\n| March | 3.5% |\n| April | 3.4% ⬅️ *Year low* |\n| May | 3.6% |\n| June | 3.6% |\n| July | 3.5% |\n| August | 3.7% |\n| September | 3.7% |\n| October | 3.9% |\n| November | 3.7% |\n| December | 3.8% |\n\n#### **2024** — Gradual rise through the year\n| Month | Rate |\n|-------|------|\n| January | 3.7% |\n| February | 3.9% |\n| March | 3.9% |\n| April | 3.9% |\n| May | 3.9% |\n| June | 4.1% |\n| July | 4.2% |\n| August | 4.2% |\n| September | 4.1% |\n| October | 4.1% |\n| November | 4.2% |\n| December | 4.1% |\n\n#### **2025** — Continued elevation\n| Month | Rate |\n|-------|------|\n| January | 4.0% |\n| February | 4.2% |\n| March | 4.2% |\n| April | 4.2% |\n| May | 4.3% |\n| June | 4.1% |\n| July | 4.3% |\n| August | 4.3% |\n| September | 4.4% |\n| October | *(unavailable — lapse in appropriations)* |\n| November | 4.5% |\n| December | 4.4% |\n\n---\n\n### Key Takeaways:\n- **2023** was a historically strong labor market year, with unemployment hovering between **3.4%–3.9%**.\n- **2024** saw a gradual climb, crossing the **4% threshold** in June and ending the year around **4.1–4.2%**.\n- **2025** has seen unemployment remain elevated in the **4.1%–4.5%** range, the highest since early 2022.\n- October 2025 data is missing due to a **lapse in government appropriations**."
+      }
+    ],
+    "toolCalls": [
+      {
+        "round": 1,
+        "tool": "query_data_source",
+        "args": {
+          "connectorId": "bls-public-data",
+          "path": "/timeseries/data/",
+          "method": "POST",
+          "body": {
+            "seriesid": [
+              "LNS14000000"
+            ],
+            "startyear": "2023",
+            "endyear": "2025"
+          }
+        },
+        "rawResponse": "{\n  \"status\": 200,\n  \"data\": {\n    \"status\": \"REQUEST_SUCCEEDED\",\n    \"responseTime\": 115,\n    \"message\": [],\n    \"Results\": {\n      \"series\": [\n        {\n          \"seriesID\": \"LNS14000000\",\n          \"data\": [\n            {\n              \"year\": \"2025\",\n              \"period\": \"M12\",\n              \"periodName\": \"December\",\n              \"value\": \"4.4\",\n              \"footnotes\": [\n                {}\n              ]\n            },\n            {\n              \"year\": \"2025\",\n              \"period\": \"M11\",\n              \"periodName\": \"November\",\n              \"value\": \"4.5\",\n              \"footnotes\": [\n                {}\n              ]\n            },\n            {\n              \"year\": \"2025\",\n              \"period\": \"M10\",\n              \"periodName\": \"October\",\n              \"value\": \"-\",\n              \"footnotes\": [\n                {\n                  \"code\": \"9\",\n                  \"text\": \"Data unavailable due to the 2025 lapse in appropriations.\"\n                }\n              ]\n            },\n            {\n              \"year\": \"2025\",\n              \"period\": \"M09\",\n              \"periodName\": \"September\",\n              \"value\": \"4.4\",\n              \"footnotes\": [\n                {}\n              ]\n            },\n            {\n              \"year\": \"2025\",\n              \"period\": \"M08\",\n              \"periodName\": \"August\",\n              \"value\": \"4.3\",\n              \"footnotes\": [\n                {}\n              ]\n            },\n            {\n              \"year\": \"2025\",\n              \"period\": \"M07\",\n              \"periodName\": \"July\",\n              \"value\": \"4.3\",\n              \"footnotes\": [\n                {}\n              ]\n            },\n            {\n              \"year\": \"2025\",\n              \"period\": \"M06\",\n              \"periodName\": \"June\",\n              \"value\": \"4.1\",\n              \"footnotes\": [\n                {}\n              ]\n            },\n            {\n              \"year\": \"2025\",\n              \"period\": \"M05\",\n              \"periodName\": \"May\",\n              \"value\": \"4.3\",\n      …[truncated]",
+        "errored": false
+      }
+    ],
+    "roundsUsed": 1,
+    "finalAnswer": "Here is the U.S. national unemployment rate (seasonally adjusted) from the Bureau of Labor Statistics over the past ~3 years:\n\n---\n\n### 📊 U.S. National Unemployment Rate (2023–2025)\n*Source: BLS Series LNS14000000*\n\n#### **2023** — A historically low year\n| Month | Rate |\n|-------|------|\n| January | 3.5% |\n| February | 3.6% |\n| March | 3.5% |\n| April | 3.4% ⬅️ *Year low* |\n| May | 3.6% |\n| June | 3.6% |\n| July | 3.5% |\n| August | 3.7% |\n| September | 3.7% |\n| October | 3.9% |\n| November | 3.7% |\n| December | 3.8% |\n\n#### **2024** — Gradual rise through the year\n| Month | Rate |\n|-------|------|\n| January | 3.7% |\n| February | 3.9% |\n| March | 3.9% |\n| April | 3.9% |\n| May | 3.9% |\n| June | 4.1% |\n| July | 4.2% |\n| August | 4.2% |\n| September | 4.1% |\n| October | 4.1% |\n| November | 4.2% |\n| December | 4.1% |\n\n#### **2025** — Continued elevation\n| Month | Rate |\n|-------|------|\n| January | 4.0% |\n| February | 4.2% |\n| March | 4.2% |\n| April | 4.2% |\n| May | 4.3% |\n| June | 4.1% |\n| July | 4.3% |\n| August | 4.3% |\n| September | 4.4% |\n| October | *(unavailable — lapse in appropriations)* |\n| November | 4.5% |\n| December | 4.4% |\n\n---\n\n### Key Takeaways:\n- **2023** was a historically strong labor market year, with unemployment hovering between **3.4%–3.9%**.\n- **2024** saw a gradual climb, crossing the **4% threshold** in June and ending the year around **4.1–4.2%**.\n- **2025** has seen unemployment remain elevated in the **4.1%–4.5%** range, the highest since early 2022.\n- October 2025 data is missing due to a **lapse in government appropriations**.",
+    "error": null,
+    "usage": {
+      "inputTokens": 29133,
+      "outputTokens": 798
+    }
+  },
+  "grade": {
+    "correctSource": true,
+    "firstQueryValid": true,
+    "attemptsToUsefulData": 1,
+    "meetsCriteria": true,
+    "pass": true,
+    "failureCategory": null,
+    "notes": "The agent correctly POSTed to the BLS timeseries endpoint (bls-public-data, /timeseries/data/) with series LNS14000000 and year range as strings (\"2023\"–\"2025\"). The response succeeded and the final answer reports multiple recent monthly unemployment rates (all in the 3.4%–4.5% plausible range), explicitly attributed to BLS Series LNS14000000, fully satisfying the success criteria.",
+    "usage": {
+      "inputTokens": 2896,
+      "outputTokens": 272
+    }
+  },
+  "usage": {
+    "agent": {
+      "inputTokens": 29133,
+      "outputTokens": 798
+    },
+    "grader": {
+      "inputTokens": 2896,
+      "outputTokens": 272
+    },
+    "total": {
+      "inputTokens": 32029,
+      "outputTokens": 1070
+    }
+  }
+}

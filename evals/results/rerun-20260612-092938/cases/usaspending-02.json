@@ -1,0 +1,220 @@
+{
+  "case": {
+    "id": "usaspending-02",
+    "sourceId": "usaspending",
+    "intent": "How much did the Department of Veterans Affairs spend on grants awarded to recipients in California in fiscal year 2023?",
+    "successCriteria": "Returns grant awards for fiscal year 2023 (Oct 1 2022 - Sep 30 2023) where the awarding agency is the Department of Veterans Affairs and the recipient/place-of-performance location is California, with award amounts. Correctly requires a multi-faceted POST filter combining an agency filter (awarding agency = VA), grant award type codes (not contracts), a California location filter, and the FY2023 time period — likely after resolving the VA agency reference. Total or per-award dollar amounts must be reported, scoped to VA + CA + grants, not all federal spending.",
+    "difficulty": "hard"
+  },
+  "transcript": {
+    "caseId": "usaspending-02",
+    "intent": "How much did the Department of Veterans Affairs spend on grants awarded to recipients in California in fiscal year 2023?",
+    "sourceId": "usaspending",
+    "assistantTurns": [
+      {
+        "round": 1,
+        "text": "I'll start by discovering the available data sources, then query the right one for VA grant spending in California for FY2023."
+      },
+      {
+        "round": 2,
+        "text": "The best source is **USAspending** (id: `usaspending`). I'll query it for VA grants with place of performance in California for FY2023 (Oct 1, 2022 – Sep 30, 2023). I'll also request a high enough limit and use the `Award Amount` aggregation approach. Let me first run an initial search and also get the total spending via a subawards/aggregation endpoint. I'll use `spending_by_award` with `Award Amount` summed, paginating as needed. Let me start with a broad query to get the totals."
+      },
+      {
+        "round": 3,
+        "text": "There are more results (hasNext: true). I need to get the total count/sum. Let me use the `spending_by_geography` or `spending_by_category` endpoint, or better yet, use the `spending_by_award` with `count` approach. Let me try to use the `spending_by_geography` endpoint or the `award_amounts` endpoint to get an aggregate total. I'll try the `spending_by_category` endpoint or check if there's a total in the metadata. Let me try fetching the total by requesting the `spending_by_award` with a higher page count and checking the page_metadata for a total, or use a dedicated aggregation endpoint."
+      },
+      {
+        "round": 4,
+        "text": "There are still more results. Rather than paginating through all records to manually sum, let me use the USAspending `spending_by_geography` endpoint which can return aggregate totals, or try the `spending_by_category` endpoint. Actually, the best approach is to use the `/search/spending_by_geography/` endpoint to get a state-level aggregate total."
+      },
+      {
+        "round": 5,
+        "text": "I now have a precise aggregate total directly from USAspending's geography aggregation endpoint.\n\n---\n\n## Department of Veterans Affairs — Grants in California, FY2023\n\nAccording to **USAspending.gov** (the official federal spending transparency database), the **Department of Veterans Affairs awarded approximately **$382,069,990.50** (~$382.1 million)** in grants with a place of performance in **California** during **Fiscal Year 2023** (October 1, 2022 – September 30, 2023).\n\n### Key Details:\n| Metric | Value |\n|---|---|\n| **Agency** | Department of Veterans Affairs |\n| **Award Type** | Grants |\n| **State** | California |\n| **Fiscal Year** | FY2023 (Oct 2022 – Sep 2023) |\n| **Total Awarded** | **$382,069,990.50** |\n| **Per Capita** | ~$9.66 (based on CA population of ~39.5M) |\n\n### Notable Top Recipients:\nThe largest individual grants went to:\n1. **California Department of Veterans Affairs** – multiple awards totaling ~$460M+ across several grants (e.g., CA662B: $122.4M, CA662A: $101M, CA664A: $86.9M, CA664B: $83.8M)\n2. **Veterans Home of California** – ~$104M (CA691DV)\n3. **Department of Veteran Affairs (CA)** – ~$93.8M (CA612DT)\n4. Smaller community organizations like Insight Housing, Nation's Finest, PATH, Vietnam Veterans of San Diego, and others receiving millions each for veteran services programs.\n\n> **Note:** The total reflects the **aggregated transaction amounts** tied to grants active or obligated within FY2023 for performance in California, as reported to USAspending.gov."
+      }
+    ],
+    "toolCalls": [
+      {
+        "round": 1,
+        "tool": "discover_data_sources",
+        "args": {},
+        "rawResponse": "{\n  \"count\": 22,\n  \"sources\": [\n    {\n      \"id\": \"bea\",\n      \"name\": \"BEA — Bureau of Economic Analysis API\",\n      \"agency\": \"U.S. Bureau of Economic Analysis\",\n      \"category\": \"economy\",\n      \"tier\": \"free\",\n      \"status\": \"live\",\n      \"api\": {\n        \"baseUrl\": \"https://apps.bea.gov/api\",\n        \"protocol\": \"rest-json\",\n        \"docsUrl\": \"https://apps.bea.gov/api/_pdf/bea_web_service_api_user_guide.pdf\",\n        \"endpoints\": [\n          {\n            \"id\": \"data\",\n            \"path\": \"/data\",\n            \"method\": \"GET\",\n            \"description\": \"Single endpoint; the method= param selects the operation (GetData, GetDataSetList, GetParameterList, GetParameterValues).\"\n          }\n        ]\n      },\n      \"auth\": {\n        \"type\": \"api-key\",\n        \"placement\": \"query\",\n        \"paramName\": \"UserID\",\n        \"credentialRef\": \"env:BEA_API_KEY\",\n        \"signupUrl\": \"https://apps.bea.gov/API/signup/\"\n      },\n      \"limits\": {\n        \"dailyQuota\": null,\n        \"perRequestMaxSeries\": null,\n        \"rateLimitBehavior\": \"error\",\n        \"notes\": \"Free UserID key required. Throttle: max 100 requests, 100MB, and 30 errors per minute per IP/key — exceeding it blocks for 1 hour.\"\n      },\n      \"pricing\": {\n        \"model\": \"free\",\n        \"feePerCallCents\": null\n      },\n      \"llmDocs\": {\n        \"summary\": \"US economic accounts: GDP (NIPA), regional income/GDP, input-output, international trade and investment, and fixed assets.\",\n        \"queryGuide\": \"One endpoint, /data; the operation is chosen by method=. Discover structure first: method=GetDataSetList, then GetParameterList&datasetname=, then GetParameterValues&datasetname=&ParameterName=. Then method=GetData&datasetname=<ds>&<params>&ResultFormat=JSON. UserID is injected by the gateway.\",\n        \"exampleQueries\": [\n          {\n            \"intent\": \"List available datasets\",\n            \"request\": {\n              \"method\": \"GET\",\n              \"path\": \"/data\",\n              \"params\": {\n                \"method\": \"GetDataSetList\",\n                \"R…[truncated]",
+        "errored": false
+      },
+      {
+        "round": 2,
+        "tool": "query_data_source",
+        "args": {
+          "connectorId": "usaspending",
+          "path": "/search/spending_by_award/",
+          "method": "POST",
+          "body": {
+            "filters": {
+              "agencies": [
+                {
+                  "type": "awarding",
+                  "tier": "toptier",
+                  "name": "Department of Veterans Affairs"
+                }
+              ],
+              "award_type_codes": [
+                "02",
+                "03",
+                "04",
+                "05"
+              ],
+              "place_of_performance_locations": [
+                {
+                  "country": "USA",
+                  "state": "CA"
+                }
+              ],
+              "time_period": [
+                {
+                  "start_date": "2022-10-01",
+                  "end_date": "2023-09-30"
+                }
+              ]
+            },
+            "fields": [
+              "Award ID",
+              "Recipient Name",
+              "Award Amount",
+              "Start Date",
+              "End Date"
+            ],
+            "limit": 100,
+            "page": 1,
+            "sort": "Award Amount",
+            "order": "desc"
+          }
+        },
+        "rawResponse": "{\n  \"status\": 200,\n  \"data\": {\n    \"spending_level\": \"awards\",\n    \"limit\": 100,\n    \"results\": [\n      {\n        \"internal_id\": 260143551,\n        \"Award ID\": \"CA662B\",\n        \"Recipient Name\": \"CALIFORNIA DEPARTMENT OF VETERANS AFFAIRS\",\n        \"Award Amount\": 122420704.63,\n        \"Start Date\": null,\n        \"End Date\": null,\n        \"generated_internal_id\": \"ASST_NON_CA662B_036\"\n      },\n      {\n        \"internal_id\": 260143556,\n        \"Award ID\": \"CA691DV\",\n        \"Recipient Name\": \"VETERANS HOME OF CALIFORNIA\",\n        \"Award Amount\": 103981160.78,\n        \"Start Date\": null,\n        \"End Date\": \"2026-09-30\",\n        \"generated_internal_id\": \"ASST_NON_CA691DV_036\"\n      },\n      {\n        \"internal_id\": 260143550,\n        \"Award ID\": \"CA662A\",\n        \"Recipient Name\": \"CALIFORNIA DEPARTMENT OF VETERANS AFFAIRS\",\n        \"Award Amount\": 100979535.46,\n        \"Start Date\": null,\n        \"End Date\": null,\n        \"generated_internal_id\": \"ASST_NON_CA662A_036\"\n      },\n      {\n        \"internal_id\": 260143525,\n        \"Award ID\": \"CA612DT\",\n        \"Recipient Name\": \"DEPARTMENT OF VETERAN AFFAIRS\",\n        \"Award Amount\": 93774979.48,\n        \"Start Date\": null,\n        \"End Date\": \"2026-09-30\",\n        \"generated_internal_id\": \"ASST_NON_CA612DT_036\"\n      },\n      {\n        \"internal_id\": 260143552,\n        \"Award ID\": \"CA664A\",\n        \"Recipient Name\": \"CALIFORNIA DEPARTMENT OF VETERANS AFFAIRS\",\n        \"Award Amount\": 86928944.27,\n        \"Start Date\": null,\n        \"End Date\": \"2026-09-30\",\n        \"generated_internal_id\": \"ASST_NON_CA664A_036\"\n      },\n      {\n        \"internal_id\": 260143553,\n        \"Award ID\": \"CA664B\",\n        \"Recipient Name\": \"CALIFORNIA DEPARTMENT OF VETERANS AFFAIRS\",\n        \"Award Amount\": 83844573.25,\n        \"Start Date\": null,\n        \"End Date\": \"2026-09-30\",\n        \"generated_internal_id\": \"ASST_NON_CA664B_036\"\n      },\n      {\n        \"internal_id\": 260143513,\n        \"Award ID\": \"CA570DT\",\n        \"Recipient Name\": \"VETERANS HOME OF CALIFORNIA - FRESNO\",\n        \"A…[truncated]",
+        "errored": false
+      },
+      {
+        "round": 3,
+        "tool": "query_data_source",
+        "args": {
+          "connectorId": "usaspending",
+          "path": "/search/spending_by_award/",
+          "method": "POST",
+          "body": {
+            "filters": {
+              "agencies": [
+                {
+                  "type": "awarding",
+                  "tier": "toptier",
+                  "name": "Department of Veterans Affairs"
+                }
+              ],
+              "award_type_codes": [
+                "02",
+                "03",
+                "04",
+                "05"
+              ],
+              "place_of_performance_locations": [
+                {
+                  "country": "USA",
+                  "state": "CA"
+                }
+              ],
+              "time_period": [
+                {
+                  "start_date": "2022-10-01",
+                  "end_date": "2023-09-30"
+                }
+              ]
+            },
+            "fields": [
+              "Award ID",
+              "Award Amount"
+            ],
+            "limit": 100,
+            "page": 2,
+            "sort": "Award Amount",
+            "order": "desc"
+          }
+        },
+        "rawResponse": "{\n  \"status\": 200,\n  \"data\": {\n    \"spending_level\": \"awards\",\n    \"limit\": 100,\n    \"results\": [\n      {\n        \"internal_id\": 230043534,\n        \"Award ID\": \"14-NY-259-24\",\n        \"Award Amount\": 1816929,\n        \"generated_internal_id\": \"ASST_NON_14-NY-259-24_036\"\n      },\n      {\n        \"internal_id\": 271777844,\n        \"Award ID\": \"VOAL330-3568-691-PD-24\",\n        \"Award Amount\": 1747408.96,\n        \"generated_internal_id\": \"ASST_NON_VOAL330-3568-691-PD-24_036\"\n      },\n      {\n        \"internal_id\": 235783360,\n        \"Award ID\": \"23-CA-456-24\",\n        \"Award Amount\": 1714898,\n        \"generated_internal_id\": \"ASST_NON_23-CA-456-24_036\"\n      },\n      {\n        \"internal_id\": 260307039,\n        \"Award ID\": \"CVAF044-4808-691-PD-24\",\n        \"Award Amount\": 1699968.24,\n        \"generated_internal_id\": \"ASST_NON_CVAF044-4808-691-PD-24_036\"\n      },\n      {\n        \"internal_id\": 233157899,\n        \"Award ID\": \"18-CA-176-22\",\n        \"Award Amount\": 1636465.31,\n        \"generated_internal_id\": \"ASST_NON_18-CA-176-22_036\"\n      },\n      {\n        \"internal_id\": 233157921,\n        \"Award ID\": \"18-CA-358-23\",\n        \"Award Amount\": 1579699,\n        \"generated_internal_id\": \"ASST_NON_18-CA-358-23_036\"\n      },\n      {\n        \"internal_id\": 267924736,\n        \"Award ID\": \"HFSC272-1533-640-PD-21\",\n        \"Award Amount\": 1552594.56,\n        \"generated_internal_id\": \"ASST_NON_HFSC272-1533-640-PD-21_036\"\n      },\n      {\n        \"internal_id\": 202618938,\n        \"Award ID\": \"12-CA-016-24\",\n        \"Award Amount\": 1524158,\n        \"generated_internal_id\": \"ASST_NON_12-CA-016-24_036\"\n      },\n      {\n        \"internal_id\": 233911016,\n        \"Award ID\": \"19-CA-173-21\",\n        \"Award Amount\": 1520645.09,\n        \"generated_internal_id\": \"ASST_NON_19-CA-173-21_036\"\n      },\n      {\n        \"internal_id\": 271789497,\n        \"Award ID\": \"VTAH251-1546-612-PD-21\",\n        \"Award Amount\": 1511099.12,\n        \"generated_internal_id\": \"ASST_NON_VTAH251-1546-612-PD-21_036\"\n      },\n      {\n        \"internal_id\": 270100864,\n…[truncated]",
+        "errored": false
+      },
+      {
+        "round": 4,
+        "tool": "query_data_source",
+        "args": {
+          "connectorId": "usaspending",
+          "path": "/search/spending_by_geography/",
+          "method": "POST",
+          "body": {
+            "filters": {
+              "agencies": [
+                {
+                  "type": "awarding",
+                  "tier": "toptier",
+                  "name": "Department of Veterans Affairs"
+                }
+              ],
+              "award_type_codes": [
+                "02",
+                "03",
+                "04",
+                "05"
+              ],
+              "place_of_performance_locations": [
+                {
+                  "country": "USA",
+                  "state": "CA"
+                }
+              ],
+              "time_period": [
+                {
+                  "start_date": "2022-10-01",
+                  "end_date": "2023-09-30"
+                }
+              ]
+            },
+            "scope": "place_of_performance",
+            "geo_layer": "state"
+          }
+        },
+        "rawResponse": "{\n  \"status\": 200,\n  \"data\": {\n    \"scope\": \"place_of_performance\",\n    \"geo_layer\": \"state\",\n    \"spending_level\": \"transactions\",\n    \"results\": [\n      {\n        \"shape_code\": \"CA\",\n        \"display_name\": \"California\",\n        \"aggregated_amount\": 382069990.5,\n        \"population\": 39538223,\n        \"per_capita\": 9.66\n      }\n    ],\n    \"messages\": [\n      \"For searches, time period start and end dates are currently limited to an earliest date of 2007-10-01.  For data going back to 2000-10-01, use either the Custom Award Download feature on the website or one of our download or bulk_download API endpoints as listed on https://api.usaspending.gov/docs/endpoints. \",\n      \"The 'subawards' field will be deprecated in the future. Set 'spending_level' to 'subawards' instead. See documentation for more information.\"\n    ]\n  },\n  \"contentType\": \"application/json\"\n}",
+        "errored": false
+      }
+    ],
+    "roundsUsed": 4,
+    "finalAnswer": "I now have a precise aggregate total directly from USAspending's geography aggregation endpoint.\n\n---\n\n## Department of Veterans Affairs — Grants in California, FY2023\n\nAccording to **USAspending.gov** (the official federal spending transparency database), the **Department of Veterans Affairs awarded approximately **$382,069,990.50** (~$382.1 million)** in grants with a place of performance in **California** during **Fiscal Year 2023** (October 1, 2022 – September 30, 2023).\n\n### Key Details:\n| Metric | Value |\n|---|---|\n| **Agency** | Department of Veterans Affairs |\n| **Award Type** | Grants |\n| **State** | California |\n| **Fiscal Year** | FY2023 (Oct 2022 – Sep 2023) |\n| **Total Awarded** | **$382,069,990.50** |\n| **Per Capita** | ~$9.66 (based on CA population of ~39.5M) |\n\n### Notable Top Recipients:\nThe largest individual grants went to:\n1. **California Department of Veterans Affairs** – multiple awards totaling ~$460M+ across several grants (e.g., CA662B: $122.4M, CA662A: $101M, CA664A: $86.9M, CA664B: $83.8M)\n2. **Veterans Home of California** – ~$104M (CA691DV)\n3. **Department of Veteran Affairs (CA)** – ~$93.8M (CA612DT)\n4. Smaller community organizations like Insight Housing, Nation's Finest, PATH, Vietnam Veterans of San Diego, and others receiving millions each for veteran services programs.\n\n> **Note:** The total reflects the **aggregated transaction amounts** tied to grants active or obligated within FY2023 for performance in California, as reported to USAspending.gov.",
+    "error": null,
+    "usage": {
+      "inputTokens": 212904,
+      "outputTokens": 1683
+    }
+  },
+  "grade": {
+    "correctSource": true,
+    "firstQueryValid": true,
+    "attemptsToUsefulData": 2,
+    "meetsCriteria": true,
+    "pass": true,
+    "failureCategory": null,
+    "notes": "The agent correctly queried the usaspending source with the proper multi-faceted POST filter combining VA awarding agency, grant award type codes (02–05), California place-of-performance, and FY2023 time period. The final answer reports $382,069,990.50 total grant spend from the geography aggregation endpoint, which directly satisfies the success criteria with agency, location, award type, and time period all properly scoped.",
+    "usage": {
+      "inputTokens": 5698,
+      "outputTokens": 264
+    }
+  },
+  "usage": {
+    "agent": {
+      "inputTokens": 212904,
+      "outputTokens": 1683
+    },
+    "grader": {
+      "inputTokens": 5698,
+      "outputTokens": 264
+    },
+    "total": {
+      "inputTokens": 218602,
+      "outputTokens": 1947
+    }
+  }
+}

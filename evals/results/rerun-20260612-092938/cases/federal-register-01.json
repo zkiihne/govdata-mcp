@@ -1,0 +1,129 @@
+{
+  "case": {
+    "id": "federal-register-01",
+    "sourceId": "federal-register",
+    "intent": "Have there been any recent final rules published about offshore wind energy? Show me a few with their titles and publication dates.",
+    "successCriteria": "Answer returns recent Federal Register final rules (document type RULE) matching an offshore-wind full-text term, each with a title and a publication date, ordered newest-first. At least one real, plausible document is listed with a valid publication date (YYYY-MM-DD) and a title clearly related to offshore wind. Correct approach uses the documents search with a term filter, a RULE type filter, and newest ordering.",
+    "difficulty": "basic"
+  },
+  "transcript": {
+    "caseId": "federal-register-01",
+    "intent": "Have there been any recent final rules published about offshore wind energy? Show me a few with their titles and publication dates.",
+    "sourceId": "federal-register",
+    "assistantTurns": [
+      {
+        "round": 2,
+        "text": "The initial results are broad matches — they mention \"offshore wind\" tangentially. Let me refine the search to get more directly relevant results."
+      },
+      {
+        "round": 3,
+        "text": "The broad search is pulling in many tangentially related rules (marine mammals, oil & gas, etc.). Let me try a more targeted search focused specifically on offshore wind leasing or regulations from BOEM/Interior."
+      },
+      {
+        "round": 4,
+        "text": "Now I have some solid, clearly offshore-wind-specific final rules. Here's a summary of recent final rules published in the **Federal Register** related to offshore wind energy:\n\n---\n\n### Recent Final Rules Related to Offshore Wind Energy\n\n1. **Safety Zone; Sunrise Wind Farm Project Area, Outer Continental Shelf, Lease OCS-A 0487, Offshore Massachusetts, New York, and Rhode Island**\n   - 📅 **Published:** June 16, 2025\n   - The U.S. Coast Guard established 85 temporary safety zones around individual wind energy facilities being constructed at the Sunrise Wind Farm, located ~16 nautical miles south of Martha's Vineyard, MA. Only attending or authorized vessels may enter these zones during enforcement.\n   - 🔗 [Full Rule](https://www.federalregister.gov/documents/2025/06/16/2025-11020/safety-zone-sunrise-wind-farm-project-area-outer-continental-shelf-lease-ocs-a-0487-offshore)\n\n2. **Restoring Names That Honor American Greatness: Gulf of America (BOEM)**\n   - 📅 **Published:** June 6, 2025\n   - The Bureau of Ocean Energy Management (BOEM) amended its Outer Continental Shelf regulations to replace \"Gulf of Mexico\" with \"Gulf of America\" per Executive Order 14172. While not exclusively an offshore wind rule, BOEM's offshore wind leasing regulations are covered under these OCSLA amendments.\n   - 🔗 [Full Rule](https://www.federalregister.gov/documents/2025/06/06/2025-10068/restoring-names-that-honor-american-greatness-gulf-of-america)\n\n3. **Safety Zone; Cable Laying Corridor, Atlantic Ocean, Virginia Beach, Virginia**\n   - 📅 **Published:** April 21, 2025\n   - The Coast Guard established a temporary moving safety zone around nearshore cable-laying operations extending 12 nautical miles seaward off Virginia Beach, VA — related to offshore wind cable infrastructure.\n   - 🔗 [Full Rule](https://www.federalregister.gov/documents/2025/04/21/2025-06681/safety-zone-cable-laying-corridor-atlantic-ocean-virginia-beach-virginia)\n\n4. **Safety Zone; Empire Wind 1 Wind Farm Project Area, Outer Continental Shelf, Lease OCS-A 0512, Offshore New York and New Jersey**\n   - 📅 **Published:** April 11, 2025\n   - The Coast Guard established 55 temporary safety zones around the construction of wind turbines at the Empire Wind 1 project, located ~12 nautical miles south of Long Island, NY in BOEM Lease Area OCS-A 0512.\n   - 🔗 [Full Rule](https://www.federalregister.gov/documents/2025/04/11/2025-06188/safety-zone-empire-wind-1-wind-farm-project-area-outer-continental-shelf-lease-ocs-a-0512-offshore)\n\n---\n\n**Key takeaway:** The most recent offshore wind final rules are predominantly **Coast Guard safety zones** being established around active offshore wind construction projects (Sunrise Wind off Massachusetts and Empire Wind 1 off New York/New Jersey), reflecting that offshore wind development is actively underway on the U.S. East Coast. BOEM itself has also published regulatory updates related to its offshore leasing framework."
+      }
+    ],
+    "toolCalls": [
+      {
+        "round": 1,
+        "tool": "query_data_source",
+        "args": {
+          "connectorId": "federal-register",
+          "path": "/documents.json",
+          "params": {
+            "conditions[term]": "offshore wind",
+            "conditions[type][]": "RULE",
+            "fields[]": [
+              "title",
+              "publication_date",
+              "html_url"
+            ],
+            "per_page": "5",
+            "order": "newest"
+          }
+        },
+        "rawResponse": "{\n  \"status\": 200,\n  \"data\": {\n    \"description\": \"Documents matching 'offshore wind' and of type Rule\",\n    \"count\": 521,\n    \"total_pages\": 50,\n    \"next_page_url\": \"https://www.federalregister.gov/api/v1/documents?conditions%5Bterm%5D=offshore+wind&conditions%5Btype%5D%5B%5D=RULE&fields%5B%5D=title&fields%5B%5D=publication_date&fields%5B%5D=html_url&format=json&order=newest&page=2&per_page=5\",\n    \"results\": [\n      {\n        \"title\": \"Taking and Importing Marine Mammals; Taking Marine Mammals Incidental to Geophysical Surveys in the Gulf of America\",\n        \"publication_date\": \"2026-04-17\",\n        \"html_url\": \"https://www.federalregister.gov/documents/2026/04/17/2026-07536/taking-and-importing-marine-mammals-taking-marine-mammals-incidental-to-geophysical-surveys-in-the\"\n      },\n      {\n        \"title\": \"Reconsideration of Standards of Performance for New, Reconstructed, and Modified Sources and Emissions Guidelines for Existing Sources: Oil and Natural Gas Sector Climate Review\",\n        \"publication_date\": \"2026-04-09\",\n        \"html_url\": \"https://www.federalregister.gov/documents/2026/04/09/2026-06808/reconsideration-of-standards-of-performance-for-new-reconstructed-and-modified-sources-and-emissions\"\n      },\n      {\n        \"title\": \"Risk-Informed, Technology-Inclusive Regulatory Framework for Advanced Reactors\",\n        \"publication_date\": \"2026-03-30\",\n        \"html_url\": \"https://www.federalregister.gov/documents/2026/03/30/2026-06048/risk-informed-technology-inclusive-regulatory-framework-for-advanced-reactors\"\n      },\n      {\n        \"title\": \"Marine Mammals; Incidental Take of Northern Sea Otters During Specified Activities; Seward, Sitka, and Kodiak, Alaska\",\n        \"publication_date\": \"2026-03-27\",\n        \"html_url\": \"https://www.federalregister.gov/documents/2026/03/27/2026-05976/marine-mammals-incidental-take-of-northern-sea-otters-during-specified-activities-seward-sitka-and\"\n      },\n      {\n        \"title\": \"Special Conditions: Airbus Helicopters Model EC175B Helicopters; Search and R…[truncated]",
+        "errored": false
+      },
+      {
+        "round": 2,
+        "tool": "query_data_source",
+        "args": {
+          "connectorId": "federal-register",
+          "path": "/documents.json",
+          "params": {
+            "conditions[term]": "offshore wind energy",
+            "conditions[type][]": "RULE",
+            "fields[]": [
+              "title",
+              "publication_date",
+              "html_url",
+              "abstract"
+            ],
+            "per_page": "8",
+            "order": "newest"
+          }
+        },
+        "rawResponse": "{\n  \"status\": 200,\n  \"data\": {\n    \"description\": \"Documents matching 'offshore wind energy' and of type Rule\",\n    \"count\": 389,\n    \"total_pages\": 49,\n    \"next_page_url\": \"https://www.federalregister.gov/api/v1/documents?conditions%5Bterm%5D=offshore+wind+energy&conditions%5Btype%5D%5B%5D=RULE&fields%5B%5D=title&fields%5B%5D=publication_date&fields%5B%5D=html_url&fields%5B%5D=abstract&format=json&order=newest&page=2&per_page=8\",\n    \"results\": [\n      {\n        \"title\": \"Taking and Importing Marine Mammals; Taking Marine Mammals Incidental to Geophysical Surveys in the Gulf of America\",\n        \"publication_date\": \"2026-04-17\",\n        \"html_url\": \"https://www.federalregister.gov/documents/2026/04/17/2026-07536/taking-and-importing-marine-mammals-taking-marine-mammals-incidental-to-geophysical-surveys-in-the\",\n        \"abstract\": \"In accordance with the regulations implementing the Marine Mammal Protection Act (MMPA), as amended, notification is hereby given that NMFS promulgates regulations to govern the incidental taking of marine mammals during geophysical survey activity conducted in the Gulf of America (GOA), over the course of 5 years. These regulations, which allow for the issuance of Letters of Authorization (LOA) to survey operators for the incidental take of marine mammals during the described activities and specified timeframe, prescribe the permissible methods of taking and other means of effecting the least practicable adverse impact on marine mammal species or stocks and their habitat, as well as requirements pertaining to the monitoring and reporting of such taking.\"\n      },\n      {\n        \"title\": \"Reconsideration of Standards of Performance for New, Reconstructed, and Modified Sources and Emissions Guidelines for Existing Sources: Oil and Natural Gas Sector Climate Review\",\n        \"publication_date\": \"2026-04-09\",\n        \"html_url\": \"https://www.federalregister.gov/documents/2026/04/09/2026-06808/reconsideration-of-standards-of-performance-for-new-reconstructed-and-modified-sources-and-emi…[truncated]",
+        "errored": false
+      },
+      {
+        "round": 3,
+        "tool": "query_data_source",
+        "args": {
+          "connectorId": "federal-register",
+          "path": "/documents.json",
+          "params": {
+            "conditions[term]": "offshore wind leasing BOEM",
+            "conditions[type][]": "RULE",
+            "fields[]": [
+              "title",
+              "publication_date",
+              "html_url",
+              "abstract"
+            ],
+            "per_page": "5",
+            "order": "newest"
+          }
+        },
+        "rawResponse": "{\n  \"status\": 200,\n  \"data\": {\n    \"description\": \"Documents matching 'offshore wind leasing BOEM' and of type Rule\",\n    \"count\": 66,\n    \"total_pages\": 14,\n    \"next_page_url\": \"https://www.federalregister.gov/api/v1/documents?conditions%5Bterm%5D=offshore+wind+leasing+BOEM&conditions%5Btype%5D%5B%5D=RULE&fields%5B%5D=title&fields%5B%5D=publication_date&fields%5B%5D=html_url&fields%5B%5D=abstract&format=json&order=newest&page=2&per_page=5\",\n    \"results\": [\n      {\n        \"title\": \"Taking and Importing Marine Mammals; Taking Marine Mammals Incidental to Geophysical Surveys in the Gulf of America\",\n        \"publication_date\": \"2026-04-17\",\n        \"html_url\": \"https://www.federalregister.gov/documents/2026/04/17/2026-07536/taking-and-importing-marine-mammals-taking-marine-mammals-incidental-to-geophysical-surveys-in-the\",\n        \"abstract\": \"In accordance with the regulations implementing the Marine Mammal Protection Act (MMPA), as amended, notification is hereby given that NMFS promulgates regulations to govern the incidental taking of marine mammals during geophysical survey activity conducted in the Gulf of America (GOA), over the course of 5 years. These regulations, which allow for the issuance of Letters of Authorization (LOA) to survey operators for the incidental take of marine mammals during the described activities and specified timeframe, prescribe the permissible methods of taking and other means of effecting the least practicable adverse impact on marine mammal species or stocks and their habitat, as well as requirements pertaining to the monitoring and reporting of such taking.\"\n      },\n      {\n        \"title\": \"Safety Zone; Sunrise Wind Farm Project Area, Outer Continental Shelf, Lease OCS-A 0487, Offshore Massachusetts, New York, and Rhode Island, Atlantic Ocean\",\n        \"publication_date\": \"2025-06-16\",\n        \"html_url\": \"https://www.federalregister.gov/documents/2025/06/16/2025-11020/safety-zone-sunrise-wind-farm-project-area-outer-continental-shelf-lease-ocs-a-0487-offshore\",\n        \"ab…[truncated]",
+        "errored": false
+      }
+    ],
+    "roundsUsed": 3,
+    "finalAnswer": "Now I have some solid, clearly offshore-wind-specific final rules. Here's a summary of recent final rules published in the **Federal Register** related to offshore wind energy:\n\n---\n\n### Recent Final Rules Related to Offshore Wind Energy\n\n1. **Safety Zone; Sunrise Wind Farm Project Area, Outer Continental Shelf, Lease OCS-A 0487, Offshore Massachusetts, New York, and Rhode Island**\n   - 📅 **Published:** June 16, 2025\n   - The U.S. Coast Guard established 85 temporary safety zones around individual wind energy facilities being constructed at the Sunrise Wind Farm, located ~16 nautical miles south of Martha's Vineyard, MA. Only attending or authorized vessels may enter these zones during enforcement.\n   - 🔗 [Full Rule](https://www.federalregister.gov/documents/2025/06/16/2025-11020/safety-zone-sunrise-wind-farm-project-area-outer-continental-shelf-lease-ocs-a-0487-offshore)\n\n2. **Restoring Names That Honor American Greatness: Gulf of America (BOEM)**\n   - 📅 **Published:** June 6, 2025\n   - The Bureau of Ocean Energy Management (BOEM) amended its Outer Continental Shelf regulations to replace \"Gulf of Mexico\" with \"Gulf of America\" per Executive Order 14172. While not exclusively an offshore wind rule, BOEM's offshore wind leasing regulations are covered under these OCSLA amendments.\n   - 🔗 [Full Rule](https://www.federalregister.gov/documents/2025/06/06/2025-10068/restoring-names-that-honor-american-greatness-gulf-of-america)\n\n3. **Safety Zone; Cable Laying Corridor, Atlantic Ocean, Virginia Beach, Virginia**\n   - 📅 **Published:** April 21, 2025\n   - The Coast Guard established a temporary moving safety zone around nearshore cable-laying operations extending 12 nautical miles seaward off Virginia Beach, VA — related to offshore wind cable infrastructure.\n   - 🔗 [Full Rule](https://www.federalregister.gov/documents/2025/04/21/2025-06681/safety-zone-cable-laying-corridor-atlantic-ocean-virginia-beach-virginia)\n\n4. **Safety Zone; Empire Wind 1 Wind Farm Project Area, Outer Continental Shelf, Lease OCS-A 0512, Offshore New York and New Jersey**\n   - 📅 **Published:** April 11, 2025\n   - The Coast Guard established 55 temporary safety zones around the construction of wind turbines at the Empire Wind 1 project, located ~12 nautical miles south of Long Island, NY in BOEM Lease Area OCS-A 0512.\n   - 🔗 [Full Rule](https://www.federalregister.gov/documents/2025/04/11/2025-06188/safety-zone-empire-wind-1-wind-farm-project-area-outer-continental-shelf-lease-ocs-a-0512-offshore)\n\n---\n\n**Key takeaway:** The most recent offshore wind final rules are predominantly **Coast Guard safety zones** being established around active offshore wind construction projects (Sunrise Wind off Massachusetts and Empire Wind 1 off New York/New Jersey), reflecting that offshore wind development is actively underway on the U.S. East Coast. BOEM itself has also published regulatory updates related to its offshore leasing framework.",
+    "error": null,
+    "usage": {
+      "inputTokens": 64433,
+      "outputTokens": 1348
+    }
+  },
+  "grade": {
+    "correctSource": true,
+    "firstQueryValid": true,
+    "attemptsToUsefulData": 1,
+    "meetsCriteria": true,
+    "pass": true,
+    "failureCategory": null,
+    "notes": "The agent correctly queried the federal-register source with RULE type filter, term filter, and newest ordering. The final answer lists multiple real, plausible offshore wind-related final rules with valid YYYY-MM-DD publication dates and titles clearly related to offshore wind (safety zones for Sunrise Wind Farm, Empire Wind 1, cable-laying corridor). Items like the Sunrise Wind Farm safety zone (2025-06-16) and Empire Wind 1 (2025-04-11) appear in the raw response data and are clearly offshore-wind-specific. Success criteria are met.",
+    "usage": {
+      "inputTokens": 4674,
+      "outputTokens": 294
+    }
+  },
+  "usage": {
+    "agent": {
+      "inputTokens": 64433,
+      "outputTokens": 1348
+    },
+    "grader": {
+      "inputTokens": 4674,
+      "outputTokens": 294
+    },
+    "total": {
+      "inputTokens": 69107,
+      "outputTokens": 1642
+    }
+  }
+}

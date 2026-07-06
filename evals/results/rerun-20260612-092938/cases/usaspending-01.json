@@ -1,0 +1,105 @@
+{
+  "case": {
+    "id": "usaspending-01",
+    "sourceId": "usaspending",
+    "intent": "Which companies received the largest federal contracts in fiscal year 2024?",
+    "successCriteria": "Returns a ranked list of the largest federal contract awards for fiscal year 2024 (Oct 1 2023 - Sep 30 2024), each with a recipient name and award amount, sorted descending by amount. Top recipients should be large defense/aerospace or pharma contractors (e.g. Lockheed Martin, Boeing, etc.) with award amounts in the hundreds of millions to billions. Must come from USAspending's award search filtered to contract award type codes and the FY2024 time period.",
+    "difficulty": "basic"
+  },
+  "transcript": {
+    "caseId": "usaspending-01",
+    "intent": "Which companies received the largest federal contracts in fiscal year 2024?",
+    "sourceId": "usaspending",
+    "assistantTurns": [
+      {
+        "round": 2,
+        "text": "The best source is **USAspending** (`usaspending`). I'll query it for the top contract awards in FY2024 (Oct 1, 2023 – Sep 30, 2024), sorted by award amount, with key fields like recipient name and award amount."
+      },
+      {
+        "round": 3,
+        "text": "Here are the **top federal contract recipients in Fiscal Year 2024** (October 1, 2023 – September 30, 2024), based on USAspending.gov data. Note that these reflect the **cumulative value of active multi-year contracts**, not just new obligations in FY2024 alone:\n\n---\n\n## 🏆 Largest Federal Contract Recipients — FY2024\n\n| Rank | Recipient | Award Amount | Awarding Agency | Contract Purpose |\n|------|-----------|-------------|-----------------|------------------|\n| 1 | **Humana Government Business Inc.** | $51.3 billion | Dept. of Defense | Defense Health (TRICARE) |\n| 2 | **Lockheed Martin Corp** *(Energy contract)* | $48.1 billion | Dept. of Energy | National lab management |\n| 3 | **National Technology & Engineering Solutions of Sandia (NTESS)** | $42.4 billion | Dept. of Energy | Sandia National Laboratories M&O |\n| 4 | **UT-Battelle LLC** | $41.6 billion | Dept. of Energy | Oak Ridge National Laboratory M&O |\n| 5 | **Lawrence Livermore National Security, LLC** | $41.1 billion | Dept. of Energy | Lawrence Livermore National Lab M&O |\n| 6 | **Regents of the University of California** | $35.3 billion | Dept. of Energy | Los Alamos National Lab M&O |\n| 7 | **Lockheed Martin Corporation** *(Defense)* | $35.1 billion | Dept. of Defense | F-35 LRIP Lot 12 |\n| 8 | **Triad National Security, LLC** | $35.0 billion | Dept. of Energy | Los Alamos National Lab M&O |\n| 9 | **Electric Boat Corporation** | $34.7 billion | Dept. of Defense | Virginia-class submarine construction |\n| 10 | **Lockheed Martin Corporation** *(JSF/F-35)* | $34.2 billion | Dept. of Defense | F-35 Joint Strike Fighter development |\n| 11 | **Consolidated Nuclear Security, LLC** | $34.1 billion | Dept. of Energy | Y-12 & Pantex nuclear weapons plants |\n| 12 | **The Boeing Company** | $32.0 billion | Dept. of Defense | KC-46 Tanker Modernization Program |\n| 13 | **Battelle Memorial Institute** | $30.4 billion | Dept. of Energy | Pacific Northwest National Lab M&O |\n| 14 | **Lockheed Martin Corporation** *(F-35 LRIP 15)* | $30.1 billion | Dept. of Defense | F-35A production |\n| 15 | **Los Alamos National Security LLC** | $27.4 billion | Dept. of Energy | Los Alamos National Lab M&O (prior contract) |\n\n---\n\n### Key Takeaways:\n- 🔬 **Department of Energy** dominates the top contracts, primarily through **Management & Operations (M&O) contracts** for national laboratories (Sandia, Oak Ridge, Lawrence Livermore, Pacific Northwest, Los Alamos).\n- 🛡️ **Department of Defense** awards go heavily to **Lockheed Martin** (F-35 fighter jets), **Electric Boat** (nuclear submarines), **Boeing** (KC-46 tanker), and **Humana** (military healthcare/TRICARE).\n- **Lockheed Martin** appears multiple times across distinct contracts, making it arguably the single largest defense contractor by cumulative obligation.\n- These are long-running multi-year contracts; the dollar amounts reflect the total contract ceiling or cumulative modification value, not just FY2024 spending alone."
+      }
+    ],
+    "toolCalls": [
+      {
+        "round": 1,
+        "tool": "discover_data_sources",
+        "args": {},
+        "rawResponse": "{\n  \"count\": 22,\n  \"sources\": [\n    {\n      \"id\": \"bea\",\n      \"name\": \"BEA — Bureau of Economic Analysis API\",\n      \"agency\": \"U.S. Bureau of Economic Analysis\",\n      \"category\": \"economy\",\n      \"tier\": \"free\",\n      \"status\": \"live\",\n      \"api\": {\n        \"baseUrl\": \"https://apps.bea.gov/api\",\n        \"protocol\": \"rest-json\",\n        \"docsUrl\": \"https://apps.bea.gov/api/_pdf/bea_web_service_api_user_guide.pdf\",\n        \"endpoints\": [\n          {\n            \"id\": \"data\",\n            \"path\": \"/data\",\n            \"method\": \"GET\",\n            \"description\": \"Single endpoint; the method= param selects the operation (GetData, GetDataSetList, GetParameterList, GetParameterValues).\"\n          }\n        ]\n      },\n      \"auth\": {\n        \"type\": \"api-key\",\n        \"placement\": \"query\",\n        \"paramName\": \"UserID\",\n        \"credentialRef\": \"env:BEA_API_KEY\",\n        \"signupUrl\": \"https://apps.bea.gov/API/signup/\"\n      },\n      \"limits\": {\n        \"dailyQuota\": null,\n        \"perRequestMaxSeries\": null,\n        \"rateLimitBehavior\": \"error\",\n        \"notes\": \"Free UserID key required. Throttle: max 100 requests, 100MB, and 30 errors per minute per IP/key — exceeding it blocks for 1 hour.\"\n      },\n      \"pricing\": {\n        \"model\": \"free\",\n        \"feePerCallCents\": null\n      },\n      \"llmDocs\": {\n        \"summary\": \"US economic accounts: GDP (NIPA), regional income/GDP, input-output, international trade and investment, and fixed assets.\",\n        \"queryGuide\": \"One endpoint, /data; the operation is chosen by method=. Discover structure first: method=GetDataSetList, then GetParameterList&datasetname=, then GetParameterValues&datasetname=&ParameterName=. Then method=GetData&datasetname=<ds>&<params>&ResultFormat=JSON. UserID is injected by the gateway.\",\n        \"exampleQueries\": [\n          {\n            \"intent\": \"List available datasets\",\n            \"request\": {\n              \"method\": \"GET\",\n              \"path\": \"/data\",\n              \"params\": {\n                \"method\": \"GetDataSetList\",\n                \"R…[truncated]",
+        "errored": false
+      },
+      {
+        "round": 2,
+        "tool": "query_data_source",
+        "args": {
+          "connectorId": "usaspending",
+          "path": "/search/spending_by_award/",
+          "method": "POST",
+          "body": {
+            "filters": {
+              "award_type_codes": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "time_period": [
+                {
+                  "start_date": "2023-10-01",
+                  "end_date": "2024-09-30"
+                }
+              ]
+            },
+            "fields": [
+              "Award ID",
+              "Recipient Name",
+              "Award Amount",
+              "Awarding Agency",
+              "Description"
+            ],
+            "sort": "Award Amount",
+            "order": "desc",
+            "limit": 15,
+            "page": 1
+          }
+        },
+        "rawResponse": "{\n  \"status\": 200,\n  \"data\": {\n    \"spending_level\": \"awards\",\n    \"limit\": 15,\n    \"results\": [\n      {\n        \"internal_id\": 307885715,\n        \"Award ID\": \"HT940216C0001\",\n        \"Recipient Name\": \"HUMANA GOVERNMENT BUSINESS INC\",\n        \"Award Amount\": 51269205263.03,\n        \"Awarding Agency\": \"Department of Defense\",\n        \"Description\": \"IGF::OT::IGF\",\n        \"awarding_agency_id\": 1173,\n        \"agency_slug\": \"department-of-defense\",\n        \"generated_internal_id\": \"CONT_AWD_HT940216C0001_9700_-NONE-_-NONE-\"\n      },\n      {\n        \"internal_id\": 295476065,\n        \"Award ID\": \"DEAC0494AL85000\",\n        \"Recipient Name\": \"LOCKHEED MARTIN CORP\",\n        \"Award Amount\": 48063763681.32,\n        \"Awarding Agency\": \"Department of Energy\",\n        \"Description\": null,\n        \"awarding_agency_id\": 930,\n        \"agency_slug\": \"department-of-energy\",\n        \"generated_internal_id\": \"CONT_AWD_DEAC0494AL85000_8900_-NONE-_-NONE-\"\n      },\n      {\n        \"internal_id\": 295527116,\n        \"Award ID\": \"DENA0003525\",\n        \"Recipient Name\": \"NATIONAL TECHNOLOGY & ENGINEERING SOLUTIONS OF SANDIA, LLC\",\n        \"Award Amount\": 42370311400.75,\n        \"Awarding Agency\": \"Department of Energy\",\n        \"Description\": \"IGF::CL,CT::IGF CONTRACT AWARD DE-NA0003525 TO THE NATIONAL TECHNOLOGY&ENGINEERING SOLUTIONS OF SANDIA, LLC (NTESS) FOR THE MANAGEMENT AND OPERATION OF THE DEPARTMENT OF ENERGY, NATIONAL NUCLEAR SECURITY ADMINISTRATION'S SANDIA NATIONAL LABORATORIES (SNL)\",\n        \"awarding_agency_id\": 930,\n        \"agency_slug\": \"department-of-energy\",\n        \"generated_internal_id\": \"CONT_AWD_DENA0003525_8900_-NONE-_-NONE-\"\n      },\n      {\n        \"internal_id\": 295476106,\n        \"Award ID\": \"DEAC0500OR22725\",\n        \"Recipient Name\": \"UT-BATTELLE LLC\",\n        \"Award Amount\": 41553920411.82,\n        \"Awarding Agency\": \"Department of Energy\",\n        \"Description\": \"MANAGEMENT AND OPERATION OF THE OAK RIDGE NATIONAL LABORATORY\",\n        \"awarding_agency_id\": 930,\n        \"agency_slug\": \"department-of-energy\",…[truncated]",
+        "errored": false
+      }
+    ],
+    "roundsUsed": 2,
+    "finalAnswer": "Here are the **top federal contract recipients in Fiscal Year 2024** (October 1, 2023 – September 30, 2024), based on USAspending.gov data. Note that these reflect the **cumulative value of active multi-year contracts**, not just new obligations in FY2024 alone:\n\n---\n\n## 🏆 Largest Federal Contract Recipients — FY2024\n\n| Rank | Recipient | Award Amount | Awarding Agency | Contract Purpose |\n|------|-----------|-------------|-----------------|------------------|\n| 1 | **Humana Government Business Inc.** | $51.3 billion | Dept. of Defense | Defense Health (TRICARE) |\n| 2 | **Lockheed Martin Corp** *(Energy contract)* | $48.1 billion | Dept. of Energy | National lab management |\n| 3 | **National Technology & Engineering Solutions of Sandia (NTESS)** | $42.4 billion | Dept. of Energy | Sandia National Laboratories M&O |\n| 4 | **UT-Battelle LLC** | $41.6 billion | Dept. of Energy | Oak Ridge National Laboratory M&O |\n| 5 | **Lawrence Livermore National Security, LLC** | $41.1 billion | Dept. of Energy | Lawrence Livermore National Lab M&O |\n| 6 | **Regents of the University of California** | $35.3 billion | Dept. of Energy | Los Alamos National Lab M&O |\n| 7 | **Lockheed Martin Corporation** *(Defense)* | $35.1 billion | Dept. of Defense | F-35 LRIP Lot 12 |\n| 8 | **Triad National Security, LLC** | $35.0 billion | Dept. of Energy | Los Alamos National Lab M&O |\n| 9 | **Electric Boat Corporation** | $34.7 billion | Dept. of Defense | Virginia-class submarine construction |\n| 10 | **Lockheed Martin Corporation** *(JSF/F-35)* | $34.2 billion | Dept. of Defense | F-35 Joint Strike Fighter development |\n| 11 | **Consolidated Nuclear Security, LLC** | $34.1 billion | Dept. of Energy | Y-12 & Pantex nuclear weapons plants |\n| 12 | **The Boeing Company** | $32.0 billion | Dept. of Defense | KC-46 Tanker Modernization Program |\n| 13 | **Battelle Memorial Institute** | $30.4 billion | Dept. of Energy | Pacific Northwest National Lab M&O |\n| 14 | **Lockheed Martin Corporation** *(F-35 LRIP 15)* | $30.1 billion | Dept. of Defense | F-35A production |\n| 15 | **Los Alamos National Security LLC** | $27.4 billion | Dept. of Energy | Los Alamos National Lab M&O (prior contract) |\n\n---\n\n### Key Takeaways:\n- 🔬 **Department of Energy** dominates the top contracts, primarily through **Management & Operations (M&O) contracts** for national laboratories (Sandia, Oak Ridge, Lawrence Livermore, Pacific Northwest, Los Alamos).\n- 🛡️ **Department of Defense** awards go heavily to **Lockheed Martin** (F-35 fighter jets), **Electric Boat** (nuclear submarines), **Boeing** (KC-46 tanker), and **Humana** (military healthcare/TRICARE).\n- **Lockheed Martin** appears multiple times across distinct contracts, making it arguably the single largest defense contractor by cumulative obligation.\n- These are long-running multi-year contracts; the dollar amounts reflect the total contract ceiling or cumulative modification value, not just FY2024 spending alone.",
+    "error": null,
+    "usage": {
+      "inputTokens": 90324,
+      "outputTokens": 1286
+    }
+  },
+  "grade": {
+    "correctSource": true,
+    "firstQueryValid": true,
+    "attemptsToUsefulData": 2,
+    "meetsCriteria": true,
+    "pass": true,
+    "failureCategory": null,
+    "notes": "The agent correctly queried USAspending's award search endpoint with contract award type codes (A, B, C, D) and the FY2024 time period, receiving valid results sorted descending by award amount. The final answer presents a ranked list with recipient names and award amounts in the billions, featuring expected large contractors (Lockheed Martin, Boeing, Humana/TRICARE, etc.), satisfying the success criteria.",
+    "usage": {
+      "inputTokens": 4173,
+      "outputTokens": 261
+    }
+  },
+  "usage": {
+    "agent": {
+      "inputTokens": 90324,
+      "outputTokens": 1286
+    },
+    "grader": {
+      "inputTokens": 4173,
+      "outputTokens": 261
+    },
+    "total": {
+      "inputTokens": 94497,
+      "outputTokens": 1547
+    }
+  }
+}
